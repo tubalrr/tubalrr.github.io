@@ -117,6 +117,8 @@ border-radius:16px 16px 16px 4px;line-height:1.45;word-break:break-word}
 <div id="chatToast"></div>
 
 <script type="module">
+// SAME LIVE NOTIFICATION SYSTEM: User receives Admin messages; Admin receives User messages.
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
@@ -171,13 +173,29 @@ async function requestChatNotifications(){
 function notifyChat(title, body){
   unreadCount++;
   document.title = `(${unreadCount}) Payapang Isip • Global Chat`;
-  showChatToast(`🔔 ${title}: ${body}`);
-  if("Notification" in window && Notification.permission === "granted" && document.hidden){
-    new Notification(title,{body,icon:"https://tubalrr.github.io/favicon.ico"});
+
+  // Always show an in-page notification while the site is open.
+  showChatToast(`🔔 NEW MESSAGE — ${body}`);
+
+  // Browser notification when permission was allowed.
+  if("Notification" in window && Notification.permission === "granted"){
+    try{
+      new Notification(title,{body});
+    }catch(e){
+      console.warn("Browser notification failed:",e);
+    }
   }
 }
 
 if(notifyBtn) notifyBtn.addEventListener("click",requestChatNotifications);
+
+const testNotifyBtn = document.getElementById("testNotifyBtn");
+if(testNotifyBtn) testNotifyBtn.addEventListener("click",async()=>{
+  if("Notification" in window && Notification.permission !== "granted"){
+    await requestChatNotifications();
+  }
+  notifyChat("Test Notification","Gumagana ang notification ng Payapang Isip 🔔");
+});
 document.addEventListener("visibilitychange",()=>{
   if(!document.hidden){
     unreadCount=0;
