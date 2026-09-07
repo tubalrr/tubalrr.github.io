@@ -3,48 +3,557 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Payapang Isip • Nature AI</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
+
+<!-- =========================
+     VIDEO HERO
+========================= -->
+
 <div class="video-hero" id="heroSection">
+
   <video autoplay muted loop playsinline id="natureVideo">
     <source src="misty_forest_sunbeams.mp4" type="video/mp4">
   </video>
+
   <div class="leaves">
-    <span class="leaf">🍃</span><span class="leaf">🌿</span><span class="leaf">🍂</span><span class="leaf">🍃</span><span class="leaf">🌱</span><span class="leaf">🍂</span><span class="leaf">🍃</span><span class="leaf">🌿</span>
+    <span class="leaf">🍃</span>
+    <span class="leaf">🌿</span>
+    <span class="leaf">🍂</span>
+    <span class="leaf">🍃</span>
+    <span class="leaf">🌱</span>
+    <span class="leaf">🍂</span>
+    <span class="leaf">🍃</span>
+    <span class="leaf">🌿</span>
   </div>
+
   <div class="video-overlay">
-    <span class="eyebrow">🌲 AI NATURE • PAYAPANG ISIP</span>
-    <h1>Payapang<br>Isip, Payapang<br>Puso</h1>
-    <p>Isang kalmadong espasyo na ginawa para huminga ka muli. Parang gubat sa umaga — mahinahon, presko, at puno ng pag-asa. May AI generated forest video.</p>
-    <div style="margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <button class="btn-nature" style="background:white;color:#2D5A3D;box-shadow:0 12px 32px rgba(0,0,0,.2)" onclick="document.querySelector('.shell').scrollIntoView({behavior:'smooth'})">🌿 Simulan ang Journey →</button>
-      <button class="btn-nature" style="background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.35);backdrop-filter:blur(12px)" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">🍃 Huminga Muna</button>
+
+    <span class="eyebrow">
+      🌲 AI NATURE • PAYAPANG ISIP
+    </span>
+
+    <h1>
+      Payapang<br>
+      Isip, Payapang<br>
+      Puso
+    </h1>
+
+    <p>
+      Isang kalmadong espasyo na ginawa para huminga ka muli.
+      Parang gubat sa umaga — mahinahon, presko, at puno ng pag-asa.
+      May AI generated forest video.
+    </p>
+
+    <div style="
+      margin-top:28px;
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap
+    ">
+
+      <button
+        class="btn-nature"
+        style="
+          background:white;
+          color:#2D5A3D;
+          box-shadow:0 12px 32px rgba(0,0,0,.2)
+        "
+        onclick="
+          document.querySelector('.shell')
+          .scrollIntoView({behavior:'smooth'})
+        "
+      >
+        🌿 Simulan ang Journey →
+      </button>
+
+
+      <button
+        class="btn-nature"
+        style="
+          background:rgba(255,255,255,.15);
+          color:white;
+          border:1.5px solid rgba(255,255,255,.35);
+          backdrop-filter:blur(12px)
+        "
+        onclick="
+          document.getElementById('app')
+          .scrollIntoView({behavior:'smooth'})
+        "
+      >
+        🍃 Huminga Muna
+      </button>
+
     </div>
+
   </div>
+
 </div>
-<div class="topbar"><div class="topbar-inner"><div class="brand"><div class="logo">🌲</div><div><b>Payapang Isip</b><small>🌿 NATURE AI STUDIO</small></div></div><div class="actions"><button class="btn" style="background:white;border:1.5px solid var(--line)" onclick="location.href='dashboard.html'">Dashboard</button><button class="btn" style="background:var(--forest);color:white" onclick="go('tahanan')">Home 🌿</button></div></div></div>
-<div class="shell"><aside class="sidebar"><div id="nav" class="nav"></div><div class="side-chat" id="sideChat"><b style="font-size:12px;font-family:Fraunces">🌍 Global Chat • Live</b><div id="sideChatMessages" style="margin:12px 0;max-height:220px;overflow:auto"></div><div style="display:flex;gap:6px"><input id="sideChatText" placeholder="Type..." style="flex:1;border:1.5px solid var(--line);border-radius:12px;padding:9px 12px;font-size:12.5px;outline:0"><button style="padding:9px 12px;border-radius:12px;background:var(--forest);color:white" onclick="sendSideChat()">↑</button></div></div><div class="reminder"><b style="font-family:Fraunces">🌿 Paalala ng Gubat</b><p>Parang puno — hindi mo kailangang madaliin ang paglaki. Mag-ugat ka muna nang malalim, at ang dahon ay susunod.</p><button style="width:100%;margin-top:8px;padding:10px;border-radius:12px;background:white;border:1.5px solid var(--line);font-size:12px;font-weight:700" onclick="nextAffirm()">Bagong paalala 🍃</button></div></aside><main><div id="app" class="content"></div></main></div>
-<div id="mobileNav" style="position:fixed;bottom:0;left:0;right:0;background:rgba(254,252,248,.92);backdrop-filter:blur(20px);border-top:1px solid var(--line);display:none;padding:8px;z-index:20"></div>
+
+
+<!-- =========================
+     TOPBAR
+========================= -->
+
+<div class="topbar">
+
+  <div class="topbar-inner">
+
+    <div class="brand">
+
+      <div class="logo">
+        🌲
+      </div>
+
+      <div>
+
+        <b>
+          Payapang Isip
+        </b>
+
+        <small>
+          🌿 NATURE AI STUDIO
+        </small>
+
+      </div>
+
+    </div>
+
+
+    <div class="actions">
+
+      <button
+        class="btn"
+        style="
+          background:white;
+          border:1.5px solid var(--line)
+        "
+        onclick="location.href='dashboard.html'"
+      >
+        Dashboard
+      </button>
+
+
+      <button
+        class="btn"
+        style="
+          background:var(--forest);
+          color:white
+        "
+        onclick="go('tahanan')"
+      >
+        Home 🌿
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- =========================
+     MAIN WEBSITE
+========================= -->
+
+<div class="shell">
+
+
+  <!-- =========================
+       SIDEBAR
+  ========================= -->
+
+  <aside class="sidebar">
+
+
+    <!-- NAVIGATION -->
+
+    <div
+      id="nav"
+      class="nav"
+    ></div>
+
+
+
+    <!-- =========================
+         GLOBAL CHAT
+    ========================= -->
+
+    <div
+      class="side-chat"
+      id="sideChat"
+    >
+
+
+      <!-- CLICKABLE HEADER -->
+
+      <b
+        style="
+          font-size:12px;
+          font-family:Fraunces;
+          cursor:pointer;
+          display:block
+        "
+
+        onclick="
+          window.location.href='./global-chat.html'
+        "
+      >
+        🌍 Global Chat • Live →
+      </b>
+
+
+
+      <!-- CHAT MESSAGES -->
+
+      <div
+        id="sideChatMessages"
+
+        style="
+          margin:12px 0;
+          max-height:220px;
+          overflow:auto
+        "
+      ></div>
+
+
+
+      <!-- MINI CHAT INPUT -->
+
+      <div
+        style="
+          display:flex;
+          gap:6px
+        "
+      >
+
+        <input
+
+          id="sideChatText"
+
+          placeholder="Type..."
+
+          style="
+            flex:1;
+            border:1.5px solid var(--line);
+            border-radius:12px;
+            padding:9px 12px;
+            font-size:12.5px;
+            outline:0
+          "
+
+        >
+
+
+        <button
+
+          style="
+            padding:9px 12px;
+            border-radius:12px;
+            background:var(--forest);
+            color:white
+          "
+
+          onclick="sendSideChat()"
+
+        >
+          ↑
+        </button>
+
+
+      </div>
+
+
+
+      <!-- =========================
+           OPEN GLOBAL CHAT BUTTON
+      ========================= -->
+
+      <button
+
+        onclick="
+          window.location.href='./global-chat.html'
+        "
+
+        style="
+          width:100%;
+          margin-top:10px;
+          padding:10px;
+          border-radius:12px;
+
+          background:var(--forest);
+
+          color:white;
+
+          border:none;
+
+          font-size:12px;
+
+          font-weight:700;
+
+          cursor:pointer
+        "
+
+      >
+
+        🌍 Open Global Chat →
+
+      </button>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         REMINDER
+    ========================= -->
+
+    <div class="reminder">
+
+      <b
+        style="
+          font-family:Fraunces
+        "
+      >
+        🌿 Paalala ng Gubat
+      </b>
+
+
+      <p>
+
+        Parang puno — hindi mo kailangang
+        madaliin ang paglaki.
+
+        Mag-ugat ka muna nang malalim,
+        at ang dahon ay susunod.
+
+      </p>
+
+
+      <button
+
+        style="
+          width:100%;
+          margin-top:8px;
+
+          padding:10px;
+
+          border-radius:12px;
+
+          background:white;
+
+          border:1.5px solid var(--line);
+
+          font-size:12px;
+
+          font-weight:700
+        "
+
+        onclick="nextAffirm()"
+
+      >
+
+        Bagong paalala 🍃
+
+      </button>
+
+
+    </div>
+
+
+  </aside>
+
+
+
+  <!-- =========================
+       MAIN CONTENT
+  ========================= -->
+
+  <main>
+
+    <div
+      id="app"
+      class="content"
+    ></div>
+
+  </main>
+
+
+</div>
+
+
+
+<!-- =========================
+     MOBILE NAVIGATION
+========================= -->
+
+<div
+
+  id="mobileNav"
+
+  style="
+    position:fixed;
+
+    bottom:0;
+
+    left:0;
+
+    right:0;
+
+    background:rgba(254,252,248,.92);
+
+    backdrop-filter:blur(20px);
+
+    border-top:1px solid var(--line);
+
+    display:none;
+
+    padding:8px;
+
+    z-index:20
+  "
+
+></div>
+
+
+
+<!-- =========================
+     TOAST
+========================= -->
+
 <div id="toast"></div>
 
 
-<script type="module" src="./script.js"></script>
+
+<!-- =========================
+     MAIN JAVASCRIPT
+========================= -->
+
+<script
+  type="module"
+  src="./script.js"
+></script>
+
+
+
+<!-- =========================
+     SHOP LINK HANDLER
+========================= -->
 
 <script>
-document.addEventListener('click', function(e){
-  const el = e.target.closest('button,a,[data-page],[data-nav]');
-  if(!el) return;
-  const text = (el.innerText || el.textContent || '').trim().toLowerCase();
-  const page = String(el.dataset?.page || el.dataset?.nav || '').toLowerCase();
-  if(text === 'shop' || text.includes('🛍') || text.includes('view shop') || page === 'shop'){
-    e.preventDefault();
-    e.stopPropagation();
-    window.location.assign('./shop.html');
-  }
-}, true);
+
+document.addEventListener(
+
+  'click',
+
+  function(e){
+
+    const el =
+      e.target.closest(
+        'button,a,[data-page],[data-nav]'
+      );
+
+
+    if(!el) return;
+
+
+    const text =
+      (
+        el.innerText ||
+        el.textContent ||
+        ''
+      )
+      .trim()
+      .toLowerCase();
+
+
+    const page =
+      String(
+
+        el.dataset?.page ||
+
+        el.dataset?.nav ||
+
+        ''
+
+      )
+      .toLowerCase();
+
+
+
+    /* =========================
+       SHOP LINK
+    ========================= */
+
+    if(
+
+      text === 'shop' ||
+
+      text.includes('🛍') ||
+
+      text.includes('view shop') ||
+
+      page === 'shop'
+
+    ){
+
+      e.preventDefault();
+
+      e.stopPropagation();
+
+      window.location.assign(
+        './shop.html'
+      );
+
+    }
+
+
+    /* =========================
+       GLOBAL CHAT LINK
+    ========================= */
+
+    if(
+
+      text.includes('global chat') ||
+
+      text.includes('🌍') ||
+
+      page === 'global-chat' ||
+
+      page === 'globalchat'
+
+    ){
+
+      e.preventDefault();
+
+      e.stopPropagation();
+
+      window.location.assign(
+        './global-chat.html'
+      );
+
+    }
+
+
+  },
+
+  true
+
+);
+
 </script>
 
-</body></html>
+
+
+</body>
+</html>
