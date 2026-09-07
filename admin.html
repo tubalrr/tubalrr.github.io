@@ -291,7 +291,7 @@ button,input{font:inherit}button{cursor:pointer}
           <option value="file">📁 Digital File</option>
         </select>
         <input id="productMedia" type="url" placeholder="Media link / URL (optional)">
-        <div style="font-size:11px;color:var(--muted)">No upload needed. Paste a direct link for image, audio, video, or file.</div>
+<div style="font-size:11px;color:var(--muted)">Paste a direct link for image, audio, video, or file. No Firebase Storage needed.</div>
       </div>
       <button class="btn-primary" type="submit" id="saveProductBtn">Save Product</button>
     </form>
@@ -400,6 +400,62 @@ function openProductModal(product=null){
   document.getElementById("productStock").value=product?.stock??0;
   document.getElementById("productCategory").value=product?.category||"General";
   document.getElementById("productType").value=product?.type||"image";
+document.getElementById("productMedia").value=product?.media||product?.image||"";
+}
+function closeProductModal(){document.getElementById("productModal").classList.remove("show");}
+document.getElementById("addProductBtn").addEventListener("click",()=>openProductModal());
+document.getElementById("closeProductModal").addEventListener("click",closeProductModal);
+document.getElementById("productModal").addEventListener("click",e=>{if(e.target.id==="productModal")closeProductModal();});
+document.getElementById("refreshProductsBtn").addEventListener("click",loadProducts);
+
+window.editProduct=(id)=>openProductModal(productsCache.find(x=>x.id===id));
+window.removeProduct=async(id)=>{
+  if(!currentAdmin||!confirm("Delete this product?"))return;
+  try{
+    await deleteDoc(doc(db,"products",id));
+    setFeedback("Product deleted successfully.");
+    await loadProducts();
+  }catch(e){
+    console.error(e);
+    alert("Unable to delete product. Check Firestore Security Rules.");
+  }
+};
+
+document.getElementById("productForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!currentAdmin)return;
+  const id=document.getElementById("editingProductId").value;
+  const name=document.getElementById("productName").value.trim();
+  const description=document.getElementById("productDescription").value.trim();
+  const price=Number(document.getElementById("productPrice").value);
+  const stock=Number(document.getElementById("productStock").value);
+  const category=document.getElementById("productCategory").value;
+  const type=document.getElementById("productType").value;
+const media=document.getElementById("productMedia").value.trim();
+  if(!name||!Number.isFinite(price)||price<0||!Number.isFinite(stock)||stock<0)return alert("Please enter valid product information.");
+  const btn=document.getElementById("saveProductBtn");
+  btn.disabled=true;btn.textContent="Saving…";
+  const data={name,description,price,stock,category,type,media,image:(type==="image"?media:""),updatedAt:serverTimestamp(),updatedBy:currentAdmin.email};
+  try{
+    if(id){
+      await updateDoc(doc(db,"products",id),data);
+      setFeedback("Product updated successfully.");
+    }else{
+      await addDoc(collection(db,"products"),{...data,createdAt:serverTimestamp(),createdBy:currentAdmin.email});
+      setFeedback("Product added successfully.");
+    }
+    closeProductModal();
+    e.target.reset();
+    document.getElementById("editingProductId").value="";
+    document.getElementById("productStock").value=0;document.getElementById("productMedia").value="";
+    await loadProducts();
+  }catch(err){
+    console.error(err);
+    alert("Unable to save product. Check Firestore Database and Security Rules.");
+  }finally{
+    btn.disabled=false;btn.textContent="Save Product";
+  }
+});
 
 
 onAuthStateChanged(auth,user=>{if(user&&user.email?.toLowerCase()===ADMIN_EMAIL){currentAdmin=user;loginScreen.style.display="none";adminApp.style.display="block";document.getElementById("adminEmail").textContent=user.email;const e2=document.getElementById("adminEmail2");if(e2)e2.textContent=user.email;loadProducts()}else{currentAdmin=null;loginScreen.style.display="grid";adminApp.style.display="none"}});
