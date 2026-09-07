@@ -223,12 +223,31 @@ button,input{font:inherit}button{cursor:pointer}
           <div class="empty-premium" style="padding:24px"><div class="big">🌍</div><h4>Loading live chat…</h4><p>Kinukuha ang messages mula sa Firebase.</p></div>
         </div>
 
-        <div style="display:flex;gap:10px;margin-top:14px">
-          <div class="search-box" style="flex:1">
-            💬
-            <input id="adminChatText" placeholder="Type to send as Admin..." maxlength="500">
+        <div style="margin-top:14px">
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="action-btn" type="button" onclick="toggleAdminEmojiPicker()" title="Emojis">😊</button>
+            <button class="action-btn" type="button" onclick="toggleAdminStickerPicker()" title="Stickers">🌿</button>
+            <div class="search-box" style="flex:1">
+              💬
+              <input id="adminChatText" placeholder="Type to send as Admin..." maxlength="500">
+            </div>
+            <button id="adminChatSendBtn" class="btn-primary" type="button" onclick="sendAdminChat()">Send</button>
           </div>
-          <button id="adminChatSendBtn" class="btn-primary" type="button" onclick="sendAdminChat()">Send</button>
+
+          <div id="adminEmojiPicker" style="display:none;margin-top:8px;padding:10px;border-radius:14px;background:#FBF8F5;border:1px solid #eee;line-height:2.2">
+            😊 😂 ❤️ 👍 👋 🙏 😍 😢 😮 🎉 🌿 🍃 🌲 ☀️ 💚 ✨ 🔥 💬
+          </div>
+
+          <div id="adminStickerPicker" style="display:none;margin-top:8px;padding:10px;border-radius:14px;background:#FBF8F5;border:1px solid #eee;display:none;gap:8px;flex-wrap:wrap">
+            <button type="button" class="action-btn" onclick="sendAdminSticker('🌿')">🌿</button>
+            <button type="button" class="action-btn" onclick="sendAdminSticker('🍃')">🍃</button>
+            <button type="button" class="action-btn" onclick="sendAdminSticker('🌲')">🌲</button>
+            <button type="button" class="action-btn" onclick="sendAdminSticker('☀️')">☀️</button>
+            <button type="button" class="action-btn" onclick="sendAdminSticker('💚')">💚</button>
+            <button type="button" class="action-btn" onclick="sendAdminSticker('✨')">✨</button>
+            <button type="button" class="action-btn" onclick="sendAdminSticker('🕊️')">🕊️</button>
+            <button type="button" class="action-btn" onclick="sendAdminSticker('🌈')">🌈</button>
+          </div>
         </div>
 
         <p id="adminChatStatus" style="font-size:11.5px;color:var(--muted);margin:10px 2px 0">Admin chat is ready.</p>
@@ -629,6 +648,39 @@ window.sendAdminChat=async()=>{
     button.textContent="Send";
   }
 };
+
+
+window.toggleAdminEmojiPicker=()=>{
+  const box=document.getElementById("adminEmojiPicker");
+  const sticker=document.getElementById("adminStickerPicker");
+  if(sticker) sticker.style.display="none";
+  if(!box) return;
+  box.style.display=box.style.display==="none"||!box.style.display?"block":"none";
+};
+
+window.toggleAdminStickerPicker=()=>{
+  const box=document.getElementById("adminStickerPicker");
+  const emoji=document.getElementById("adminEmojiPicker");
+  if(emoji) emoji.style.display="none";
+  if(!box) return;
+  box.style.display=box.style.display==="none"||!box.style.display?"flex":"none";
+};
+
+window.sendAdminSticker=(sticker)=>{
+  const input=document.getElementById("adminChatText");
+  if(!input) return;
+  input.value=sticker;
+  window.sendAdminChat();
+};
+
+document.addEventListener("click",e=>{
+  const picker=document.getElementById("adminEmojiPicker");
+  if(!picker || !picker.contains(e.target)) return;
+  const value=e.target.textContent.trim();
+  if(!value || value.length>4) return;
+  const input=document.getElementById("adminChatText");
+  if(input){ input.value+=value; input.focus(); }
+});
 
 document.addEventListener("keydown",e=>{
   const input=document.getElementById("adminChatText");
