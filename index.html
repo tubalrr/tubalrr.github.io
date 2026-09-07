@@ -50,10 +50,19 @@ main{padding:26px 20px 90px;min-width:0}
 @media(max-width:1200px){.shell{grid-template-columns:210px minmax(0,1fr)}.side-chat{display:none}.content{max-width:100%}}
 @media(max-width:900px){.shell{display:block}.sidebar{display:none}.side-chat{display:none}.home-feature-links{grid-template-columns:1fr}}
 
+
+/* ===== FIREBASE ACCOUNT AUTH ===== */
+.auth-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.48);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+.auth-backdrop.show{display:flex}.auth-modal{width:min(460px,100%);background:rgba(255,255,255,.97);border:1px solid white;border-radius:30px;padding:28px;box-shadow:0 30px 90px rgba(15,23,42,.28);position:relative}
+.auth-close{position:absolute;right:16px;top:14px;width:36px;height:36px;border-radius:12px;background:#f8fafc;font-size:18px}.auth-logo{width:58px;height:58px;border-radius:20px;background:linear-gradient(135deg,#fff3cf,#fde68a);display:grid;place-items:center;font-weight:900;font-size:24px}
+.auth-modal h2{margin:16px 0 6px}.auth-modal p{font-size:12px;color:#64748b;line-height:1.6}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:#f1f5f9;border-radius:14px;padding:4px;margin:18px 0}.auth-tabs button{padding:10px;border-radius:10px;background:transparent;font-weight:800;font-size:12px}.auth-tabs button.active{background:white;box-shadow:0 4px 14px rgba(15,23,42,.08)}
+.auth-form{display:grid;gap:11px}.auth-form input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;outline:none;background:white}.auth-form input:focus{border-color:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.1)}.auth-primary{width:100%;padding:13px;border-radius:14px;background:var(--ink);color:white;font-weight:800}
+.auth-divider{display:flex;align-items:center;gap:10px;color:#94a3b8;font-size:11px;margin:16px 0}.auth-divider:before,.auth-divider:after{content:"";height:1px;background:var(--line);flex:1}.social-auth{display:grid;grid-template-columns:1fr 1fr;gap:10px}.social-auth button{padding:12px;border:1px solid var(--line);background:white;border-radius:14px;font-weight:800;font-size:12px}.auth-msg{display:none;margin-top:12px;padding:10px 12px;border-radius:12px;background:#fff1f2;color:#b42318;font-size:12px}.auth-msg.success{background:#ecfdf3;color:#16794b}.account-btn{display:flex;align-items:center;gap:8px}.account-avatar{width:28px;height:28px;border-radius:10px;background:#fff3cf;display:grid;place-items:center;font-size:12px}
+
 </style>
 </head>
 <body>
-<header class="topbar"><div class="topbar-inner"><div class="brand"><div class="logo">P</div><div><b>Payapang Isip</b><small>Home • Community • Global</small></div></div><div class="actions"><button class="btn btn-dark" onclick="location.href='dashboard.html'">👤 My Dashboard</button></div></div></header>
+<header class="topbar"><div class="topbar-inner"><div class="brand"><div class="logo">P</div><div><b>Payapang Isip</b><small>Home • Community • Global</small></div></div><div class="actions" id="accountActions"><button class="btn btn-light" onclick="openAuth('login')">Sign In</button><button class="btn btn-dark" onclick="openAuth('signup')">Create Account</button></div></div></header>
 <div class="shell">
 <aside class="sidebar"><nav class="nav" id="nav"></nav><div class="reminder"><b>🌿 Paalala</b><p>“Hindi mo kailangang ayusin lahat ngayon. Isang paghinga lang muna.”</p><div class="small">Payapang Isip • Wellness</div></div></aside>
 <main><div class="content" id="app"></div></main>
@@ -69,8 +78,63 @@ main{padding:26px 20px 90px;min-width:0}
   </div>
 </aside>
 </div>
-<nav class="mobile-nav" id="mobileNav"></nav><div class="toast" id="toast"></div>
-<script>
+<nav class="mobile-nav" id="mobileNav"></nav>
+<div class="auth-backdrop" id="authBackdrop">
+ <div class="auth-modal">
+  <button class="auth-close" onclick="closeAuth()">×</button>
+  <div class="auth-logo">P</div>
+  <h2 class="serif" id="authTitle">Welcome back</h2>
+  <p id="authSubtitle">Mag-sign in para magpatuloy sa Payapang Isip.</p>
+  <div class="auth-tabs">
+   <button id="tabLogin" class="active" onclick="setAuthMode('login')">Sign In</button>
+   <button id="tabSignup" onclick="setAuthMode('signup')">Create Account</button>
+  </div>
+  <div class="auth-form">
+   <input id="authEmail" type="email" placeholder="Email address" autocomplete="email">
+   <input id="authPassword" type="password" placeholder="Password (minimum 6 characters)" autocomplete="current-password">
+   <button class="auth-primary" id="authSubmit" onclick="submitAuth()">Sign In</button>
+  </div>
+  <div class="auth-divider">OR CONTINUE WITH</div>
+  <div class="social-auth">
+   <button onclick="signInGoogle()">🔵 Google</button>
+   <button onclick="signInFacebook()">🔵 Facebook</button>
+  </div>
+  <div class="auth-msg" id="authMsg"></div>
+  <p style="margin-top:14px;font-size:10px">Google/Facebook login requires the provider to be enabled in Firebase Authentication.</p>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
+  authDomain: "payapang-isip.firebaseapp.com",
+  projectId: "payapang-isip",
+  storageBucket: "payapang-isip.firebasestorage.app",
+  messagingSenderId: "901078398408",
+  appId: "1:901078398408:web:1f4c5e5794f96801f57cfd"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
+let authMode = "login";
+
+window.openAuth=(mode="login")=>{document.getElementById("authBackdrop").classList.add("show");setAuthMode(mode);};
+window.closeAuth=()=>document.getElementById("authBackdrop").classList.remove("show");
+window.setAuthMode=(mode)=>{authMode=mode;const signup=mode==="signup";document.getElementById("tabLogin").classList.toggle("active",!signup);document.getElementById("tabSignup").classList.toggle("active",signup);document.getElementById("authTitle").textContent=signup?"Create your account":"Welcome back";document.getElementById("authSubtitle").textContent=signup?"Gumawa ng account gamit ang email, Google, o Facebook.":"Mag-sign in para magpatuloy sa Payapang Isip.";document.getElementById("authSubmit").textContent=signup?"Create Account":"Sign In";document.getElementById("authPassword").autocomplete=signup?"new-password":"current-password";authMessage("");};
+function authMessage(msg,ok=false){const b=document.getElementById("authMsg");if(!msg){b.style.display="none";return}b.textContent=msg;b.className="auth-msg"+(ok?" success":"");b.style.display="block";}
+function friendlyError(e){const m={"auth/email-already-in-use":"May account na gamit ang email na ito.","auth/invalid-email":"Hindi valid ang email address.","auth/weak-password":"Gumamit ng password na may minimum na 6 characters.","auth/invalid-credential":"Maling email o password.","auth/popup-closed-by-user":"Isinara ang sign-in window.","auth/account-exists-with-different-credential":"May existing account na gamit ang email na ito sa ibang sign-in method.","auth/operation-not-allowed":"Hindi pa enabled ang sign-in method na ito sa Firebase Authentication."};return m[e.code]||("Authentication error: "+(e.message||"Subukan ulit."));}
+window.submitAuth=async()=>{const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPassword").value;if(!email||!password)return authMessage("Ilagay ang email at password.");try{if(authMode==="signup")await createUserWithEmailAndPassword(auth,email,password);else await signInWithEmailAndPassword(auth,email,password);authMessage("Success!",true);closeAuth();}catch(e){authMessage(friendlyError(e));}};
+window.signInGoogle=async()=>{try{await signInWithPopup(auth,googleProvider);closeAuth();}catch(e){authMessage(friendlyError(e));}};
+window.signInFacebook=async()=>{try{await signInWithPopup(auth,facebookProvider);closeAuth();}catch(e){authMessage(friendlyError(e));}};
+onAuthStateChanged(auth,user=>{const box=document.getElementById("accountActions");if(!box)return;if(user){const name=user.displayName||user.email?.split("@")[0]||"Member";box.innerHTML=`<button class="btn btn-light account-btn" onclick="location.href='dashboard.html'"><span class="account-avatar">${name.slice(0,1).toUpperCase()}</span>${name}</button><button class="btn btn-dark" onclick="siteLogout()">Logout</button>`;}else{box.innerHTML=`<button class="btn btn-light" onclick="openAuth('login')">Sign In</button><button class="btn btn-dark" onclick="openAuth('signup')">Create Account</button>`;}});
+window.siteLogout=async()=>{await signOut(auth);toast("Logged out");};
+
 const quotes=[
 {id:1,title:'Magandang Umaga',views:'4,577 views',text:'Magandang umaga. Hindi mo kailangang maging perpekto ngayon. Maging totoo ka lang, sapat na.'},
 {id:2,title:'Masakit palang tanggapin',views:'3.2k views',text:'Masakit palang tanggapin na minsan, kahit anong gawin mo, may mga bagay na hindi para sa’yo. At okay lang yun.'},
@@ -161,7 +225,7 @@ function nextAffirm(){state.affirm=(state.affirm+1)%affirmations.length;render()
 let breathTimer=null;
 function toggleBreathing(){if(state.breathing){clearInterval(breathTimer);state.breathing=false;state.phase='ready';render();return}state.breathing=true;state.phase='inhale';state.seconds=60;let phaseSec=4,elapsed=0;breathTimer=setInterval(()=>{state.seconds--;elapsed++;phaseSec--;if(phaseSec<=0){if(state.phase==='inhale'){state.phase='hold';phaseSec=7}else if(state.phase==='hold'){state.phase='exhale';phaseSec=8}else{state.phase='inhale';phaseSec=4;state.cycles++}}if(state.seconds<=0){clearInterval(breathTimer);state.breathing=false;state.phase='ready';toast('Tapos na. Salamat sa paghinga 🌿')}render()},1000);render()}
 function resetBreathing(){clearInterval(breathTimer);state.breathing=false;state.phase='ready';state.seconds=60;state.cycles=0;render()}
-function logout(){if(confirm('Mag-logout sa dashboard?')){localStorage.removeItem('payapang_user');toast('Logged out');setTimeout(()=>location.href='index.html',500)}}
+function logout(){if(confirm('Mag-logout sa dashboard?')){signOut(auth).finally(()=>{localStorage.removeItem('payapang_user');toast('Logged out');setTimeout(()=>location.href='index.html',500)})}}
 function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 render();
 </script>
