@@ -1,75 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Payapang Isip • Nature AI</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./style.css">
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:#F6F8F3;color:#1A2E22}
-.video-hero{position:relative;min-height:86vh;display:grid;place-items:center;background:#0e2418;overflow:hidden}
-.video-hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.video-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,27,18,.25),rgba(8,31,20,.55))}
-.video-overlay{position:relative;z-index:2;text-align:center;color:#fff;padding:60px 20px;max-width:760px}
-.video-overlay h1{font-family:Fraunces,serif;font-size:clamp(36px,6vw,64px);line-height:.95;margin:12px 0}
-.topbar{position:sticky;top:0;z-index:20;background:rgba(254,252,248,.92);backdrop-filter:blur(16px);border-bottom:1px solid rgba(33,75,56,.08);height:64px;display:flex;align-items:center;padding:0 16px}
-.topbar-inner{width:min(1280px,92vw);margin:auto;display:flex;justify-content:space-between;align-items:center}
-.brand{display:flex;gap:8px;align-items:center;text-decoration:none;color:#102d22}
-.brand .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#214b38,#7FB069);color:#fff;display:grid;place-items:center;font-weight:800}
-.btn{border:0;border-radius:999px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer}
-.btn-ghost{background:#fff;border:1.5px solid rgba(33,75,56,.12)} .btn-primary{background:#214b38;color:#fff}
-.shell{max-width:1280px;margin:12px auto;padding:0 16px 30px;display:grid;grid-template-columns:240px 1fr;gap:14px}
-.nav{display:flex;flex-direction:column;gap:7px}
-.nav a{display:flex;gap:8px;padding:11px 12px;border-radius:12px;background:#fff;border:1px solid rgba(33,75,56,.08);text-decoration:none;color:#1A2E22;font-weight:700;font-size:13px}
-.nav a.active{background:#214b38;color:#fff}
-.main{background:#fff;border:1px solid rgba(33,75,56,.08);border-radius:18px;padding:18px;min-height:400px}
-.ghibli{max-width:1280px;margin:18px auto;padding:0 16px}
-.ghibli-box{border-radius:20px;overflow:hidden;background:#000;position:relative;height:420px}
-.ghibli-box video{width:100%;height:100%;object-fit:cover}
-@media(max-width:800px){.shell{grid-template-columns:1fr}}
+:root{--forest:#214b38;--deep:#102d22;--line:rgba(33,75,56,.11);--gold:#e8c77a}
+html{scroll-behavior:smooth}*{box-sizing:border-box}
+body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:#F5F8F3;color:#1A2E22}
+.video-hero{min-height:92vh;position:relative;overflow:hidden;display:grid;place-items:center;background:#0e2418}
+#natureVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.08)}
+.video-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,27,18,.22),rgba(8,31,20,.5));z-index:1}
+.leaves{position:absolute;inset:0;pointer-events:none;z-index:2}.leaf{position:absolute;font-size:22px;opacity:.18;animation:fall 14s linear infinite}
+.leaf:nth-child(1){left:10%} .leaf:nth-child(2){left:30%;animation-delay:1s} .leaf:nth-child(3){left:60%;animation-delay:2s} .leaf:nth-child(4){left:80%;animation-delay:.5s}
+@keyframes fall{0%{transform:translateY(-10%) rotate(0deg)}100%{transform:translateY(110vh) rotate(360deg)}}
+.video-overlay{position:relative;z-index:3;max-width:860px;padding:70px 24px;text-align:center;color:#fff}
+.hero-kicker{display:inline-flex;gap:8px;padding:9px 14px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);font-size:11px;font-weight:800;letter-spacing:1.3px;backdrop-filter:blur(14px)}
+.eyebrow{display:block;margin:12px 0 6px;font-size:11px;letter-spacing:1.5px;font-weight:800;opacity:.85}
+.video-overlay h1{font-family:Fraunces,serif;font-size:clamp(38px,6vw,68px);line-height:.95;margin:10px 0;text-shadow:0 10px 35px rgba(0,0,0,.25)}
+.video-overlay p{max-width:690px;margin:14px auto 0;line-height:1.8;opacity:.9}
+.hero-actions{margin-top:24px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn-nature{border:0;border-radius:999px;padding:13px 20px;font-weight:800;cursor:pointer;transition:.2s}
+.btn-nature:hover{transform:translateY(-2px)}
+.hero-scroll{position:absolute;z-index:3;bottom:22px;left:50%;transform:translateX(-50%);color:#fff;font-size:11px;font-weight:700;opacity:.8;animation:f 2.5s ease-in-out infinite}
+@keyframes f{50%{transform:translate(-50%,6px)}}
+.home-intro{background:linear-gradient(180deg,#f8fbf7,#fffdf9);padding:42px 20px}
+.home-intro-inner{max-width:1180px;margin:auto}
+.home-heading{text-align:center;max-width:720px;margin:0 auto 22px}
+.home-heading .mini{color:var(--forest);font-size:11px;font-weight:800;letter-spacing:1.5px}
+.home-heading h2{font-family:Fraunces,serif;font-size:clamp(30px,4vw,44px);margin:10px 0;color:var(--deep)}
+.home-features{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.home-feature{background:rgba(255,255,255,.9);border:1px solid rgba(33,75,56,.09);border-radius:18px;padding:18px;box-shadow:0 8px 22px rgba(25,55,38,.06);transition:.2s;cursor:pointer}
+.home-feature:hover{transform:translateY(-4px)}
+.daily-home{max-width:1180px;margin:0 auto;padding:10px 20px 42px}
+.daily-card{background:linear-gradient(135deg,#214b38,#153427);color:#fff;border-radius:24px;padding:26px;display:flex;gap:20px;align-items:center;justify-content:space-between;box-shadow:0 16px 40px rgba(19,56,38,.18)}
+/* TOPBAR - ORIGINAL DESIGN RESTORED */
+.topbar{position:sticky;top:0;z-index:50;background:rgba(254,252,248,.92)!important;backdrop-filter:blur(18px);border-bottom:1px solid var(--line);box-shadow:0 6px 20px rgba(33,75,56,.04);height:72px;display:flex;align-items:center;padding:0 20px}
+.topbar-inner{width:min(1320px,92vw);margin:auto;display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--deep)}
+.brand .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#214b38,#7FB069);color:#fff;display:grid;place-items:center;font-weight:800;box-shadow:0 8px 18px rgba(33,75,56,.15)}
+.brand b{font-family:Fraunces,serif;font-size:18px;line-height:1}.brand small{display:block;font-size:8.5px;letter-spacing:.16em;color:#6B8A7A;font-weight:800;margin-top:2px}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn-top{border:0;border-radius:999px;padding:10px 15px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.btn-ghost{background:#fff;border:1.5px solid rgba(33,75,56,.12);color:#214b38}
+.btn-primary{background:linear-gradient(135deg,#214b38,#1A2E22);color:#fff;box-shadow:0 8px 18px rgba(33,75,56,.18)}
+.btn-secondary{background:#EDF3EC;border:1.5px solid rgba(33,75,56,.08);color:#214b38}
+.btn-home{background:#E8F5E9;border:1.5px solid rgba(33,75,56,.08);color:#214b38}
+.account-user{display:flex;gap:8px;align-items:center;background:#fff;border:1.5px solid var(--line);padding:4px 12px 4px 4px;border-radius:999px}
+.account-user img{width:32px;height:32px;border-radius:50%}
+.shell{max-width:1320px;margin:14px auto;padding:0 20px 40px;display:grid;grid-template-columns:250px 1fr;gap:16px}
+.sidebar{position:sticky;top:86px;height:fit-content;display:flex;flex-direction:column;gap:12px}
+.nav-menu{display:flex;flex-direction:column;gap:7px}
+.nav-link{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:12px;background:#fff;border:1px solid var(--line);text-decoration:none;color:#1A2E22;font-weight:700;font-size:13px;transition:.2s}
+.nav-link.active{background:linear-gradient(135deg,#214b38,#1A2E22);color:#fff}
+.nav-link .ico{width:26px;height:26px;border-radius:8px;background:#EDF3EC;display:grid;place-items:center;font-size:13px}
+.nav-link.active .ico{background:rgba(255,255,255,.15)}
+.side-chat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px;box-shadow:0 8px 20px rgba(33,75,56,.05)}
+.reminder{background:linear-gradient(135deg,#FFFBF0,#F5F8F3);border:1px solid var(--line);border-radius:16px;padding:14px}
+.content{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;min-height:520px;box-shadow:0 12px 30px rgba(33,75,56,.06)}
+#toast{position:fixed;right:16px;bottom:16px;background:#1A2E22;color:#fff;padding:12px 14px;border-radius:12px;display:none;z-index:9999;font-size:12px}
+.auth-backdrop{position:fixed;inset:0;background:rgba(10,25,18,.62);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:16px}
+.auth-backdrop.show{display:flex}
+.auth-modal{width:min(520px,94vw);background:#fffdf9;border-radius:24px;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.28);position:relative}
+.auth-close{position:absolute;right:16px;top:12px;border:0;background:transparent;font-size:28px;cursor:pointer;color:#6c786f}
+.auth-tabs{display:flex;background:#eef3ed;border-radius:12px;padding:4px;margin-bottom:14px}
+.auth-tabs button{flex:1;border:0;background:transparent;padding:11px;border-radius:9px;font-weight:800;cursor:pointer}
+.auth-tabs button.active{background:#fff;color:#214b38;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.auth-input{width:100%;padding:12px 14px;border:1.5px solid #dce5dc;border-radius:10px;margin:6px 0;outline:none;font-size:14px}
+.auth-main{width:100%;padding:12px;border:0;border-radius:10px;background:#214b38;color:#fff;font-weight:800;cursor:pointer;margin-top:6px}
+.auth-google{width:100%;padding:11px;border:1.5px solid #dce5dc;border-radius:10px;background:#fff;font-weight:700;cursor:pointer;margin-top:8px}
+.auth-msg{display:none;margin:8px 0;padding:9px;border-radius:8px;background:#fff0ee;color:#a33;font-size:12px}
+@media(max-width:900px){.home-features{grid-template-columns:repeat(2,1fr)}.shell{grid-template-columns:1fr}.sidebar{position:relative;top:0}.topbar{height:auto;padding:10px 0}}
+@media(max-width:520px){.home-features{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="video-hero">
-  <video autoplay muted loop playsinline><source src="misty_forest_sunbeams.mp4" type="video/mp4"></video>
+
+<div class="video-hero" id="heroSection">
+  <video autoplay muted loop playsinline id="natureVideo">
+    <source src="misty_forest_sunbeams.mp4" type="video/mp4">
+  </video>
+  <div class="leaves"><span class="leaf">🍃</span><span class="leaf">🌿</span><span class="leaf">🍂</span><span class="leaf">🌱</span></div>
   <div class="video-overlay">
-    <div style="display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:7px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:1px">🌲 AI NATURE • PAYAPANG ISIP</div>
-    <h1>Payapang Isip, Payapang Puso</h1>
-    <p style="opacity:.9;line-height:1.7;font-size:14px">Isang kalmadong espasyo na ginawa para huminga ka muli.</p>
-    <div style="margin-top:18px"><button class="btn" style="background:#fff;color:#214b38;padding:12px 18px" onclick="document.querySelector('.shell').scrollIntoView({behavior:'smooth'})">🌿 Simulan ang Journey →</button></div>
+    <div class="hero-kicker">🌲 AI NATURE • PAYAPANG ISIP</div>
+    <span class="eyebrow">ISANG LIGTAS NA ESPASYO PARA HUMINGA</span>
+    <h1>Payapang<br>Isip, Payapang<br>Puso</h1>
+    <p>Isang kalmadong espasyo na ginawa para huminga ka muli. Parang gubat sa umaga — mahinahon, presko, at puno ng pag-asa.</p>
+    <div class="hero-actions">
+      <button class="btn-nature" style="background:#fff;color:#214b38" onclick="document.querySelector('.shell').scrollIntoView({behavior:'smooth'})">🌿 Simulan ang Journey →</button>
+      <button class="btn-nature" style="background:rgba(255,255,255,.14);color:#fff;border:1.5px solid rgba(255,255,255,.35);backdrop-filter:blur(10px)" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})">🍃 Huminga Muna</button>
+    </div>
   </div>
+  <div class="hero-scroll">SCROLL TO EXPLORE<br>⌄</div>
 </div>
 
-<div class="topbar"><div class="topbar-inner"><a href="./index.html" class="brand"><div class="logo">🌲</div><b style="font-family:Fraunces">Payapang Isip</b></a><div style="display:flex;gap:7px"><button class="btn btn-ghost" onclick="location.href='./global-chat.html'">🌍 Chat</button><button class="btn btn-primary" onclick="location.href='dashboard.html'">Dashboard</button></div></div></div>
+<section class="home-intro">
+  <div class="home-intro-inner">
+    <div class="home-heading">
+      <div class="mini">🌿 YOUR CALM DIGITAL SPACE</div>
+      <h2>Sandali lang. Huminga tayo.</h2>
+      <p style="color:#65736a;line-height:1.6;font-size:13px">Piliin ang gusto mong gawin ngayon. Walang pagmamadali— isang maliit na hakbang tungo sa mas payapang araw.</p>
+    </div>
+    <div class="home-features">
+      <div class="home-feature" onclick="document.getElementById('app').scrollIntoView({behavior:'smooth'})"><div style="font-size:24px">🧘</div><b style="font-family:Fraunces">Huminga Muna</b><span style="font-size:11px;color:#6B8A7A;display:block;margin-top:4px">Magpahinga at bigyan ang sarili ng ilang tahimik na sandali.</span></div>
+      <div class="home-feature" onclick="location.href='./global-chat.html'"><div style="font-size:24px">🌍</div><b style="font-family:Fraunces">Global Chat</b><span style="font-size:11px;color:#6B8A7A;display:block;margin-top:4px">Kumonekta at makipag-usap sa community nang real-time.</span></div>
+      <div class="home-feature"><div style="font-size:24px">💭</div><b style="font-family:Fraunces">Daily Reminder</b><span style="font-size:11px;color:#6B8A7A;display:block;margin-top:4px">Isang munting paalala na maaaring kailangan mong marinig ngayon.</span></div>
+      <div class="home-feature" onclick="document.querySelector('.shell').scrollIntoView({behavior:'smooth'})"><div style="font-size:24px">🌲</div><b style="font-family:Fraunces">Explore Nature</b><span style="font-size:11px;color:#6B8A7A;display:block;margin-top:4px">Tuklasin ang mga calming space ng Payapang Isip.</span></div>
+    </div>
+  </div>
+</section>
 
-<div class="ghibli">
-  <h2 style="font-family:Fraunces,serif;margin:0 0 8px">🎬 AI Ghibli Video - GitHub Fixed</h2>
-  <p style="font-size:12px;color:#6B8A7A;margin:0 0 10px">Naka-external URL para walang 6MB limit. Palitan mo lang ng Cloudinary URL mo.</p>
-  <div class="ghibli-box">
-    <video autoplay muted loop playsinline controls poster="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1200">
-      <source src="https://res.cloudinary.com/demo/video/upload/q_auto,f_auto/samples/sea-turtle.mp4" type="video/mp4">
-    </video>
+<section class="daily-home"><div class="daily-card"><div><div style="font-family:Fraunces;font-size:44px;line-height:.6;color:var(--gold)">“</div><h3 style="font-family:Fraunces;margin:5px 0 6px;font-size:22px">Hindi mo kailangang ayusin ang lahat ngayon.</h3><p style="margin:0;opacity:.85;font-size:12px;line-height:1.6">May mga araw na sapat nang magpahinga, huminga, at magpatuloy muli bukas. Dahan-dahan lang.</p></div><button style="white-space:nowrap;border:0;border-radius:12px;padding:11px 16px;font-weight:800;cursor:pointer;background:#fff;color:#214b38">🍃 Bagong Paalala</button></div></section>
+
+<!-- TOPBAR - ORIGINAL WITH LOGIN/CREATE RESTORED -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="./index.html" class="brand">
+      <div class="logo">🌲</div>
+      <div><b>Payapang Isip</b><small>🌿 NATURE AI STUDIO</small></div>
+    </a>
+    <div class="actions" id="accountActions">
+      <button class="btn-top btn-ghost" onclick="openAuth('login')">Login</button>
+      <button class="btn-top btn-primary" onclick="openAuth('signup')">✨ Create Account</button>
+      <button class="btn-top btn-secondary" onclick="location.href='dashboard.html'">📊 Dashboard</button>
+      <button class="btn-top btn-home" onclick="location.href='./index.html'">🌿 Home</button>
+    </div>
   </div>
 </div>
 
 <div class="shell">
-  <aside><div class="nav">
-    <a href="./index.html" class="active">🏠 HomeNgayon</a>
-    <a href="./global-chat.html">🌍 Global Chatlive</a>
-    <a href="./shop.html">🛍️ Shopitems</a>
-    <a href="./dashboard.html">👤 My Dashboard</a>
-  </div></aside>
-  <main class="main">
-    <h2 style="font-family:Fraunces,serif;margin:0 0 6px">Fixed na! Hindi na 6MB 🎉</h2>
-    <p style="font-size:13px;color:#6B8A7A;line-height:1.6">Dati 6.44MB kaya hindi makita code sa GitHub. Ngayon <30KB na lang, kita na lahat. Video files nasa labas (hindi embedded), Ghibli video naka-Cloudinary URL.</p>
-    <ul style="font-size:12px;line-height:1.8">
-      <li>✅ index.html = 28KB lang (dating 6,444KB)</li>
-      <li>✅ Video hero = separate file (misty_forest_sunbeams.mp4) - hindi embedded</li>
-      <li>✅ Ghibli video = external URL - walang GitHub limit</li>
-      <li>✅ Walang blue highlight, walang Loading...</li>
-    </ul>
-  </main>
+  <aside class="sidebar">
+    <div class="nav-menu" id="nav">
+      <a href="./index.html" class="nav-link active"><span class="ico">🏠</span> HomeNgayon</a>
+      <a href="#" class="nav-link"><span class="ico">🌿</span> Communityshare</a>
+      <a href="./global-chat.html" class="nav-link"><span class="ico">🌍</span> Global Chatlive</a>
+      <a href="#" class="nav-link"><span class="ico">📰</span> Newsupdates</a>
+      <a href="./shop.html" class="nav-link"><span class="ico">🛍️</span> Shopitems</a>
+      <a href="./dashboard.html" class="nav-link"><span class="ico">👤</span> My Dashboardprofile</a>
+    </div>
+    <div class="side-chat" id="sideChat">
+      <b style="font-size:12px;font-family:Fraunces;display:block;cursor:pointer" onclick="location.href='./global-chat.html'">🌍 Global Chat • Live →</b>
+      <div id="sideChatMessages" style="margin:10px 0;max-height:180px;overflow:auto;font-size:12px"></div>
+      <div style="display:flex;gap:6px"><input id="sideChatText" placeholder="Type..." style="flex:1;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;outline:0"><button style="padding:8px 12px;border-radius:10px;background:#214b38;color:#fff;border:0" onclick="location.href='./global-chat.html'">↑</button></div>
+      <button onclick="location.href='./global-chat.html'" style="width:100%;margin-top:10px;padding:9px;border-radius:10px;background:#214b38;color:#fff;border:0;font-size:11px;font-weight:700;cursor:pointer">🌍 Open Global Chat →</button>
+    </div>
+    <div class="reminder"><b style="font-family:Fraunces;font-size:13px">🌿 Paalala ng Gubat</b><p style="font-size:11px;color:#6B8A7A;line-height:1.6;margin:6px 0 0">Parang puno — hindi mo kailangang madaliin ang paglaki. Mag-ugat ka muna nang malalim.</p></div>
+  </aside>
+  <main><div id="app" class="content">Loading app...</div></main>
 </div>
+
+<div id="toast"></div>
+
+<div class="auth-backdrop" id="authBackdrop">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="closeAuth()">×</button>
+    <div style="font-size:40px;text-align:center">🌿</div>
+    <h2 id="authTitle" style="font-family:Fraunces;text-align:center;margin:8px 0">Welcome back</h2>
+    <p style="text-align:center;color:#6B8A7A;font-size:13px;margin:0 0 14px">Mag-sign in para magpatuloy sa Payapang Isip.</p>
+    <div class="auth-tabs"><button id="tabLogin" class="active" onclick="setAuthMode('login')">Login</button><button id="tabSignup" onclick="setAuthMode('signup')">Create Account</button></div>
+    <div id="authMsg" class="auth-msg"></div>
+    <input class="auth-input" id="authEmail" type="email" placeholder="Email address">
+    <input class="auth-input" id="authPassword" type="password" placeholder="Password (minimum 6 characters)">
+    <button class="auth-main" id="authSubmit" onclick="submitAuth()">Sign In</button>
+    <div style="display:flex;align-items:center;gap:10px;color:#9aa59d;font-size:11px;margin:12px 0"><span style="flex:1;height:1px;background:#e4e9e3"></span>OR<span style="flex:1;height:1px;background:#e4e9e3"></span></div>
+    <button class="auth-google" onclick="signInGoogle()">🌐 Continue with Google</button>
+  </div>
+</div>
+
 <script type="module" src="./script.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+const firebaseConfig={apiKey:"AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",authDomain:"payapang-isip.firebaseapp.com",projectId:"payapang-isip",storageBucket:"payapang-isip.firebasestorage.app",messagingSenderId:"901078398408",appId:"1:901078398408:web:1f4c5e5794f96801f57cfd"};
+const firebaseApp=initializeApp(firebaseConfig);const auth=getAuth(firebaseApp);const googleProvider=new GoogleAuthProvider();let authMode="login";
+window.openAuth=(m="login")=>{document.getElementById("authBackdrop").classList.add("show");window.setAuthMode(m)};
+window.closeAuth=()=>document.getElementById("authBackdrop").classList.remove("show");
+window.setAuthMode=(m)=>{authMode=m;const s=m==="signup";document.getElementById("tabLogin").classList.toggle("active",!s);document.getElementById("tabSignup").classList.toggle("active",s);document.getElementById("authTitle").textContent=s?"Create your account":"Welcome back";document.getElementById("authSubmit").textContent=s?"Create Account":"Sign In";document.getElementById("authMsg").style.display="none"};
+function showMsg(t,ok=false){const b=document.getElementById("authMsg");b.textContent=t;b.style.background=ok?"#e9f7ec":"#fff0ee";b.style.color=ok?"#236438":"#a33";b.style.display="block"}
+window.submitAuth=async()=>{const e=document.getElementById("authEmail").value.trim(),p=document.getElementById("authPassword").value;if(!e||!p){showMsg("Ilagay ang email at password.");return}try{if(authMode==="signup") await createUserWithEmailAndPassword(auth,e,p);else await signInWithEmailAndPassword(auth,e,p);showMsg("Success!",true);setTimeout(()=>window.closeAuth(),600)}catch(err){showMsg(err.message)}};
+window.signInGoogle=async()=>{try{await signInWithPopup(auth,googleProvider);window.closeAuth()}catch(err){showMsg(err.message)}};
+window.logoutAccount=async()=>{await signOut(auth)};
+onAuthStateChanged(auth,user=>{
+  const box=document.getElementById("accountActions");if(!box) return;
+  if(user){
+    const name=user.displayName||user.email?.split("@")[0]||"Member";const photo=user.photoURL||"";
+    box.innerHTML=`<div class="account-user">${photo?`<img src="${photo}">`:"🌿"}<div><b style="font-size:12px">${name}</b><br><button onclick="logoutAccount()" style="border:0;background:transparent;color:#6B8A7A;font-weight:700;font-size:11px;cursor:pointer">Logout</button></div></div><button class="btn-top btn-secondary" onclick="location.href='dashboard.html'">📊 Dashboard</button><button class="btn-top btn-home" onclick="location.href='./index.html'">🌿 Home</button>`;
+  }else{
+    box.innerHTML=`<button class="btn-top btn-ghost" onclick="openAuth('login')">Login</button><button class="btn-top btn-primary" onclick="openAuth('signup')">✨ Create Account</button><button class="btn-top btn-secondary" onclick="location.href='dashboard.html'">📊 Dashboard</button><button class="btn-top btn-home" onclick="location.href='./index.html'">🌿 Home</button>`;
+  }
+});
+document.getElementById("authBackdrop").addEventListener("click",e=>{if(e.target.id==="authBackdrop") window.closeAuth()});
+window.go=(p)=>{if(p==='tahanan') location.href='./index.html'};
+window.sendSideChat=()=>{location.href='./global-chat.html'};
+</script>
 </body>
 </html>
