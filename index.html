@@ -109,6 +109,7 @@ main{padding:26px 20px 90px;min-width:0}
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
@@ -120,6 +121,7 @@ const firebaseConfig = {
 };
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 let authMode = "login";
@@ -166,6 +168,12 @@ function home(){const q=quotes[new Date().getDate()%quotes.length];return `<div 
 <button class="home-feature-link" onclick="go('community')"><span class="icon">👥</span><h3>Community</h3><p>Makipag-ugnayan at magbahagi ng positibong mensahe.</p><div class="go">Buksan →</div></button>
 <button class="home-feature-link" onclick="go('news')"><span class="icon">📰</span><h3>News</h3><p>Mga update, kwento, at paalala mula sa Payapang Isip.</p><div class="go">Basahin →</div></button>
 <button class="home-feature-link" onclick="go('shop')"><span class="icon">🛍️</span><h3>Shop</h3><p>Digital items at resources para sa iyong wellness journey.</p><div class="go">Tingnan →</div></button>
+</div>
+<div style="margin-top:28px">
+  <div class="row" style="margin-bottom:14px"><div><h2 class="serif" style="margin:0">Latest from Shop</h2><p class="small" style="margin:4px 0 0">Mga bagong products na idinagdag ng admin.</p></div><button class="btn btn-light" onclick="go('shop')">View Shop →</button></div>
+  ${products.length
+    ? `<div class="shop-grid">${products.slice(0,3).map(p=>productCard(p,true)).join('')}</div>`
+    : `<div class="card small" style="text-align:center;padding:28px">🛍️ Wala pang products sa shop.</div>`}
 </div>`}
 function journal(){return `${header('Journal','Isulat mo. Walang filter. Para sa’yo lang ito.')}<div class="card"><div class="row" style="margin-top:0"><b>✎ Bagong entry</b><div class="moods">${moods.map((m,i)=>`<button class="mood ${state.mood===i+1?'active':''}" style="width:40px;height:40px;font-size:18px;border-radius:12px" onclick="setMood(${i+1})">${m[0]}</button>`).join('')}</div></div><textarea class="textarea" id="journalText" placeholder="Magsimula ka dito..." style="margin-top:14px"></textarea><div class="row"><span class="small">Mood: ${state.mood?moods[state.mood-1][1]:'Sakto'}</span><button class="btn btn-dark" onclick="addJournal('journalText')">I-save sa Journal</button></div></div><div class="grid" style="margin-top:16px">${state.journals.slice().sort((a,b)=>b.date-a.date).map(j=>`<div class="card entry"><div class="face">${moods[(j.mood||3)-1][0]}</div><div style="flex:1"><b>${new Date(j.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</b><p>${escapeHtml(j.text)}</p><div class="small" style="margin-top:8px">${moods[(j.mood||3)-1][1]}</div></div><button class="delete" onclick="deleteJournal('${j.id}')">Delete</button></div>`).join('')||'<div class="card empty">Wala pa. Magsimula ka ng unang sulat.</div>'}</div>`}
 function favorites(){const fav=quotes.filter(q=>state.favorites.includes(q.id));return `${header('Paborito','Mga salitang gusto mong balikan.')}<div class="quote-list">${fav.map(q=>`<div class="quote-item"><button class="heart" onclick="toggleFav(${q.id})">♥</button><span class="small">${q.title}</span><p>${q.text}</p><span class="small">${q.views} • Payapang Isip</span></div>`).join('')||'<div class="card empty">Wala ka pang saved na quote.</div>'}</div><h2 class="serif" style="margin-top:30px">Iba pang quotes</h2><div class="quote-list">${quotes.filter(q=>!state.favorites.includes(q.id)).map(q=>`<div class="quote-item"><button class="heart" onclick="toggleFav(${q.id})" style="background:white;color:#94a3b8;border:1px solid var(--line)">♡</button><span class="small">${q.title}</span><p>${q.text}</p><button class="btn btn-light" onclick="toggleFav(${q.id})">Save</button></div>`).join('')}</div>`}
@@ -178,18 +186,77 @@ const newsItems=[
 {tag:'WELLNESS',title:'Isang minuto para sa sarili',text:'Subukan ang Hinga section kapag kailangan mong huminto sandali at mag-reset.'},
 {tag:'SHOP',title:'Bagong Payapang Isip digital items',text:'Available ang sample digital products at community support items sa Shop.'}
 ];
-const products=[
-{id:1,emoji:'📖',name:'Payapang Journal',desc:'Digital reflection pages',price:49},
-{id:2,emoji:'🌿',name:'Affirmation Cards',desc:'30 calming reminders',price:39},
-{id:3,emoji:'🖼️',name:'Quote Wallpaper Pack',desc:'Mobile backgrounds',price:29},
-{id:4,emoji:'🎧',name:'Calm Audio Pack',desc:'Relaxing ambience',price:59},
-{id:5,emoji:'☀️',name:'Morning Planner',desc:'Simple daily planning',price:45},
-{id:6,emoji:'💛',name:'Supporter Badge',desc:'Community supporter',price:99}
-];
+let products=[];
+
+async function loadLiveProducts(){
+  try{
+    let snap;
+    try{
+      snap=await getDocs(query(collection(db,"products"),orderBy("createdAt","desc")));
+    }catch(orderError){
+      // Works even if Firestore has no order index or old products have no createdAt.
+      snap=await getDocs(collection(db,"products"));
+    }
+
+    products=snap.docs.map(d=>({
+      id:d.id,
+      name:"Untitled Product",
+      description:"",
+      price:0,
+      stock:0,
+      category:"General",
+      image:"",
+      ...d.data()
+    }));
+
+    // Refresh the currently visible page automatically.
+    if(state && (state.page==="shop" || state.page==="tahanan")) render();
+  }catch(error){
+    console.error("Unable to load products:",error);
+    products=[];
+    if(state && (state.page==="shop" || state.page==="tahanan")) render();
+  }
+}
+
+function productImage(p){
+  return p.image
+    ? `<img src="${String(p.image).replace(/"/g,'&quot;')}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" onerror="this.style.display='none'">`
+    : "🛍️";
+}
+
+function productCard(p,home=false){
+  const id=String(p.id).replace(/'/g,"\\'");
+  return `<article class="product">
+    <div class="product-visual">${productImage(p)}</div>
+    <h3 class="serif">${escProduct(p.name)}</h3>
+    <div class="small">${escProduct(p.description||"No description")}</div>
+    <div class="row">
+      <span class="price">₱${Number(p.price||0).toLocaleString("en-PH")}</span>
+      ${home
+        ? `<button class="btn btn-dark" onclick="go('shop')">View</button>`
+        : `<button class="btn btn-dark" ${Number(p.stock||0)<=0?'disabled style="opacity:.55;cursor:not-allowed"':''} onclick="addCart('${id}')">${Number(p.stock||0)<=0?'Out of stock':state.cart.includes(String(p.id))?'Added ✓':'Add'}</button>`}
+    </div>
+  </article>`;
+}
+
+function escProduct(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
 function community(){let posts=state.community.slice().reverse();return `${header('Community','Isang ligtas at positibong lugar para magbahagi.')}<div class="card community-hero"><span class="badge">☀ PAYAPANG ISIP COMMUNITY</span><h2 class="serif" style="font-size:28px;margin:18px 0 8px;position:relative;z-index:1">Magbahagi ng kabutihan.</h2><p style="position:relative;z-index:1;opacity:.75">I-share ang simpleng thought, encouragement, o magandang nangyari sa araw mo.</p></div><div class="card post-composer" style="margin-top:16px"><b>✦ Gumawa ng post</b><textarea id="communityText" placeholder="Ano ang gusto mong ibahagi sa community?" style="margin-top:12px"></textarea><div class="row"><span class="small">Panatilihing mabait at magalang ang community.</span><button class="btn btn-dark" onclick="addPost()">I-post</button></div></div><div>${posts.map(p=>`<article class="post"><div class="post-head"><div class="avatar">PI</div><div><b>${escapeHtml(p.author||'Community Member')}</b><div class="small">${new Date(p.date).toLocaleString()}</div></div></div><p>${escapeHtml(p.text)}</p><div class="post-actions"><button class="mini-btn" onclick="likePost('${p.id}')">♥ ${p.likes||0} Like</button><button class="mini-btn" onclick="toast('Comments feature coming soon')">◌ Comment</button></div></article>`).join('')||'<div class="card empty">Wala pang community post. Ikaw ang unang magbahagi! ☀</div>'}</div>`}
 function chat(){let msgs=state.chat;return `${header('Global Chat','Friendly messages para sa Payapang Isip community.')}<div class="chat-shell"><aside class="card room-list"><button class="room active">🌍 Global Room<br><span class="small">Community chat</span></button><button class="room" onclick="toast('Coming soon')">🌿 Positivity</button><button class="room" onclick="toast('Coming soon')">☀ Morning Club</button><div class="small"><span class="online-dot"></span>Online demo room</div></aside><section class="card chat-box"><div class="messages" id="messages">${msgs.map(m=>`<div class="msg ${m.me?'me':''}"><div class="avatar">${m.me?'ME':'PI'}</div><div class="bubble"><b>${m.me?'Ikaw':'Payapang Isip Member'}</b><div>${escapeHtml(m.text)}</div><small>${new Date(m.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</small></div></div>`).join('')||'<div class="empty">Wala pang message. Batiin ang community 👋</div>'}</div><div class="chat-send"><input class="chat-input" id="chatText" placeholder="Type a friendly message..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-dark" onclick="sendChat()">Send</button></div><div class="small" style="margin-top:10px">Demo mode: messages are stored locally on this browser.</div></section></div>`}
 function news(){return `${header('News','Mga update at announcements mula sa Payapang Isip.')}<div class="news-grid">${newsItems.map((n,i)=>`<article class="news-card"><span class="news-tag">${n.tag}</span><h3 class="serif">${n.title}</h3><p class="small" style="font-size:13px;line-height:1.65">${n.text}</p><div class="small" style="margin-top:14px">${i+1} day${i?'s':''} ago • Payapang Isip</div></article>`).join('')}</div>`}
-function shop(){let total=state.cart.reduce((a,id)=>a+(products.find(p=>p.id===id)?.price||0),0);return `${header('Shop','Simple digital items para sa Payapang Isip community.')}<div class="shop-grid">${products.map(p=>`<article class="product"><div class="product-visual">${p.emoji}</div><h3 class="serif">${p.name}</h3><div class="small">${p.desc}</div><div class="row"><span class="price">₱${p.price}</span><button class="btn btn-dark" onclick="addCart(${p.id})">${state.cart.includes(p.id)?'Added ✓':'Add'}</button></div></article>`).join('')}</div><div class="cart-bar"><div><b>🛒 Cart</b><span class="small" style="color:#cbd5e1;margin-left:8px">${state.cart.length} item(s)</span></div><div><b>₱${total}</b> <button class="btn" style="margin-left:8px;background:#fbbf24;color:#0f172a" onclick="checkout()">Checkout</button></div></div>`}
+function shop(){
+  let total=state.cart.reduce((a,id)=>{
+    const p=products.find(p=>String(p.id)===String(id));
+    return a+(p?Number(p.price||0):0);
+  },0);
+
+  return `${header('Shop','Mga products na idinagdag at pinamamahalaan ng Payapang Isip admin.')}
+  ${products.length
+    ? `<div class="shop-grid">${products.map(p=>productCard(p,false)).join('')}</div>`
+    : `<div class="card" style="text-align:center;padding:40px"><div style="font-size:38px">🛍️</div><h3 class="serif">Wala pang products</h3><p class="small">Mag-add ng product ang admin para lumabas ito rito at sa Home page.</p></div>`}
+  <div class="cart-bar"><div><b>🛒 Cart</b><span class="small" style="color:#cbd5e1;margin-left:8px">${state.cart.length} item(s)</span></div><div><b>₱${Number(total).toLocaleString("en-PH")}</b> <button class="btn" style="margin-left:8px;background:#fbbf24;color:#0f172a" onclick="checkout()">Checkout</button></div></div>`
+}
 function addPost(){let el=document.getElementById('communityText'),text=el?.value.trim();if(!text)return toast('May gusto ka bang ibahagi muna?');state.community.push({id:String(Date.now()),author:'Community Member',text,date:Date.now(),likes:0});save();toast('Posted sa Community ☀');render()}
 function likePost(id){let p=state.community.find(x=>x.id===id);if(p){p.likes=(p.likes||0)+1;save();render()}}
 
@@ -213,7 +280,12 @@ function sendSideChat(){
 }
 
 function sendChat(){let el=document.getElementById('chatText'),text=el?.value.trim();if(!text)return;state.chat.push({id:String(Date.now()),text,date:Date.now(),me:true});save();render();setTimeout(()=>{let box=document.getElementById('messages');if(box)box.scrollTop=box.scrollHeight},50)}
-function addCart(id){if(!state.cart.includes(id))state.cart.push(id);save();toast('Added to cart 🛍');render()}
+function addCart(id){
+  id=String(id);
+  if(!state.cart.map(String).includes(id)){state.cart.push(id);save();toast("Added to cart")}
+  else toast("Already in cart");
+  render();
+}
 function checkout(){if(!state.cart.length)return toast('Wala pang item sa cart');toast('Demo checkout • connect payment gateway next')}
 
 function render(){renderNav();let out=state.page==='tahanan'?home():state.page==='community'?community():state.page==='chat'?chat():state.page==='news'?news():shop();document.getElementById('app').innerHTML=out;renderSideChat();const qt=document.getElementById('quickText');if(qt){qt.addEventListener('input',()=>document.getElementById('count').textContent=qt.value.length+' characters')}}
@@ -227,6 +299,7 @@ function toggleBreathing(){if(state.breathing){clearInterval(breathTimer);state.
 function resetBreathing(){clearInterval(breathTimer);state.breathing=false;state.phase='ready';state.seconds=60;state.cycles=0;render()}
 function logout(){if(confirm('Mag-logout sa dashboard?')){signOut(auth).finally(()=>{localStorage.removeItem('payapang_user');toast('Logged out');setTimeout(()=>location.href='index.html',500)})}}
 function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+loadLiveProducts();
 render();
 </script>
 </body></html>
