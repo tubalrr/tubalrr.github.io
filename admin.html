@@ -216,7 +216,10 @@ button,input{font:inherit}button{cursor:pointer}
             <h3 style="margin:0">Global Chat • Live</h3>
             <p style="margin:5px 0 0;font-size:11.5px;color:var(--muted)">Admin view • Makikita rito ang live messages at kung sinong user ang nag-send.</p>
           </div>
-          <span class="badge badge-green">● LIVE MONITORING</span>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="action-btn" id="adminNotifyBtn" type="button" title="Enable browser notifications">🔔 <span id="adminUnreadBadge" style="display:none;margin-left:4px;background:#E76F51;color:#fff;border-radius:999px;padding:2px 6px;font-size:10px">0</span></button>
+            <span class="badge badge-green">● LIVE MONITORING</span>
+          </div>
         </div>
 
         <div id="adminChatMessages" style="background:#FBF8F5;border-radius:18px;padding:16px;max-height:420px;overflow:auto">
@@ -364,6 +367,7 @@ button,input{font:inherit}button{cursor:pointer}
     </form>
   </div>
 </div>
+<div id="adminChatToast" style="display:none;position:fixed;right:22px;bottom:22px;z-index:99999;max-width:360px;background:#232E3A;color:#fff;padding:14px 16px;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.22);font-size:13px"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -386,6 +390,61 @@ async function login(){errorBox.style.display="none";const email=document.getEle
 loginBtn.addEventListener("click",login);document.getElementById("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
 
 let currentAdmin=null;
+let adminChatInitialized=false;
+let adminSeenMessageIds=new Set();
+let adminUnreadCount=0;
+
+function showAdminChatToast(text){
+  const toast=document.getElementById("adminChatToast");
+  if(!toast) return;
+  toast.textContent=text;
+  toast.style.display="block";
+  clearTimeout(showAdminChatToast.timer);
+  showAdminChatToast.timer=setTimeout(()=>toast.style.display="none",4500);
+}
+
+function updateAdminUnreadBadge(){
+  const badge=document.getElementById("adminUnreadBadge");
+  if(!badge) return;
+  badge.textContent=adminUnreadCount>99?"99+":adminUnreadCount;
+  badge.style.display=adminUnreadCount>0?"inline-block":"none";
+  document.title=adminUnreadCount>0?`(${adminUnreadCount}) Payapang Isip • Admin Studio`:"Payapang Isip • Admin Studio";
+}
+
+async function requestAdminNotifications(){
+  if(!("Notification" in window)){
+    showAdminChatToast("Browser notifications are not supported.");
+    return;
+  }
+  if(Notification.permission==="granted"){
+    showAdminChatToast("🔔 Notifications are already enabled.");
+    return;
+  }
+  if(Notification.permission==="denied"){
+    showAdminChatToast("Notifications are blocked. Enable them in browser site settings.");
+    return;
+  }
+  const result=await Notification.requestPermission();
+  showAdminChatToast(result==="granted"?"🔔 Admin notifications enabled!":"Notifications not enabled.");
+}
+
+function notifyAdminChat(data){
+  const sender=data.name || data.email || "User";
+  const message=String(data.text || data.message || data.content || "").slice(0,120);
+  adminUnreadCount++;
+  updateAdminUnreadBadge();
+  showAdminChatToast(`🔔 New message from ${sender}: ${message}`);
+  if("Notification" in window && Notification.permission==="granted" && document.hidden){
+    new Notification("New Global Chat message",{body:`${sender}: ${message}`});
+  }
+}
+
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden){
+    adminUnreadCount=0;
+    updateAdminUnreadBadge();
+  }
+});
 
 let productsCache=[];
 const money=new Intl.NumberFormat("en-PH",{style:"currency",currency:"PHP"});
@@ -607,6 +666,8 @@ function renderAdminChat(messages){
 
 function loadAdminChat(){
   if(unsubscribeAdminChat) unsubscribeAdminChat();
+  adminChatInitialized=false;
+  adminSeenMessageIds=new Set();
 
   const status=document.getElementById("adminChatStatus");
   if(status) status.textContent="Loading live messages…";
@@ -614,6 +675,20 @@ function loadAdminChat(){
   const q=query(collection(db,"globalChats"),orderBy("createdAt","desc"),limit(100));
 
   unsubscribeAdminChat=onSnapshot(q,snapshot=>{
+    if(!adminChatInitialized){
+      snapshot.docs.forEach(d=>adminSeenMessageIds.add(d.id));
+      adminChatInitialized=true;
+    }else{
+      snapshot.docChanges().forEach(change=>{
+        if(change.type==="added" && !adminSeenMessageIds.has(change.doc.id)){
+          const data=change.doc.data();
+          const isMine=currentAdmin && data.uid===currentAdmin.uid;
+          if(!data.isAdmin && !isMine) notifyAdminChat(data);
+          adminSeenMessageIds.add(change.doc.id);
+        }
+      });
+    }
+
     const messages=snapshot.docs.map(d=>({id:d.id,...d.data()}));
     renderAdminChat(messages);
     if(status) status.textContent=`Live • ${messages.length} message${messages.length===1?"":"s"} loaded`;
@@ -700,6 +775,9 @@ document.addEventListener("keydown",e=>{
   }
 });
 
+
+const adminNotifyBtn=document.getElementById("adminNotifyBtn");
+if(adminNotifyBtn) adminNotifyBtn.addEventListener("click",requestAdminNotifications);
 
 onAuthStateChanged(auth,user=>{
   if(user&&user.email?.toLowerCase()===ADMIN_EMAIL){
