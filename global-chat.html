@@ -43,6 +43,9 @@ border-radius:16px 16px 16px 4px;line-height:1.45;word-break:break-word}
 @media(max-width:600px){.messages{height:65vh}.hero h1{font-size:28px}.message{max-width:88%}.nav{padding:12px 14px}}
 .emoji-choice{border:0;background:transparent;font-size:20px;padding:3px 4px;cursor:pointer}
 .emoji-choice:hover{transform:scale(1.2)}
+#chatToast{position:fixed;right:18px;bottom:18px;max-width:330px;background:#18342b;color:#fff;padding:13px 16px;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.2);display:none;z-index:9999;font-size:13px}
+#chatToast.show{display:block;animation:toastIn .25s ease}
+@keyframes toastIn{from{transform:translateY(15px);opacity:0}to{transform:translateY(0);opacity:1}}
 
 </style>
 </head>
@@ -111,6 +114,7 @@ border-radius:16px 16px 16px 4px;line-height:1.45;word-break:break-word}
     </form>
   </section>
 </main>
+<div id="chatToast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
@@ -132,6 +136,54 @@ const db = getFirestore(app);
 
 let currentUser = null;
 let lastMessageTime = 0;
+let chatInitialized = false;
+let seenMessageIds = new Set();
+let unreadCount = 0;
+
+const notifyBtn = document.getElementById("notifyBtn");
+const chatToast = document.getElementById("chatToast");
+
+function showChatToast(text){
+  if(!chatToast) return;
+  chatToast.textContent = text;
+  chatToast.classList.add("show");
+  clearTimeout(showChatToast.timer);
+  showChatToast.timer = setTimeout(()=>chatToast.classList.remove("show"),4000);
+}
+
+async function requestChatNotifications(){
+  if(!("Notification" in window)){
+    showChatToast("Hindi supported ang browser notifications sa browser na ito.");
+    return;
+  }
+  if(Notification.permission === "granted"){
+    showChatToast("🔔 Notifications are already enabled.");
+    return;
+  }
+  if(Notification.permission === "denied"){
+    showChatToast("Naka-block ang notifications. I-enable ito sa browser site settings.");
+    return;
+  }
+  const result = await Notification.requestPermission();
+  showChatToast(result === "granted" ? "🔔 Notifications enabled!" : "Notifications not enabled.");
+}
+
+function notifyChat(title, body){
+  unreadCount++;
+  document.title = `(${unreadCount}) Payapang Isip • Global Chat`;
+  showChatToast(`🔔 ${title}: ${body}`);
+  if("Notification" in window && Notification.permission === "granted" && document.hidden){
+    new Notification(title,{body,icon:"https://tubalrr.github.io/favicon.ico"});
+  }
+}
+
+if(notifyBtn) notifyBtn.addEventListener("click",requestChatNotifications);
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden){
+    unreadCount=0;
+    document.title="Payapang Isip • Global Chat";
+  }
+});
 
 const messagesEl = document.getElementById("messages");
 const form = document.getElementById("chatForm");
@@ -170,6 +222,23 @@ const chatQuery = query(
 );
 
 onSnapshot(chatQuery, snapshot => {
+  if(!chatInitialized){
+    snapshot.docs.forEach(d=>seenMessageIds.add(d.id));
+    chatInitialized=true;
+  }else{
+    snapshot.docChanges().forEach(change=>{
+      if(change.type==="added" && !seenMessageIds.has(change.doc.id)){
+        const data=change.doc.data();
+        const mine=currentUser && data.uid===currentUser.uid;
+        if(!mine){
+          const sender=data.isAdmin ? "Admin" : (data.name || data.email || "New message");
+          notifyChat("New Global Chat message", `${sender}: ${String(data.text || "").slice(0,100)}`);
+        }
+        seenMessageIds.add(change.doc.id);
+      }
+    });
+  }
+
   if(snapshot.empty){
     messagesEl.innerHTML = '<div class="empty">Wala pang message. Ikaw ang maunang bumati! 👋</div>';
     return;
