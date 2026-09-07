@@ -59,6 +59,21 @@ html{scroll-behavior:smooth}
   .video-overlay{padding-top:90px}
 }
 </style>
+
+<style>
+/* AUTH MODAL */
+.auth-backdrop{position:fixed;inset:0;background:rgba(10,25,18,.62);backdrop-filter:blur(8px);z-index:9999;display:none;align-items:center;justify-content:center;padding:18px}
+.auth-backdrop.show{display:flex}
+.auth-modal{width:min(440px,100%);background:#fffdf9;border-radius:28px;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.28);position:relative}
+.auth-close{position:absolute;right:16px;top:14px;border:0;background:transparent;font-size:25px;cursor:pointer;color:#6c786f}
+.auth-logo{font-size:34px;text-align:center}.auth-modal h2{font-family:Fraunces,serif;text-align:center;color:#163427;margin:8px 0}.auth-sub{text-align:center;color:#6c786f;font-size:13px;line-height:1.6;margin-bottom:20px}
+.auth-tabs{display:flex;background:#eef3ed;border-radius:14px;padding:4px;margin-bottom:16px}.auth-tabs button{flex:1;border:0;background:transparent;padding:10px;border-radius:11px;font-weight:800;cursor:pointer}.auth-tabs button.active{background:white;color:#214b38;box-shadow:0 4px 14px rgba(0,0,0,.08)}
+.auth-input{width:100%;box-sizing:border-box;padding:13px 14px;border:1.5px solid #dce5dc;border-radius:14px;margin:7px 0;font-size:14px;outline:none}.auth-input:focus{border-color:#214b38}
+.auth-main{width:100%;padding:13px;border:0;border-radius:14px;background:#214b38;color:white;font-weight:800;cursor:pointer;margin-top:8px}.auth-google{width:100%;padding:12px;border:1.5px solid #dce5dc;border-radius:14px;background:white;font-weight:800;cursor:pointer;margin-top:10px}
+.auth-divider{display:flex;align-items:center;gap:10px;color:#9aa59d;font-size:11px;margin:16px 0}.auth-divider:before,.auth-divider:after{content:"";height:1px;background:#e4e9e3;flex:1}.auth-msg{display:none;margin:8px 0;padding:10px;border-radius:12px;background:#fff0ee;color:#a33;font-size:12px}.auth-msg.success{background:#e9f7ec;color:#236438}
+.account-user{display:flex;align-items:center;gap:8px}.account-user img{width:34px;height:34px;border-radius:50%;object-fit:cover}.account-user b{font-size:12px}.account-user button{border:0;background:transparent;color:#214b38;font-weight:800;cursor:pointer;font-size:12px}
+</style>
+
 </head>
 
 <body>
@@ -164,7 +179,9 @@ html{scroll-behavior:smooth}
       </div>
     </div>
 
-    <div class="actions">
+    <div class="actions" id="accountActions">
+      <button class="btn" style="background:white;border:1.5px solid var(--line)" onclick="openAuth('login')">Login</button>
+      <button class="btn" style="background:var(--forest);color:white" onclick="openAuth('signup')">Create Account</button>
       <button class="btn" style="background:white;border:1.5px solid var(--line)"
         onclick="location.href='dashboard.html'">Dashboard</button>
       <button class="btn" style="background:var(--forest);color:white"
@@ -229,6 +246,26 @@ html{scroll-behavior:smooth}
 
 <div id="toast"></div>
 
+<div class="auth-backdrop" id="authBackdrop">
+  <div class="auth-modal">
+    <button class="auth-close" onclick="closeAuth()" aria-label="Close">×</button>
+    <div class="auth-logo">🌿</div>
+    <h2 id="authTitle">Welcome back</h2>
+    <div class="auth-sub" id="authSubtitle">Mag-sign in para magpatuloy sa Payapang Isip.</div>
+    <div class="auth-tabs">
+      <button id="tabLogin" class="active" onclick="setAuthMode('login')">Login</button>
+      <button id="tabSignup" onclick="setAuthMode('signup')">Create Account</button>
+    </div>
+    <div id="authMsg" class="auth-msg"></div>
+    <input class="auth-input" id="authEmail" type="email" placeholder="Email address" autocomplete="email">
+    <input class="auth-input" id="authPassword" type="password" placeholder="Password (minimum 6 characters)" autocomplete="current-password">
+    <button class="auth-main" id="authSubmit" onclick="submitAuth()">Sign In</button>
+    <div class="auth-divider">OR</div>
+    <button class="auth-google" onclick="signInGoogle()">🌐 Continue with Google</button>
+  </div>
+</div>
+
+
 <!-- MAIN JAVASCRIPT — unchanged -->
 <script type="module" src="./script.js"></script>
 
@@ -263,6 +300,121 @@ document.addEventListener('click', function(e){
     window.location.assign('./global-chat.html');
   }
 }, true);
+</script>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
+  authDomain: "payapang-isip.firebaseapp.com",
+  projectId: "payapang-isip",
+  storageBucket: "payapang-isip.firebasestorage.app",
+  messagingSenderId: "901078398408",
+  appId: "1:901078398408:web:1f4c5e5794f96801f57cfd"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
+let authMode = "login";
+
+window.openAuth = (mode="login") => {
+  document.getElementById("authBackdrop").classList.add("show");
+  window.setAuthMode(mode);
+};
+window.closeAuth = () => document.getElementById("authBackdrop").classList.remove("show");
+
+window.setAuthMode = (mode) => {
+  authMode = mode;
+  const signup = mode === "signup";
+  document.getElementById("tabLogin").classList.toggle("active", !signup);
+  document.getElementById("tabSignup").classList.toggle("active", signup);
+  document.getElementById("authTitle").textContent = signup ? "Create your account" : "Welcome back";
+  document.getElementById("authSubtitle").textContent = signup ?
+    "Gumawa ng account gamit ang email o Google." :
+    "Mag-sign in para magpatuloy sa Payapang Isip.";
+  document.getElementById("authSubmit").textContent = signup ? "Create Account" : "Sign In";
+  document.getElementById("authPassword").autocomplete = signup ? "new-password" : "current-password";
+  authMessage("");
+};
+
+function authMessage(msg, ok=false){
+  const box=document.getElementById("authMsg");
+  if(!msg){box.style.display="none";return;}
+  box.textContent=msg;
+  box.className="auth-msg"+(ok?" success":"");
+  box.style.display="block";
+}
+
+function friendlyError(e){
+  const m={
+    "auth/email-already-in-use":"May account na gamit ang email na ito.",
+    "auth/invalid-email":"Hindi valid ang email address.",
+    "auth/weak-password":"Gumamit ng password na may minimum na 6 characters.",
+    "auth/invalid-credential":"Maling email o password.",
+    "auth/popup-closed-by-user":"Isinara ang Google sign-in window.",
+    "auth/popup-blocked":"Na-block ang Google popup. Payagan ang popup at subukan ulit.",
+    "auth/operation-not-allowed":"Hindi pa enabled ang sign-in method sa Firebase Authentication."
+  };
+  return m[e.code] || "Authentication error. Subukan ulit.";
+}
+
+window.submitAuth = async () => {
+  const email=document.getElementById("authEmail").value.trim();
+  const password=document.getElementById("authPassword").value;
+  if(!email || !password){authMessage("Ilagay ang email at password.");return;}
+  try{
+    if(authMode==="signup") await createUserWithEmailAndPassword(auth,email,password);
+    else await signInWithEmailAndPassword(auth,email,password);
+    authMessage("Success!",true);
+    window.closeAuth();
+  }catch(e){authMessage(friendlyError(e));}
+};
+
+window.signInGoogle = async () => {
+  try{
+    await signInWithPopup(auth,googleProvider);
+    window.closeAuth();
+  }catch(e){authMessage(friendlyError(e));}
+};
+
+window.logoutAccount = async () => {
+  await signOut(auth);
+};
+
+onAuthStateChanged(auth,user=>{
+  const box=document.getElementById("accountActions");
+  if(!box) return;
+  if(user){
+    const name=user.displayName || user.email?.split("@")[0] || "Member";
+    const photo=user.photoURL || "";
+    box.innerHTML=`
+      <div class="account-user">
+        ${photo ? `<img src="${photo}" alt="Profile">` : "👤"}
+        <div><b>${name}</b><br><button onclick="logoutAccount()">Logout</button></div>
+      </div>
+      <button class="btn" style="background:white;border:1.5px solid var(--line)" onclick="location.href='dashboard.html'">Dashboard</button>
+      <button class="btn" style="background:var(--forest);color:white" onclick="go('tahanan')">Home 🌿</button>
+    `;
+  }else{
+    box.innerHTML=`
+      <button class="btn" style="background:white;border:1.5px solid var(--line)" onclick="openAuth('login')">Login</button>
+      <button class="btn" style="background:var(--forest);color:white" onclick="openAuth('signup')">Create Account</button>
+      <button class="btn" style="background:white;border:1.5px solid var(--line)" onclick="location.href='dashboard.html'">Dashboard</button>
+      <button class="btn" style="background:var(--forest);color:white" onclick="go('tahanan')">Home 🌿</button>
+    `;
+  }
+});
+
+document.getElementById("authBackdrop").addEventListener("click",e=>{
+  if(e.target.id==="authBackdrop") window.closeAuth();
+});
 </script>
 
 </body>
