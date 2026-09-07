@@ -229,34 +229,4 @@ render();
 // parallax
 window.addEventListener('scroll',()=>{const v=document.getElementById('natureVideo');if(v){v.style.transform=`translateY(${window.scrollY*0.35}px) scale(1.1)`}});
 
-
-
-
-
-// --- FIX: expose all handlers to window for onclick ---
-window.go = go;
-window.setMood = setMood;
-window.addJournal = addJournal;
-window.deleteJournal = deleteJournal;
-window.toggleFav = toggleFav;
-window.nextAffirm = nextAffirm;
-window.toggleBreathing = toggleBreathing;
-window.resetBreathing = resetBreathing;
-window.addPost = addPost;
-window.likePost = likePost;
-window.sendSideChat = sendSideChat;
-window.sendChat = sendChat;
-window.addCart = addCart;
-window.checkout = checkout;
-window.escapeHtml = escapeHtml;
-window.openShop = openShop;
-
-// Override go for shop -> go to shop.html
-const originalGo = go;
-window.go = function(page){
-  if(page === 'shop'){
-    window.location.href = 'shop.html';
-    return;
-  }
-  originalGo(page);
-}
+function openShop(){ window.location.href = 'shop.html'; }
