@@ -117,14 +117,13 @@ button,input{font:inherit}
     </div>
   </section>
 
-  <!-- Right -->
+  <!-- Right - REAL ONLINE USERS -->
   <aside class="right card hide-m">
-    <h3 class="serif">Online ngayon</h3><p class="small" style="margin:4px 0 12px">Mga kapayapaan na kasama mo</p>
-    <div class="online"><div class="online-dot"></div><b style="font-size:13px">Mika</b><span class="small" style="margin-left:auto">active</span></div>
-    <div class="online"><div class="online-dot"></div><b style="font-size:13px">Luna</b><span class="small" style="margin-left:auto">active</span></div>
-    <div class="online"><div class="online-dot"></div><b style="font-size:13px">Jaycee</b><span class="small" style="margin-left:auto">typing...</span></div>
-    <div class="online"><div class="online-dot"></div><b style="font-size:13px">Alyssa</b><span class="small" style="margin-left:auto">active</span></div>
-    <div style="margin-top:16px;background:linear-gradient(135deg,#FFF8E1,#FEFCF8);border:1px solid #F3E8C8;border-radius:16px;padding:14px"><b style="font-size:13px">💡 Tip</b><p class="small" style="margin:6px 0 0">Gamitin ang stickers para mag-express nang hindi na kailangang mag-type ng mahaba. Mas payapa.</p></div>
+    <h3 class="serif">Online ngayon <span id="onlineCount" style="background:var(--forest);color:white;font-size:11px;padding:3px 8px;border-radius:999px;margin-left:6px">0</span></h3>
+    <p class="small" style="margin:4px 0 12px">Real users na nasa chat ngayon • auto-update every 30s</p>
+    <div id="onlineList"><div class="small" style="padding:20px;text-align:center;color:var(--muted)">Walang online pa...<br>Ikaw pa lang 🌿</div></div>
+    <div style="margin-top:16px;background:linear-gradient(135deg,#FFF8E1,#FEFCF8);border:1px solid #F3E8C8;border-radius:16px;padding:14px"><b style="font-size:13px">💡 Real-time</b><p class="small" style="margin:6px 0 0">Totoo lahat ng tao dito. Walang fake. Pag nag-offline, mawawala sa listahan after 2 minutes.</p></div>
+    <div style="margin-top:12px;background:#E8F5E9;border:1px solid #C8DDC6;border-radius:16px;padding:12px"><b style="font-size:11px">🔐 Privacy</b><p class="small" style="margin:4px 0 0;font-size:11px">Name at initial lang makikita. Email hidden.</p></div>
   </aside>
 </div>
 
@@ -133,7 +132,7 @@ button,input{font:inherit}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot, doc, setDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
@@ -164,15 +163,80 @@ function notifyChat(title,body){
 document.getElementById("notifyBtn").addEventListener("click",requestChatNotifications);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden){unreadCount=0;document.title="Payapang Isip • Global Chat 🌲"}});
 
-const messagesEl=document.getElementById("messages"),form=document.getElementById("chatForm"),input=document.getElementById("messageInput"),loginNotice=document.getElementById("loginNotice");
+const messagesEl=document.getElementById("messages"),form=document.getElementById("chatForm"),input=document.getElementById("messageInput"),loginNotice=document.getElementById("loginNotice"),onlineListEl=document.getElementById("onlineList"),onlineCountEl=document.getElementById("onlineCount");
 function escapeHTML(v){return String(v||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
 function formatTime(ts){if(!ts)return"Sending...";try{return ts.toDate().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})+" • "+ts.toDate().toLocaleDateString([],{month:"short",day:"numeric"})}catch{return""}}
+function formatLastSeen(ts){
+  if(!ts) return "now";
+  try{
+    const diff = (Date.now() - ts.toDate().getTime())/1000;
+    if(diff < 60) return "now";
+    if(diff < 120) return "1 min ago";
+    if(diff < 3600) return Math.floor(diff/60)+" mins ago";
+    return ts.toDate().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  }catch{return "now"}
+}
 function renderMessage(id,data){
   const mine=currentUser && data.uid===currentUser.uid;
   const name=data.name||data.email||"Anonymous";
   const initials=name.slice(0,2).toUpperCase();
   return `<div class="msg-row ${mine?"me":""}"><div class="avatar">${initials}</div><div class="bubble-wrap"><div class="meta"><b>${escapeHTML(mine?"You":name)}</b> • ${formatTime(data.createdAt)}</div><div class="bubble">${escapeHTML(data.text)}</div></div></div>`;
 }
+
+// REAL ONLINE PRESENCE SYSTEM
+let presenceInterval=null;
+async function setOnline(){
+  if(!currentUser) return;
+  try{
+    await setDoc(doc(db,"presence",currentUser.uid),{
+      uid:currentUser.uid,
+      name: currentUser.displayName || currentUser.email?.split("@")[0] || "User",
+      email: currentUser.email || "",
+      lastSeen: serverTimestamp(),
+      online:true
+    },{merge:true});
+  }catch(e){console.warn("presence set failed",e)}
+}
+async function setOffline(){
+  if(!currentUser) return;
+  try{ await deleteDoc(doc(db,"presence",currentUser.uid)); }catch(e){}
+}
+function startPresenceHeartbeat(){
+  if(presenceInterval) clearInterval(presenceInterval);
+  setOnline();
+  presenceInterval=setInterval(()=>setOnline(), 30000); // every 30s
+}
+function stopPresenceHeartbeat(){
+  if(presenceInterval){clearInterval(presenceInterval);presenceInterval=null}
+}
+
+// Listen to real online users
+const presenceQuery=query(collection(db,"presence"),orderBy("lastSeen","desc"),limit(50));
+onSnapshot(presenceQuery,snap=>{
+  const now=Date.now();
+  const onlineUsers=snap.docs.map(d=>d.data()).filter(u=>{
+    try{
+      if(!u.lastSeen) return true;
+      const t=u.lastSeen.toDate ? u.lastSeen.toDate().getTime() : now;
+      return (now - t) < 3*60*1000; // 3 minutes threshold
+    }catch{return true}
+  });
+  onlineCountEl.textContent=onlineUsers.length;
+  if(!onlineUsers.length){
+    onlineListEl.innerHTML=`<div class="small" style="padding:20px;text-align:center;color:var(--muted)">Walang online pa...<br>Ikaw pa lang 🌿</div>`;
+    return;
+  }
+  onlineListEl.innerHTML=onlineUsers.map(u=>{
+    const isMe=currentUser && u.uid===currentUser.uid;
+    const initials=(u.name||"U").slice(0,2).toUpperCase();
+    return `<div class="online" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:${isMe?'#E8F5E9':'white'};border:1px solid ${isMe?'#C8DDC6':'var(--line)'};border-radius:14px;margin-bottom:8px">
+      <div style="position:relative"><div class="avatar" style="width:34px;height:34px;font-size:11px">${initials}</div><div style="position:absolute;right:-2px;bottom:-2px;width:10px;height:10px;background:#4E9B68;border:2px solid white;border-radius:50%"></div></div>
+      <div style="flex:1;min-width:0"><b style="font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHTML(u.name)}${isMe?' (You)':''}</b><span style="font-size:11px;color:var(--muted)">${escapeHTML(formatLastSeen(u.lastSeen))}</span></div>
+      <span style="font-size:10px;background:#E8F5E9;color:#2D5A3D;padding:4px 8px;border-radius:999px;font-weight:700">● LIVE</span>
+    </div>`;
+  }).join("");
+},err=>{console.warn("presence listen failed",err); onlineListEl.innerHTML=`<div class="small" style="padding:12px;background:#FFF1F1;border-radius:12px;color:#B42318">Need Firestore Rules for presence.<br><small>${escapeHTML(err.message)}</small></div>`});
+
 const chatQuery=query(collection(db,"globalChats"),orderBy("createdAt","asc"),limit(120));
 onSnapshot(chatQuery,snapshot=>{
   if(!chatInitialized){snapshot.docs.forEach(d=>seenMessageIds.add(d.id));chatInitialized=true}else{snapshot.docChanges().forEach(ch=>{if(ch.type==="added" && !seenMessageIds.has(ch.doc.id)){const d=ch.doc.data();const mine=currentUser&&d.uid===currentUser.uid;if(!mine){notifyChat("New message",`${d.name||"Someone"}: ${String(d.text||"").slice(0,90)}`)}seenMessageIds.add(ch.doc.id)}})}
@@ -187,7 +251,14 @@ onAuthStateChanged(auth,user=>{
   input.disabled=!user;
   document.getElementById("sendBtn").disabled=!user;
   input.placeholder=user?"Mag-type ng payapang mensahe... 🌿":"Login required para makapag-chat";
+  if(user){
+    startPresenceHeartbeat();
+  }else{
+    stopPresenceHeartbeat();
+  }
 });
+window.addEventListener("beforeunload",()=>{setOffline()});
+window.addEventListener("pagehide",()=>{setOffline()});
 
 document.getElementById("emojiBtn").addEventListener("click",()=>{document.getElementById("stickerBar").classList.remove("show");document.getElementById("emojiBar").classList.toggle("show")});
 document.getElementById("stickerBtn").addEventListener("click",()=>{document.getElementById("emojiBar").classList.remove("show");document.getElementById("stickerBar").classList.toggle("show")});
