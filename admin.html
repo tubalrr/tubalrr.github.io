@@ -217,7 +217,7 @@ button,input{font:inherit}button{cursor:pointer}
             <p style="margin:5px 0 0;font-size:11.5px;color:var(--muted)">Admin view • Makikita rito ang live messages at kung sinong user ang nag-send.</p>
           </div>
           <div style="display:flex;gap:8px;align-items:center">
-            <button class="action-btn" id="adminNotifyBtn" type="button" title="Enable browser notifications">🔔 <span id="adminUnreadBadge" style="display:none;margin-left:4px;background:#E76F51;color:#fff;border-radius:999px;padding:2px 6px;font-size:10px">0</span></button>
+            <button class="action-btn" id="adminNotifyBtn" type="button" title="Enable browser notifications">🔔 <span id="adminUnreadBadge" style="display:none;margin-left:4px;background:#E76F51;color:#fff;border-radius:999px;padding:2px 6px;font-size:10px">0</span></button><button class="action-btn" id="adminTestNotifyBtn" type="button" title="Test notification">🧪</button>
             <span class="badge badge-green">● LIVE MONITORING</span>
           </div>
         </div>
@@ -370,6 +370,8 @@ button,input{font:inherit}button{cursor:pointer}
 <div id="adminChatToast" style="display:none;position:fixed;right:22px;bottom:22px;z-index:99999;max-width:360px;background:#232E3A;color:#fff;padding:14px 16px;border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.22);font-size:13px"></div>
 
 <script type="module">
+// SAME LIVE NOTIFICATION SYSTEM: User receives Admin messages; Admin receives User messages.
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
@@ -433,9 +435,17 @@ function notifyAdminChat(data){
   const message=String(data.text || data.message || data.content || "").slice(0,120);
   adminUnreadCount++;
   updateAdminUnreadBadge();
-  showAdminChatToast(`🔔 New message from ${sender}: ${message}`);
-  if("Notification" in window && Notification.permission==="granted" && document.hidden){
-    new Notification("New Global Chat message",{body:`${sender}: ${message}`});
+
+  // Always show an in-dashboard popup.
+  showAdminChatToast(`🔔 NEW MESSAGE from ${sender}: ${message}`);
+
+  // Also try browser notification if permission was granted.
+  if("Notification" in window && Notification.permission==="granted"){
+    try{
+      new Notification("New Global Chat message",{body:`${sender}: ${message}`});
+    }catch(e){
+      console.warn("Browser notification failed:",e);
+    }
   }
 }
 
@@ -778,6 +788,14 @@ document.addEventListener("keydown",e=>{
 
 const adminNotifyBtn=document.getElementById("adminNotifyBtn");
 if(adminNotifyBtn) adminNotifyBtn.addEventListener("click",requestAdminNotifications);
+
+const adminTestNotifyBtn=document.getElementById("adminTestNotifyBtn");
+if(adminTestNotifyBtn) adminTestNotifyBtn.addEventListener("click",async()=>{
+  if("Notification" in window && Notification.permission!=="granted"){
+    await requestAdminNotifications();
+  }
+  notifyAdminChat({name:"Test User",text:"Gumagana ang Admin notification 🔔"});
+});
 
 onAuthStateChanged(auth,user=>{
   if(user&&user.email?.toLowerCase()===ADMIN_EMAIL){
