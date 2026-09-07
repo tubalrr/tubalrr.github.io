@@ -71,7 +71,22 @@ border-radius:16px 16px 16px 4px;line-height:1.45;word-break:break-word}
       <div class="empty">Loading conversations... 💬</div>
     </div>
 
+    <div id="emojiBar" style="display:none;padding:8px 14px;background:#fffdf8;border-top:1px solid var(--line);font-size:22px;cursor:pointer;word-spacing:6px">
+      😊 😂 ❤️ 👍 👋 🙏 😍 😢 😮 🎉 🌿 🍃 🌲 ☀️ 💚 ✨ 🔥
+    </div>
+    <div id="stickerBar" style="display:none;padding:8px 14px;background:#fffdf8;border-top:1px solid var(--line)">
+      <button class="btn light sticker" type="button">🌿</button>
+      <button class="btn light sticker" type="button">🍃</button>
+      <button class="btn light sticker" type="button">🌲</button>
+      <button class="btn light sticker" type="button">☀️</button>
+      <button class="btn light sticker" type="button">💚</button>
+      <button class="btn light sticker" type="button">✨</button>
+      <button class="btn light sticker" type="button">🕊️</button>
+      <button class="btn light sticker" type="button">🌈</button>
+    </div>
     <form id="chatForm" class="composer">
+      <button class="btn light" id="emojiBtn" type="button" title="Emoji">😊</button>
+      <button class="btn light" id="stickerBtn" type="button" title="Sticker">🌿</button>
       <input id="messageInput" maxlength="500" placeholder="Type your message..." autocomplete="off">
       <button class="btn dark" type="submit">Send ➤</button>
     </form>
@@ -156,6 +171,26 @@ onAuthStateChanged(auth,user=>{
   form.querySelector("button").disabled=!user;
   input.placeholder=user ? "Type your message..." : "Login required to chat";
 });
+
+
+document.getElementById("emojiBtn").addEventListener("click",()=>{
+  const b=document.getElementById("emojiBar");
+  document.getElementById("stickerBar").style.display="none";
+  b.style.display=b.style.display==="none"?"block":"none";
+});
+document.getElementById("stickerBtn").addEventListener("click",()=>{
+  const b=document.getElementById("stickerBar");
+  document.getElementById("emojiBar").style.display="none";
+  b.style.display=b.style.display==="none"?"block":"none";
+});
+document.getElementById("emojiBar").addEventListener("click",e=>{
+  const t=e.target.textContent.trim();
+  if(t && t.length<=4){ input.value+=t; input.focus(); }
+});
+document.querySelectorAll(".sticker").forEach(btn=>btn.addEventListener("click",()=>{
+  input.value=btn.textContent.trim();
+  form.requestSubmit();
+}));
 
 form.addEventListener("submit",async e=>{
   e.preventDefault();
