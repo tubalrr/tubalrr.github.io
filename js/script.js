@@ -58,10 +58,10 @@ function header(title,sub){return `<h1 class="page-title serif">${title}</h1><p 
 function home(){const q=quotes[new Date().getDate()%quotes.length];return `<div class="grid two"><section class="grid" style="align-content:start"><div class="card quote"><span class="badge">✦ TODAY'S QUOTE • ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span><h1 class="serif">${q.text}</h1><p>${q.views} • Payapang Isip</p></div><div class="card"><b>Kamusta ang pakiramdam mo?</b><div class="mood-label">Pumili ng pinakamalapit sa nararamdaman mo ngayon.</div><div class="moods" style="margin-top:14px">${moods.map((m,i)=>`<button class="mood ${state.mood===i+1?'active':''}" onclick="setMood(${i+1})" title="${m[1]}">${m[0]}</button>`).join('')}</div>${state.mood?`<div class="mood-label">Napili: <b>${moods[state.mood-1][1]}</b></div>`:''}</div><div class="card"><div style="display:flex;align-items:center;gap:8px"><b>✎ Mabilis na sulat</b></div><textarea class="textarea" id="quickText" placeholder="Ano ang nasa isip mo ngayon? Walang tama o mali dito..."></textarea><div class="row"><span class="small" id="count">0 characters</span><button class="btn btn-dark" onclick="addJournal('quickText')">I-save • Journal</button></div></div></section><aside class="grid" style="align-content:start"><div class="card affirm"><div class="small" style="color:#fbbf24;letter-spacing:.1em;text-transform:uppercase;font-weight:800">✦ Affirmation ngayon</div><p class="serif">“${affirmations[state.affirm]}”</p><button class="btn" style="background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.1)" onclick="nextAffirm()">Bagong affirmation</button></div><div class="card"><b>Mabilis na stats</b><div class="stats" style="margin-top:12px"><div class="stat"><small>Streak</small><b>🔥 ${streak()}</b></div><div class="stat"><small>Journals</small><b>${state.journals.length}</b></div><div class="stat"><small>Paborito</small><b>${state.favorites.length}</b></div></div></div></aside></div><div class="home-feature-links">
 <button class="home-feature-link" onclick="go('community')"><span class="icon">👥</span><h3>Community</h3><p>Makipag-ugnayan at magbahagi ng positibong mensahe.</p><div class="go">Buksan →</div></button>
 <button class="home-feature-link" onclick="go('news')"><span class="icon">📰</span><h3>News</h3><p>Mga update, kwento, at paalala mula sa Payapang Isip.</p><div class="go">Basahin →</div></button>
-<button class="home-feature-link" onclick="location.href='shop.html'"><span class="icon">🛍️</span><h3>Shop</h3><p>Digital items at resources para sa iyong wellness journey.</p><div class="go">Tingnan →</div></button>
+<button class="home-feature-link" onclick="openShop()"><span class="icon">🛍️</span><h3>Shop</h3><p>Digital items at resources para sa iyong wellness journey.</p><div class="go">Tingnan →</div></button>
 </div>
 <div style="margin-top:28px">
-  <div class="row" style="margin-bottom:14px"><div><h2 class="serif" style="margin:0">Latest from Shop</h2><p class="small" style="margin:4px 0 0">Mga bagong products na idinagdag ng admin.</p></div><button class="btn btn-light" onclick="location.href='shop.html'">View Shop →</button></div>
+  <div class="row" style="margin-bottom:14px"><div><h2 class="serif" style="margin:0">Latest from Shop</h2><p class="small" style="margin:4px 0 0">Mga bagong products na idinagdag ng admin.</p></div><button class="btn btn-light" onclick="openShop()">View Shop →</button></div>
   ${products.length
     ? `<div class="shop-grid">${products.slice(0,3).map(p=>productCard(p,true)).join('')}</div>`
     : `<div class="card small" style="text-align:center;padding:28px">🛍️ Wala pang products sa shop.</div>`}
@@ -162,7 +162,7 @@ function productCard(p,home=false){
     <div class="row">
       <span class="price">₱${Number(p.price||0).toLocaleString("en-PH")}</span>
       ${home
-        ? `<button class="btn btn-dark" onclick="location.href='shop.html'">View</button>`
+        ? `<button class="btn btn-dark" onclick="openShop()">View</button>`
         : `<button class="btn btn-dark" ${Number(p.stock||0)<=0?'disabled style="opacity:.55;cursor:not-allowed"':''} onclick="addCart('${id}')">${Number(p.stock||0)<=0?'Out of stock':state.cart.includes(String(p.id))?'Added ✓':'Add'}</button>`}
     </div>
   </article>`;
@@ -228,3 +228,5 @@ loadLiveProducts();
 render();
 // parallax
 window.addEventListener('scroll',()=>{const v=document.getElementById('natureVideo');if(v){v.style.transform=`translateY(${window.scrollY*0.35}px) scale(1.1)`}});
+
+function openShop(){ window.location.href = 'shop.html'; }
