@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payapang Isip • Admin</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#172033;--muted:#718096;--line:#e8e4db;--gold:#d59b35;--dark:#172033}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+aside{background:#172033;color:white;padding:24px 14px;position:sticky;top:0;height:100vh}
+.brand{padding:8px 14px 28px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:18px}
+.brand h2{margin:0;font-family:Georgia,serif}.brand small{color:#c8d0dc}
+nav button{width:100%;border:0;background:transparent;color:#c8d0dc;text-align:left;padding:13px 14px;border-radius:12px;margin:3px 0;cursor:pointer;font-size:14px}
+nav button:hover,nav button.active{background:rgba(255,255,255,.1);color:white}
+main{padding:28px;max-width:1500px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px}
+h1{margin:0;font-size:28px;font-family:Georgia,serif}.sub{color:var(--muted);font-size:13px;margin-top:6px}
+.admin{background:white;border:1px solid var(--line);padding:10px 14px;border-radius:14px;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 8px 24px rgba(20,30,50,.035)}
+.stat{font-size:28px;font-weight:700;margin-top:8px}.label{font-size:12px;color:var(--muted)}
+.section{display:none}.section.active{display:block}.two{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:18px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:13px 8px;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:11px;text-transform:uppercase}
+.btn{border:0;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:600}.primary{background:var(--dark);color:white}.danger{background:#fff0f0;color:#b42318}.soft{background:#f1eee8;color:#374151}
+input,textarea,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;background:white;font:inherit;margin-top:8px}textarea{min-height:110px;resize:vertical}
+.row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:14px}.badge{padding:5px 9px;border-radius:99px;background:#eef7f0;color:#2d7a42;font-size:11px;font-weight:bold}.item{padding:13px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}
+.notice{padding:14px 16px;border-radius:12px;background:#fff8e7;border:1px solid #f0dba3;font-size:13px;color:#765516;margin-bottom:16px}
+@media(max-width:900px){.app{grid-template-columns:1fr}aside{position:relative;height:auto}.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}nav{display:flex;overflow:auto;gap:4px}nav button{min-width:max-content}main{padding:18px}}
+@media(max-width:520px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+ <div class="brand"><h2>☀ Payapang Isip</h2><small>Administration Panel</small></div>
+ <nav>
+  <button class="active" onclick="show('overview',this)">⌂ Overview</button>
+  <button onclick="show('users',this)">👥 Users</button>
+  <button onclick="show('community',this)">☀ Community</button>
+  <button onclick="show('chat',this)">🌍 Global Chat</button>
+  <button onclick="show('news',this)">📰 News</button>
+  <button onclick="show('shop',this)">🛍️ Shop</button>
+  <button onclick="show('settings',this)">⚙ Settings</button>
+ </nav>
+</aside>
+<main>
+ <div class="top"><div><h1 id="title">Admin Overview</h1><div class="sub">Manage your Payapang Isip website</div></div><div class="admin">● Admin Panel</div></div>
+
+ <section id="overview" class="section active">
+  <div class="notice">This is a clean standalone <b>admin.html</b>. Walang <b>Ctrl + Shift + A</b> shortcut na ginamit.</div>
+  <div class="grid">
+   <div class="card"><div class="label">Total Users</div><div class="stat">—</div></div>
+   <div class="card"><div class="label">Community Posts</div><div class="stat">—</div></div>
+   <div class="card"><div class="label">Chat Messages</div><div class="stat">—</div></div>
+   <div class="card"><div class="label">Shop Orders</div><div class="stat">—</div></div>
+  </div>
+  <div class="two"><div class="card"><h3>Quick Actions</h3><div class="row"><button class="btn primary" onclick="show('news',document.querySelectorAll('nav button')[4])">Create News</button><button class="btn soft" onclick="show('shop',document.querySelectorAll('nav button')[5])">Manage Shop</button></div></div>
+  <div class="card"><h3>System Status</h3><div class="item"><span class="badge">READY</span> Admin interface loaded</div><div class="item">Database: connect to your existing Firebase configuration</div></div></div>
+ </section>
+
+ <section id="users" class="section"><div class="card"><h3>Users</h3><table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Action</th></tr></thead><tbody id="usersBody"><tr><td colspan="5">Connect your existing database to load users.</td></tr></tbody></table></div></section>
+
+ <section id="community" class="section"><div class="card"><h3>Community Moderation</h3><p class="sub">Review, approve, or remove community content.</p><div id="posts"><div class="item">No live data loaded yet.</div></div></div></section>
+
+ <section id="chat" class="section"><div class="card"><h3>Global Chat Moderation</h3><p class="sub">Manage reports and inappropriate messages.</p><div id="messages"><div class="item">No live chat data loaded yet.</div></div></div></section>
+
+ <section id="news" class="section"><div class="two"><div class="card"><h3>Create News</h3><input id="newsTitle" placeholder="News title"><textarea id="newsText" placeholder="Write announcement..."></textarea><div class="row"><span class="sub">Admin announcement</span><button class="btn primary" onclick="addNews()">Publish</button></div></div><div class="card"><h3>Published News</h3><div id="newsList"><div class="item">No news yet.</div></div></div></div></section>
+
+ <section id="shop" class="section"><div class="two"><div class="card"><h3>Add Product</h3><input id="productName" placeholder="Product name"><input id="productPrice" type="number" placeholder="Price"><textarea id="productDesc" placeholder="Description"></textarea><button class="btn primary" onclick="addProduct()">Add Product</button></div><div class="card"><h3>Products</h3><div id="productList"><div class="item">No products added yet.</div></div></div></div></section>
+
+ <section id="settings" class="section"><div class="card"><h3>Admin Settings</h3><p class="sub">Database configuration should remain in your existing website configuration. Do not expose secret credentials in public HTML.</p><div class="row"><span>Keyboard shortcut Ctrl + Shift + A</span><span class="badge">NOT USED</span></div></div></section>
+</main></div>
+<script>
+const titles={overview:'Admin Overview',users:'Users',community:'Community',chat:'Global Chat',news:'News',shop:'Shop',settings:'Settings'};
+function show(id,btn){document.querySelectorAll('.section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');document.getElementById('title').textContent=titles[id]||id}
+let news=[],products=[];
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function addNews(){let t=document.getElementById('newsTitle'),x=document.getElementById('newsText');if(!t.value.trim()||!x.value.trim())return alert('Complete title and news content.');news.unshift({t:t.value,x:x.value});t.value=x.value='';renderNews()}
+function renderNews(){document.getElementById('newsList').innerHTML=news.length?news.map((n,i)=>`<div class="item"><b>${esc(n.t)}</b><p class="sub">${esc(n.x)}</p><button class="btn danger" onclick="news.splice(${i},1);renderNews()">Delete</button></div>`).join(''):'<div class="item">No news yet.</div>'}
+function addProduct(){let n=document.getElementById('productName'),p=document.getElementById('productPrice'),d=document.getElementById('productDesc');if(!n.value.trim()||!p.value)return alert('Enter product name and price.');products.push({n:n.value,p:p.value,d:d.value});n.value=p.value=d.value='';renderProducts()}
+function renderProducts(){document.getElementById('productList').innerHTML=products.length?products.map((x,i)=>`<div class="item"><b>${esc(x.n)}</b><div class="sub">₱${esc(x.p)} • ${esc(x.d)}</div><button class="btn danger" onclick="products.splice(${i},1);renderProducts()">Delete</button></div>`).join(''):'<div class="item">No products added yet.</div>'}
+</script>
+</body></html>
