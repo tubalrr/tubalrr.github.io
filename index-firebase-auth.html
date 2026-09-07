@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payapang Isip • Home</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+:root{--ink:#0f172a;--muted:#64748b;--cream:#fffaf0;--gold:#f59e0b;--line:rgba(15,23,42,.09);--card:rgba(255,255,255,.82)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:'Plus Jakarta Sans',Arial,sans-serif;color:var(--ink);background:radial-gradient(900px 500px at 0% -10%,#fff 0,transparent 70%),radial-gradient(700px 500px at 100% 0,#fff1c7 0,transparent 65%),#f8fafc;min-height:100vh}button,input,textarea{font:inherit}button{cursor:pointer;border:0}.serif{font-family:'Playfair Display',Georgia,serif}.hidden{display:none!important}
+.topbar{height:70px;position:sticky;top:0;z-index:20;background:rgba(255,255,255,.78);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px}.topbar-inner{width:min(1440px,100%);margin:auto;display:flex;align-items:center;justify-content:space-between;gap:16px}.brand{display:flex;align-items:center;gap:12px}.logo{width:40px;height:40px;border-radius:14px;background:var(--ink);color:var(--gold);display:grid;place-items:center;font-family:Georgia;font-weight:800;font-size:20px}.brand b{font-size:18px}.brand small{display:block;text-transform:uppercase;letter-spacing:.18em;font-size:9px;color:var(--muted);margin-top:2px}.actions{display:flex;gap:8px}.btn{border-radius:999px;padding:10px 16px;font-size:13px;font-weight:700;transition:.2s}.btn:hover{transform:translateY(-1px)}.btn-dark{background:var(--ink);color:white}.btn-light{background:white;color:var(--ink);border:1px solid var(--line)}
+.shell{display:flex;max-width:1440px;margin:auto}.sidebar{width:270px;padding:20px;min-height:calc(100vh - 70px);position:sticky;top:70px;height:calc(100vh - 70px);display:flex;flex-direction:column;gap:16px}.nav{display:flex;flex-direction:column;gap:6px}.nav button{background:transparent;text-align:left;border-radius:16px;padding:13px 14px;display:flex;align-items:center;gap:12px;color:var(--ink);transition:.2s}.nav button:hover{background:white;border:1px solid var(--line)}.nav button.active{background:var(--ink);color:white;box-shadow:0 10px 24px rgba(15,23,42,.18)}.nav .icon{width:36px;height:36px;border-radius:12px;background:#fff3cf;display:grid;place-items:center}.nav button.active .icon{background:rgba(255,255,255,.1)}.nav .label{font-size:14px;font-weight:800}.nav .desc{font-size:10px;opacity:.65;margin-top:3px}.reminder{margin-top:auto;background:var(--card);border:1px solid rgba(255,255,255,.9);box-shadow:0 12px 35px rgba(15,23,42,.06);border-radius:20px;padding:16px}.reminder p{font-size:13px;line-height:1.55;margin:10px 0;color:#334155}
+main{flex:1;min-width:0;padding:28px 30px 100px}.content{max-width:1020px}.page-title{font-size:30px;margin:0 0 4px}.sub{font-size:13px;color:var(--muted);margin:0 0 24px}.grid{display:grid;gap:16px}.two{grid-template-columns:1.45fr .85fr}.three{grid-template-columns:repeat(3,1fr)}.card{background:var(--card);border:1px solid rgba(255,255,255,.9);box-shadow:0 16px 50px rgba(15,23,42,.07);border-radius:24px;padding:20px;backdrop-filter:blur(14px)}.quote{background:linear-gradient(135deg,#fff2c7,#fffaf0 55%,#fff);position:relative;overflow:hidden}.quote:after{content:'';position:absolute;width:240px;height:240px;border-radius:50%;background:rgba(245,158,11,.11);right:-80px;top:-100px;filter:blur(20px)}.badge{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:white;border-radius:999px;padding:7px 11px;font-size:10px;font-weight:800;letter-spacing:.08em}.quote h1{font-size:31px;line-height:1.28;max-width:750px;margin:20px 0 10px;position:relative;z-index:1}.quote p{color:#475569;font-size:13px}.moods{display:flex;gap:9px;flex-wrap:wrap}.mood{width:58px;height:58px;border-radius:18px;background:white;border:1px solid var(--line);font-size:23px;display:grid;place-items:center;transition:.2s}.mood:hover,.mood.active{transform:translateY(-3px);background:#fff3cf;border-color:#f6c35a}.mood-label{font-size:11px;color:var(--muted);margin-top:10px}.textarea{width:100%;min-height:125px;border:1px solid var(--line);border-radius:16px;padding:14px;background:white;resize:vertical;outline:none;line-height:1.6;font-size:14px}.textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,158,11,.1)}.row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}.small{font-size:11px;color:var(--muted)}.affirm{background:var(--ink);color:white;position:relative;overflow:hidden}.affirm:after{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(245,158,11,.15);right:-80px;top:-80px;filter:blur(18px)}.affirm p{font-size:22px;line-height:1.35;margin:14px 0;position:relative;z-index:1}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.stat{padding:14px;background:white;border:1px solid var(--line);border-radius:16px}.stat b{font-size:23px}.stat small{display:block;color:var(--muted);margin-bottom:5px}.entry{display:flex;gap:14px;align-items:flex-start}.entry .face{width:45px;height:45px;border-radius:15px;background:#fff3cf;display:grid;place-items:center;font-size:21px;flex:none}.entry p{margin:3px 0 0;line-height:1.65;font-size:14px;white-space:pre-wrap}.delete{margin-left:auto;background:#fff0f0;color:#b91c1c;border-radius:10px;padding:8px 10px;font-size:12px}.empty{text-align:center;padding:35px;color:var(--muted)}
+.quote-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.quote-item{border-radius:20px;padding:18px;background:white;border:1px solid var(--line)}.quote-item p{line-height:1.5;margin:14px 0;font-family:'Playfair Display',serif;font-size:17px}.heart{float:right;border-radius:50%;width:36px;height:36px;background:var(--ink);color:#fbbf24;font-size:17px}.breath-wrap{display:grid;place-items:center;padding:35px}.breath{width:min(62vw,280px);height:min(62vw,280px);border-radius:50%;background:radial-gradient(circle at 35% 30%,#26354d,var(--ink));color:white;display:grid;place-items:center;text-align:center;box-shadow:0 25px 65px rgba(15,23,42,.25);transition:transform 1s ease}.breath.inhale{transform:scale(1.17)}.breath.hold{transform:scale(1.22)}.breath.exhale{transform:scale(.87)}.breath small{letter-spacing:.15em;text-transform:uppercase;opacity:.6}.breath h2{margin:8px 0 4px;font-size:30px}.progress-bars{display:flex;align-items:end;gap:10px;height:150px;padding:20px 4px}.bar{flex:1;border-radius:9px 9px 3px 3px;background:#e2e8f0;min-width:22px;position:relative}.bar span{position:absolute;bottom:-20px;width:100%;text-align:center;font-size:10px;color:var(--muted)}.bar i{display:block;background:linear-gradient(#fbbf24,#f59e0b);border-radius:9px 9px 3px 3px;width:100%;min-height:5px}.achievement{display:flex;gap:12px;align-items:center;padding:14px;border-radius:17px;border:1px solid var(--line);background:white}.achievement.locked{opacity:.45}.ach-icon{width:42px;height:42px;border-radius:14px;background:#fff3cf;display:grid;place-items:center;font-size:19px}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--ink);color:white;border-radius:999px;padding:11px 18px;font-size:12px;z-index:50;transition:.35s}.toast.show{transform:translateX(-50%) translateY(0)}
+.mobile-nav{display:none}
+@media(max-width:900px){.sidebar{display:none}.shell{display:block}main{padding:22px 16px 100px}.two{grid-template-columns:1fr}.topbar{padding:0 16px}.quote h1{font-size:25px}.mobile-nav{display:flex;position:fixed;z-index:30;bottom:12px;left:12px;right:12px;background:rgba(15,23,42,.94);backdrop-filter:blur(18px);border-radius:22px;padding:7px;justify-content:space-around;box-shadow:0 18px 45px rgba(15,23,42,.3)}.mobile-nav button{background:transparent;color:rgba(255,255,255,.65);font-size:10px;padding:8px 9px;border-radius:14px}.mobile-nav button.active{background:white;color:var(--ink)}.three{grid-template-columns:1fr}.quote-list{grid-template-columns:1fr}.actions .btn-light{display:none}}
+
+/* Community, Chat, News & Shop */
+.community-hero{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;overflow:hidden;position:relative}.community-hero:after{content:'';position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(245,158,11,.16);right:-80px;top:-110px;filter:blur(18px)}
+.post-composer textarea,.chat-input{width:100%;border:1px solid var(--line);border-radius:16px;padding:13px;background:#fff;outline:none;resize:vertical}.post{padding:18px;border-radius:20px;background:#fff;border:1px solid var(--line);margin-top:12px}.post-head{display:flex;gap:10px;align-items:center}.avatar{width:42px;height:42px;border-radius:14px;background:#fff3cf;display:grid;place-items:center;font-weight:800}.post p{line-height:1.65;margin:12px 0 0;white-space:pre-wrap}.post-actions{display:flex;gap:8px;margin-top:14px}.mini-btn{padding:8px 12px;border-radius:12px;background:#f8fafc;border:1px solid var(--line);font-size:12px;font-weight:700}
+.chat-shell{display:grid;grid-template-columns:260px 1fr;gap:16px}.room-list{display:grid;gap:8px;align-content:start}.room{padding:13px;border-radius:15px;background:#fff;border:1px solid var(--line);text-align:left}.room.active{background:var(--ink);color:#fff}.chat-box{min-height:470px;display:flex;flex-direction:column}.messages{flex:1;max-height:420px;overflow:auto;padding-right:4px}.msg{display:flex;gap:9px;margin:12px 0}.msg.me{flex-direction:row-reverse}.bubble{max-width:min(78%,560px);padding:11px 13px;border-radius:16px;background:#f1f5f9;font-size:13px;line-height:1.5}.msg.me .bubble{background:#fff3cf}.chat-send{display:flex;gap:8px;margin-top:12px}.chat-send input{flex:1}.online-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:5px}.news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.news-card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px}.news-tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#fff3cf;font-size:10px;font-weight:800}.news-card h3{font-size:20px;margin:12px 0 7px}.shop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.product{background:#fff;border:1px solid var(--line);border-radius:22px;padding:14px;overflow:hidden}.product-visual{height:150px;border-radius:16px;background:linear-gradient(135deg,#fff3cf,#fde68a);display:grid;place-items:center;font-size:56px}.product h3{margin:12px 0 5px}.price{font-weight:800;font-size:18px}.cart-bar{position:sticky;bottom:18px;background:var(--ink);color:#fff;padding:12px 16px;border-radius:18px;display:flex;justify-content:space-between;align-items:center;margin-top:18px;box-shadow:0 18px 40px rgba(15,23,42,.2)}
+@media(max-width:900px){.mobile-nav{overflow-x:auto;justify-content:flex-start}.mobile-nav button{min-width:62px}.chat-shell{grid-template-columns:1fr}.room-list{grid-template-columns:repeat(2,1fr)}.news-grid,.shop-grid{grid-template-columns:1fr}}
+
+/* ===== FINAL HOME LAYOUT: LEFT SIDEBAR • CENTER HOME • RIGHT GLOBAL CHAT ===== */
+.shell{max-width:1800px;display:grid;grid-template-columns:230px minmax(0,1fr) 370px;align-items:start}
+.sidebar{width:auto;padding:18px 14px 18px 18px}
+main{padding:26px 20px 90px;min-width:0}
+.content{max-width:1100px}
+.side-chat{position:sticky;top:88px;height:calc(100vh - 106px);margin:18px 18px 18px 0;background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.95);box-shadow:0 18px 55px rgba(15,23,42,.10);border-radius:26px;overflow:hidden;display:flex;flex-direction:column;backdrop-filter:blur(18px)}
+.side-chat-head{padding:20px 20px 15px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.side-chat-title{display:flex;gap:12px;align-items:center}.side-chat-icon{width:46px;height:46px;border-radius:16px;background:linear-gradient(135deg,#fff3cf,#fde68a);display:grid;place-items:center;font-size:23px}
+.side-chat-title b{display:block;font-size:19px}.side-chat-title small{display:block;color:var(--muted);margin-top:3px}
+.online-count{color:#16a34a;font-size:11px;font-weight:800;margin-top:6px}
+.side-chat-messages{flex:1;overflow:auto;padding:8px 14px}
+.side-msg{display:flex;gap:9px;padding:12px 4px;border-bottom:1px solid rgba(15,23,42,.055)}
+.side-msg:last-child{border-bottom:0}.side-avatar{width:38px;height:38px;border-radius:50%;background:#fff3cf;display:grid;place-items:center;font-size:12px;font-weight:800;flex:none;position:relative}
+.side-avatar:after{content:'';position:absolute;width:9px;height:9px;border-radius:50%;background:#22c55e;border:2px solid white;right:-1px;bottom:0}
+.side-msg-body{min-width:0;flex:1}.side-msg-top{display:flex;justify-content:space-between;gap:8px}.side-msg-name{font-size:12px;font-weight:800}.side-msg-time{font-size:10px;color:var(--muted)}
+.side-msg-text{font-size:12px;color:#475569;line-height:1.5;margin-top:3px;word-break:break-word}
+.side-chat-compose{padding:13px;border-top:1px solid var(--line);background:rgba(255,255,255,.9)}
+.side-chat-compose .compose-row{display:flex;gap:8px}.side-chat-compose input{flex:1;min-width:0;border:1px solid var(--line);border-radius:14px;padding:12px;background:#f8fafc;outline:none;font-size:12px}
+.side-chat-compose input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(245,158,11,.1)}
+.side-chat-compose button{width:44px;height:44px;border-radius:14px;background:var(--ink);color:white;font-size:16px}
+.side-chat-note{font-size:9px;color:var(--muted);margin-top:8px;text-align:center}
+.dashboard-link{margin-top:6px!important;background:#fff3cf!important;border:1px solid #fde68a!important}
+.dashboard-link .icon{background:white!important}
+.home-feature-links{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.home-feature-link{padding:18px;border-radius:22px;background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.95);box-shadow:0 14px 35px rgba(15,23,42,.06);text-align:left}
+.home-feature-link h3{margin:10px 0 5px;font-size:17px}.home-feature-link p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}.home-feature-link .go{margin-top:14px;font-size:12px;font-weight:800;color:#b45309}
+@media(max-width:1200px){.shell{grid-template-columns:210px minmax(0,1fr)}.side-chat{display:none}.content{max-width:100%}}
+@media(max-width:900px){.shell{display:block}.sidebar{display:none}.side-chat{display:none}.home-feature-links{grid-template-columns:1fr}}
+
+
+/* ===== FIREBASE ACCOUNT AUTH ===== */
+.auth-backdrop{position:fixed;inset:0;background:rgba(15,23,42,.48);backdrop-filter:blur(8px);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+.auth-backdrop.show{display:flex}.auth-modal{width:min(460px,100%);background:rgba(255,255,255,.97);border:1px solid white;border-radius:30px;padding:28px;box-shadow:0 30px 90px rgba(15,23,42,.28);position:relative}
+.auth-close{position:absolute;right:16px;top:14px;width:36px;height:36px;border-radius:12px;background:#f8fafc;font-size:18px}.auth-logo{width:58px;height:58px;border-radius:20px;background:linear-gradient(135deg,#fff3cf,#fde68a);display:grid;place-items:center;font-weight:900;font-size:24px}
+.auth-modal h2{margin:16px 0 6px}.auth-modal p{font-size:12px;color:#64748b;line-height:1.6}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:#f1f5f9;border-radius:14px;padding:4px;margin:18px 0}.auth-tabs button{padding:10px;border-radius:10px;background:transparent;font-weight:800;font-size:12px}.auth-tabs button.active{background:white;box-shadow:0 4px 14px rgba(15,23,42,.08)}
+.auth-form{display:grid;gap:11px}.auth-form input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;outline:none;background:white}.auth-form input:focus{border-color:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.1)}.auth-primary{width:100%;padding:13px;border-radius:14px;background:var(--ink);color:white;font-weight:800}
+.auth-divider{display:flex;align-items:center;gap:10px;color:#94a3b8;font-size:11px;margin:16px 0}.auth-divider:before,.auth-divider:after{content:"";height:1px;background:var(--line);flex:1}.social-auth{display:grid;grid-template-columns:1fr 1fr;gap:10px}.social-auth button{padding:12px;border:1px solid var(--line);background:white;border-radius:14px;font-weight:800;font-size:12px}.auth-msg{display:none;margin-top:12px;padding:10px 12px;border-radius:12px;background:#fff1f2;color:#b42318;font-size:12px}.auth-msg.success{background:#ecfdf3;color:#16794b}.account-btn{display:flex;align-items:center;gap:8px}.account-avatar{width:28px;height:28px;border-radius:10px;background:#fff3cf;display:grid;place-items:center;font-size:12px}
+
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-inner"><div class="brand"><div class="logo">P</div><div><b>Payapang Isip</b><small>Home • Community • Global</small></div></div><div class="actions" id="accountActions"><button class="btn btn-light" onclick="openAuth('login')">Sign In</button><button class="btn btn-dark" onclick="openAuth('signup')">Create Account</button></div></div></header>
+<div class="shell">
+<aside class="sidebar"><nav class="nav" id="nav"></nav><div class="reminder"><b>🌿 Paalala</b><p>“Hindi mo kailangang ayusin lahat ngayon. Isang paghinga lang muna.”</p><div class="small">Payapang Isip • Wellness</div></div></aside>
+<main><div class="content" id="app"></div></main>
+<aside class="side-chat" aria-label="Global Chat">
+  <div class="side-chat-head">
+    <div class="side-chat-title"><div class="side-chat-icon">🌍</div><div><b>Global Chat</b><small><span class="online-dot"></span> Community room</small><div class="online-count">● Online ngayon</div></div></div>
+    <button class="mini-btn" title="Open Global Chat page" onclick="go('chat')">↗</button>
+  </div>
+  <div class="side-chat-messages" id="sideChatMessages"></div>
+  <div class="side-chat-compose">
+    <div class="compose-row"><input id="sideChatText" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendSideChat()"><button onclick="sendSideChat()" title="Send">➤</button></div>
+    <div class="side-chat-note">Be kind • Be respectful • Keep it positive</div>
+  </div>
+</aside>
+</div>
+<nav class="mobile-nav" id="mobileNav"></nav>
+<div class="auth-backdrop" id="authBackdrop">
+ <div class="auth-modal">
+  <button class="auth-close" onclick="closeAuth()">×</button>
+  <div class="auth-logo">P</div>
+  <h2 class="serif" id="authTitle">Welcome back</h2>
+  <p id="authSubtitle">Mag-sign in para magpatuloy sa Payapang Isip.</p>
+  <div class="auth-tabs">
+   <button id="tabLogin" class="active" onclick="setAuthMode('login')">Sign In</button>
+   <button id="tabSignup" onclick="setAuthMode('signup')">Create Account</button>
+  </div>
+  <div class="auth-form">
+   <input id="authEmail" type="email" placeholder="Email address" autocomplete="email">
+   <input id="authPassword" type="password" placeholder="Password (minimum 6 characters)" autocomplete="current-password">
+   <button class="auth-primary" id="authSubmit" onclick="submitAuth()">Sign In</button>
+  </div>
+  <div class="auth-divider">OR CONTINUE WITH</div>
+  <div class="social-auth">
+   <button onclick="signInGoogle()">🔵 Google</button>
+   <button onclick="signInFacebook()">🔵 Facebook</button>
+  </div>
+  <div class="auth-msg" id="authMsg"></div>
+  <p style="margin-top:14px;font-size:10px">Google/Facebook login requires the provider to be enabled in Firebase Authentication.</p>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
+  authDomain: "payapang-isip.firebaseapp.com",
+  projectId: "payapang-isip",
+  storageBucket: "payapang-isip.firebasestorage.app",
+  messagingSenderId: "901078398408",
+  appId: "1:901078398408:web:1f4c5e5794f96801f57cfd"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const googleProvider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
+let authMode = "login";
+
+window.openAuth=(mode="login")=>{document.getElementById("authBackdrop").classList.add("show");setAuthMode(mode);};
+window.closeAuth=()=>document.getElementById("authBackdrop").classList.remove("show");
+window.setAuthMode=(mode)=>{authMode=mode;const signup=mode==="signup";document.getElementById("tabLogin").classList.toggle("active",!signup);document.getElementById("tabSignup").classList.toggle("active",signup);document.getElementById("authTitle").textContent=signup?"Create your account":"Welcome back";document.getElementById("authSubtitle").textContent=signup?"Gumawa ng account gamit ang email, Google, o Facebook.":"Mag-sign in para magpatuloy sa Payapang Isip.";document.getElementById("authSubmit").textContent=signup?"Create Account":"Sign In";document.getElementById("authPassword").autocomplete=signup?"new-password":"current-password";authMessage("");};
+function authMessage(msg,ok=false){const b=document.getElementById("authMsg");if(!msg){b.style.display="none";return}b.textContent=msg;b.className="auth-msg"+(ok?" success":"");b.style.display="block";}
+function friendlyError(e){const m={"auth/email-already-in-use":"May account na gamit ang email na ito.","auth/invalid-email":"Hindi valid ang email address.","auth/weak-password":"Gumamit ng password na may minimum na 6 characters.","auth/invalid-credential":"Maling email o password.","auth/popup-closed-by-user":"Isinara ang sign-in window.","auth/account-exists-with-different-credential":"May existing account na gamit ang email na ito sa ibang sign-in method.","auth/operation-not-allowed":"Hindi pa enabled ang sign-in method na ito sa Firebase Authentication."};return m[e.code]||("Authentication error: "+(e.message||"Subukan ulit."));}
+window.submitAuth=async()=>{const email=document.getElementById("authEmail").value.trim(),password=document.getElementById("authPassword").value;if(!email||!password)return authMessage("Ilagay ang email at password.");try{if(authMode==="signup")await createUserWithEmailAndPassword(auth,email,password);else await signInWithEmailAndPassword(auth,email,password);authMessage("Success!",true);closeAuth();}catch(e){authMessage(friendlyError(e));}};
+window.signInGoogle=async()=>{try{await signInWithPopup(auth,googleProvider);closeAuth();}catch(e){authMessage(friendlyError(e));}};
+window.signInFacebook=async()=>{try{await signInWithPopup(auth,facebookProvider);closeAuth();}catch(e){authMessage(friendlyError(e));}};
+onAuthStateChanged(auth,user=>{const box=document.getElementById("accountActions");if(!box)return;if(user){const name=user.displayName||user.email?.split("@")[0]||"Member";box.innerHTML=`<button class="btn btn-light account-btn" onclick="location.href='dashboard.html'"><span class="account-avatar">${name.slice(0,1).toUpperCase()}</span>${name}</button><button class="btn btn-dark" onclick="siteLogout()">Logout</button>`;}else{box.innerHTML=`<button class="btn btn-light" onclick="openAuth('login')">Sign In</button><button class="btn btn-dark" onclick="openAuth('signup')">Create Account</button>`;}});
+window.siteLogout=async()=>{await signOut(auth);toast("Logged out");};
+
+const quotes=[
+{id:1,title:'Magandang Umaga',views:'4,577 views',text:'Magandang umaga. Hindi mo kailangang maging perpekto ngayon. Maging totoo ka lang, sapat na.'},
+{id:2,title:'Masakit palang tanggapin',views:'3.2k views',text:'Masakit palang tanggapin na minsan, kahit anong gawin mo, may mga bagay na hindi para sa’yo. At okay lang yun.'},
+{id:3,title:'Hindi mo kailangang ayusin',views:'2.9k views',text:'Hindi mo kailangang ayusin ang buong mundo. Ayusin mo muna ang paghinga mo. Yung mundo, susunod na.'},
+{id:4,title:'1st Day of September',views:'5.1k views',text:'1st Day of September — paalala na pwede ka ulit magsimula. Hindi pa huli ang lahat.'},
+{id:5,title:'Maybe you are not lost',views:'4.4k views',text:'Maybe you are not lost. Maybe you are just taking the scenic route to becoming yourself.'},
+{id:6,title:'Take your time',views:'3.8k views',text:'Take your time. Walang hinahabol. Ang payapa, hindi minamadali — inaalagaan.'}
+];
+const affirmations=['Karapat-dapat akong maging payapa ngayong araw.','Hindi ko kailangang kontrolin ang lahat para maging okay.','Sapat ako, kahit hindi perpekto.','Pinipili kong huminga bago mag-react.','Maliit na hakbang, pero hakbang pa rin.','Pinapayagan kong maging tao — nasasaktan, natututo, lumalago.'];
+const moods=[['😔','Mabigat'],['😕','Medyo'],['😐','Sakto'],['🙂','Magaan'],['😌','Payapa']];
+let state={page:'tahanan',mood:+localStorage.getItem('payapang_last_mood')||0,journals:JSON.parse(localStorage.getItem('payapang_journals')||'[]'),favorites:JSON.parse(localStorage.getItem('payapang_favorites')||'[1,3]'),community:JSON.parse(localStorage.getItem('payapang_community')||'[]'),chat:JSON.parse(localStorage.getItem('payapang_chat')||'[]'),cart:JSON.parse(localStorage.getItem('payapang_cart')||'[]'),affirm:0,breathing:false,phase:'ready',seconds:60,cycles:0};
+if(!state.journals.length){state.journals=[{id:'1',text:'Ngayong araw, pinili kong huminga ng malalim bago sumagot. Hindi ko na-control lahat, pero na-control ko sarili ko.',mood:4,date:Date.now()-86400000},{id:'2',text:'Ang bigat kanina. Pero sinulat ko lahat dito. Gumaan pakiramdam.',mood:2,date:Date.now()-172800000}];save()}
+const navItems=[['tahanan','⌂','Home','Ngayon'],['community','☀','Community','share'],['chat','🌍','Global Chat','live'],['news','▣','News','updates'],['shop','🛍','Shop','items'],['dashboard','👤','My Dashboard','profile']];
+function save(){localStorage.setItem('payapang_journals',JSON.stringify(state.journals));localStorage.setItem('payapang_favorites',JSON.stringify(state.favorites));localStorage.setItem('payapang_last_mood',state.mood);localStorage.setItem('payapang_community',JSON.stringify(state.community));localStorage.setItem('payapang_chat',JSON.stringify(state.chat));localStorage.setItem('payapang_cart',JSON.stringify(state.cart))}
+function streak(){return Math.min(state.journals.length,12)}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
+function renderNav(){
+const make=compact=>navItems.map(([id,ic,label,desc])=>{
+ const active=state.page===id?'active':'';
+ const action=id==='dashboard'?"location.href='dashboard.html'":`go('${id}')`;
+ return `<button class="${active} ${id==='dashboard'?'dashboard-link':''}" onclick="${action}">${compact?ic:`<span class="icon">${ic}</span><span><span class="label">${label}</span><span class="desc">${desc}</span></span>`}</button>`;
+}).join('');
+document.getElementById('nav').innerHTML=make(false);
+document.getElementById('mobileNav').innerHTML=make(true)
+}
+function go(page){state.page=page;render()}
+function header(title,sub){return `<h1 class="page-title serif">${title}</h1><p class="sub">${sub}</p>`}
+function home(){const q=quotes[new Date().getDate()%quotes.length];return `<div class="grid two"><section class="grid" style="align-content:start"><div class="card quote"><span class="badge">✦ TODAY'S QUOTE • ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span><h1 class="serif">${q.text}</h1><p>${q.views} • Payapang Isip</p></div><div class="card"><b>Kamusta ang pakiramdam mo?</b><div class="mood-label">Pumili ng pinakamalapit sa nararamdaman mo ngayon.</div><div class="moods" style="margin-top:14px">${moods.map((m,i)=>`<button class="mood ${state.mood===i+1?'active':''}" onclick="setMood(${i+1})" title="${m[1]}">${m[0]}</button>`).join('')}</div>${state.mood?`<div class="mood-label">Napili: <b>${moods[state.mood-1][1]}</b></div>`:''}</div><div class="card"><div style="display:flex;align-items:center;gap:8px"><b>✎ Mabilis na sulat</b></div><textarea class="textarea" id="quickText" placeholder="Ano ang nasa isip mo ngayon? Walang tama o mali dito..."></textarea><div class="row"><span class="small" id="count">0 characters</span><button class="btn btn-dark" onclick="addJournal('quickText')">I-save • Journal</button></div></div></section><aside class="grid" style="align-content:start"><div class="card affirm"><div class="small" style="color:#fbbf24;letter-spacing:.1em;text-transform:uppercase;font-weight:800">✦ Affirmation ngayon</div><p class="serif">“${affirmations[state.affirm]}”</p><button class="btn" style="background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.1)" onclick="nextAffirm()">Bagong affirmation</button></div><div class="card"><b>Mabilis na stats</b><div class="stats" style="margin-top:12px"><div class="stat"><small>Streak</small><b>🔥 ${streak()}</b></div><div class="stat"><small>Journals</small><b>${state.journals.length}</b></div><div class="stat"><small>Paborito</small><b>${state.favorites.length}</b></div></div></div></aside></div><div class="home-feature-links">
+<button class="home-feature-link" onclick="go('community')"><span class="icon">👥</span><h3>Community</h3><p>Makipag-ugnayan at magbahagi ng positibong mensahe.</p><div class="go">Buksan →</div></button>
+<button class="home-feature-link" onclick="go('news')"><span class="icon">📰</span><h3>News</h3><p>Mga update, kwento, at paalala mula sa Payapang Isip.</p><div class="go">Basahin →</div></button>
+<button class="home-feature-link" onclick="go('shop')"><span class="icon">🛍️</span><h3>Shop</h3><p>Digital items at resources para sa iyong wellness journey.</p><div class="go">Tingnan →</div></button>
+</div>`}
+function journal(){return `${header('Journal','Isulat mo. Walang filter. Para sa’yo lang ito.')}<div class="card"><div class="row" style="margin-top:0"><b>✎ Bagong entry</b><div class="moods">${moods.map((m,i)=>`<button class="mood ${state.mood===i+1?'active':''}" style="width:40px;height:40px;font-size:18px;border-radius:12px" onclick="setMood(${i+1})">${m[0]}</button>`).join('')}</div></div><textarea class="textarea" id="journalText" placeholder="Magsimula ka dito..." style="margin-top:14px"></textarea><div class="row"><span class="small">Mood: ${state.mood?moods[state.mood-1][1]:'Sakto'}</span><button class="btn btn-dark" onclick="addJournal('journalText')">I-save sa Journal</button></div></div><div class="grid" style="margin-top:16px">${state.journals.slice().sort((a,b)=>b.date-a.date).map(j=>`<div class="card entry"><div class="face">${moods[(j.mood||3)-1][0]}</div><div style="flex:1"><b>${new Date(j.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</b><p>${escapeHtml(j.text)}</p><div class="small" style="margin-top:8px">${moods[(j.mood||3)-1][1]}</div></div><button class="delete" onclick="deleteJournal('${j.id}')">Delete</button></div>`).join('')||'<div class="card empty">Wala pa. Magsimula ka ng unang sulat.</div>'}</div>`}
+function favorites(){const fav=quotes.filter(q=>state.favorites.includes(q.id));return `${header('Paborito','Mga salitang gusto mong balikan.')}<div class="quote-list">${fav.map(q=>`<div class="quote-item"><button class="heart" onclick="toggleFav(${q.id})">♥</button><span class="small">${q.title}</span><p>${q.text}</p><span class="small">${q.views} • Payapang Isip</span></div>`).join('')||'<div class="card empty">Wala ka pang saved na quote.</div>'}</div><h2 class="serif" style="margin-top:30px">Iba pang quotes</h2><div class="quote-list">${quotes.filter(q=>!state.favorites.includes(q.id)).map(q=>`<div class="quote-item"><button class="heart" onclick="toggleFav(${q.id})" style="background:white;color:#94a3b8;border:1px solid var(--line)">♡</button><span class="small">${q.title}</span><p>${q.text}</p><button class="btn btn-light" onclick="toggleFav(${q.id})">Save</button></div>`).join('')}</div>`}
+function breathing(){return `${header('Hinga','4-7-8 breathing. Langhap 4s, pigil 7s, buga 8s. Isang minuto lang.')}<div class="card breath-wrap"><div class="breath ${state.phase}" id="breathCircle"><div><small>${state.breathing?state.phase:'ready'}</small><h2 class="serif">${state.breathing?(state.phase==='inhale'?'Langhap':state.phase==='hold'?'Pigil':'Buga'):'Hinga'}</h2><span>${state.breathing?state.seconds+'s • '+state.cycles+' cycles':'1 minuto'}</span></div></div><div class="row" style="margin-top:40px"><button class="btn ${state.breathing?'btn-light':'btn-dark'}" onclick="toggleBreathing()">${state.breathing?'Stop':'Simulan'}</button><button class="btn btn-light" onclick="resetBreathing()">Reset</button></div></div>`}
+function progress(){let days=[];for(let i=6;i>=0;i--){let d=new Date(Date.now()-i*86400000);let found=state.journals.find(j=>new Date(j.date).toDateString()===d.toDateString());days.push({label:d.toLocaleDateString('en-US',{weekday:'short'}).charAt(0),h:found?55+(found.mood||3)*9:5})}let achievements=[['🌱','Unang Hakbang','Nagsulat ka ng unang journal',state.journals.length>=1],['🔥','3 Araw na Payapa','3 araw na tuloy-tuloy',streak()>=3],['✎','Manunulat','5 journals na',state.journals.length>=5],['♥','Mapagmahal sa Sarili','Nag-save ng 3 paborito',state.favorites.length>=3]];return `${header('Progress','Tingnan ang maliliit na hakbang na nagawa mo.')}<div class="grid two"><div class="card"><b>Huling 7 araw</b><div class="progress-bars">${days.map(d=>`<div class="bar"><i style="height:${d.h}%"></i><span>${d.label}</span></div>`).join('')}</div><div class="small">Batay sa journal entries at mood check-ins.</div></div><div class="card"><b>Mga numero mo</b><div class="stats" style="margin-top:15px"><div class="stat"><small>Journals</small><b>${state.journals.length}</b></div><div class="stat"><small>Streak</small><b>${streak()}</b></div><div class="stat"><small>Saved</small><b>${state.favorites.length}</b></div></div></div></div><div class="grid" style="margin-top:16px"><h2 class="serif" style="margin:0">Achievements</h2>${achievements.map(a=>`<div class="achievement ${a[3]?'':'locked'}"><div class="ach-icon">${a[0]}</div><div><b>${a[1]}</b><div class="small">${a[2]}</div></div><span style="margin-left:auto;font-size:11px;font-weight:800">${a[3]?'Unlocked':'Locked'}</span></div>`).join('')}</div>`}
+
+const newsItems=[
+{tag:'COMMUNITY',title:'Maligayang pagdating sa Payapang Isip Community',text:'May bago tayong space para magbahagi ng simpleng kwento, quote, at positibong mensahe.'},
+{tag:'UPDATE',title:'Global Chat is now open',text:'Mag-iwan ng friendly message at makipag-usap nang may respeto at kabutihan.'},
+{tag:'WELLNESS',title:'Isang minuto para sa sarili',text:'Subukan ang Hinga section kapag kailangan mong huminto sandali at mag-reset.'},
+{tag:'SHOP',title:'Bagong Payapang Isip digital items',text:'Available ang sample digital products at community support items sa Shop.'}
+];
+const products=[
+{id:1,emoji:'📖',name:'Payapang Journal',desc:'Digital reflection pages',price:49},
+{id:2,emoji:'🌿',name:'Affirmation Cards',desc:'30 calming reminders',price:39},
+{id:3,emoji:'🖼️',name:'Quote Wallpaper Pack',desc:'Mobile backgrounds',price:29},
+{id:4,emoji:'🎧',name:'Calm Audio Pack',desc:'Relaxing ambience',price:59},
+{id:5,emoji:'☀️',name:'Morning Planner',desc:'Simple daily planning',price:45},
+{id:6,emoji:'💛',name:'Supporter Badge',desc:'Community supporter',price:99}
+];
+function community(){let posts=state.community.slice().reverse();return `${header('Community','Isang ligtas at positibong lugar para magbahagi.')}<div class="card community-hero"><span class="badge">☀ PAYAPANG ISIP COMMUNITY</span><h2 class="serif" style="font-size:28px;margin:18px 0 8px;position:relative;z-index:1">Magbahagi ng kabutihan.</h2><p style="position:relative;z-index:1;opacity:.75">I-share ang simpleng thought, encouragement, o magandang nangyari sa araw mo.</p></div><div class="card post-composer" style="margin-top:16px"><b>✦ Gumawa ng post</b><textarea id="communityText" placeholder="Ano ang gusto mong ibahagi sa community?" style="margin-top:12px"></textarea><div class="row"><span class="small">Panatilihing mabait at magalang ang community.</span><button class="btn btn-dark" onclick="addPost()">I-post</button></div></div><div>${posts.map(p=>`<article class="post"><div class="post-head"><div class="avatar">PI</div><div><b>${escapeHtml(p.author||'Community Member')}</b><div class="small">${new Date(p.date).toLocaleString()}</div></div></div><p>${escapeHtml(p.text)}</p><div class="post-actions"><button class="mini-btn" onclick="likePost('${p.id}')">♥ ${p.likes||0} Like</button><button class="mini-btn" onclick="toast('Comments feature coming soon')">◌ Comment</button></div></article>`).join('')||'<div class="card empty">Wala pang community post. Ikaw ang unang magbahagi! ☀</div>'}</div>`}
+function chat(){let msgs=state.chat;return `${header('Global Chat','Friendly messages para sa Payapang Isip community.')}<div class="chat-shell"><aside class="card room-list"><button class="room active">🌍 Global Room<br><span class="small">Community chat</span></button><button class="room" onclick="toast('Coming soon')">🌿 Positivity</button><button class="room" onclick="toast('Coming soon')">☀ Morning Club</button><div class="small"><span class="online-dot"></span>Online demo room</div></aside><section class="card chat-box"><div class="messages" id="messages">${msgs.map(m=>`<div class="msg ${m.me?'me':''}"><div class="avatar">${m.me?'ME':'PI'}</div><div class="bubble"><b>${m.me?'Ikaw':'Payapang Isip Member'}</b><div>${escapeHtml(m.text)}</div><small>${new Date(m.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</small></div></div>`).join('')||'<div class="empty">Wala pang message. Batiin ang community 👋</div>'}</div><div class="chat-send"><input class="chat-input" id="chatText" placeholder="Type a friendly message..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-dark" onclick="sendChat()">Send</button></div><div class="small" style="margin-top:10px">Demo mode: messages are stored locally on this browser.</div></section></div>`}
+function news(){return `${header('News','Mga update at announcements mula sa Payapang Isip.')}<div class="news-grid">${newsItems.map((n,i)=>`<article class="news-card"><span class="news-tag">${n.tag}</span><h3 class="serif">${n.title}</h3><p class="small" style="font-size:13px;line-height:1.65">${n.text}</p><div class="small" style="margin-top:14px">${i+1} day${i?'s':''} ago • Payapang Isip</div></article>`).join('')}</div>`}
+function shop(){let total=state.cart.reduce((a,id)=>a+(products.find(p=>p.id===id)?.price||0),0);return `${header('Shop','Simple digital items para sa Payapang Isip community.')}<div class="shop-grid">${products.map(p=>`<article class="product"><div class="product-visual">${p.emoji}</div><h3 class="serif">${p.name}</h3><div class="small">${p.desc}</div><div class="row"><span class="price">₱${p.price}</span><button class="btn btn-dark" onclick="addCart(${p.id})">${state.cart.includes(p.id)?'Added ✓':'Add'}</button></div></article>`).join('')}</div><div class="cart-bar"><div><b>🛒 Cart</b><span class="small" style="color:#cbd5e1;margin-left:8px">${state.cart.length} item(s)</span></div><div><b>₱${total}</b> <button class="btn" style="margin-left:8px;background:#fbbf24;color:#0f172a" onclick="checkout()">Checkout</button></div></div>`}
+function addPost(){let el=document.getElementById('communityText'),text=el?.value.trim();if(!text)return toast('May gusto ka bang ibahagi muna?');state.community.push({id:String(Date.now()),author:'Community Member',text,date:Date.now(),likes:0});save();toast('Posted sa Community ☀');render()}
+function likePost(id){let p=state.community.find(x=>x.id===id);if(p){p.likes=(p.likes||0)+1;save();render()}}
+
+const sideChatNames=['Mika','Luna','Jaycee','Alyssa','Ken','Rhea','Carlo','Admin'];
+function renderSideChat(){
+ const box=document.getElementById('sideChatMessages'); if(!box)return;
+ const msgs=state.chat.slice(-18);
+ if(!msgs.length){
+   const samples=[
+    ['Mika','Magandang umaga sa lahat! 🙂'],['Luna','Kaya natin ito. 💪'],['Jaycee','Tara, pahinga muna. ☕'],['Alyssa','Keep safe everyone! 💙'],['Admin','Welcome sa Global Chat! 🎉']
+   ];
+   box.innerHTML=samples.map((m,i)=>`<div class="side-msg"><div class="side-avatar">${m[0].slice(0,2).toUpperCase()}</div><div class="side-msg-body"><div class="side-msg-top"><span class="side-msg-name">${m[0]}</span><span class="side-msg-time">${12+i}:2${i}</span></div><div class="side-msg-text">${m[1]}</div></div></div>`).join('');
+ } else {
+   box.innerHTML=msgs.map((m,i)=>{const name=m.me?'Ikaw':sideChatNames[i%sideChatNames.length];return `<div class="side-msg"><div class="side-avatar">${name.slice(0,2).toUpperCase()}</div><div class="side-msg-body"><div class="side-msg-top"><span class="side-msg-name">${name}</span><span class="side-msg-time">${new Date(m.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span></div><div class="side-msg-text">${escapeHtml(m.text)}</div></div></div>`}).join('');
+ }
+ box.scrollTop=box.scrollHeight;
+}
+function sendSideChat(){
+ const el=document.getElementById('sideChatText'),text=el?.value.trim(); if(!text)return;
+ state.chat.push({id:String(Date.now()),text,date:Date.now(),me:true}); save(); el.value=''; renderSideChat(); toast('Message sent 🌍');
+}
+
+function sendChat(){let el=document.getElementById('chatText'),text=el?.value.trim();if(!text)return;state.chat.push({id:String(Date.now()),text,date:Date.now(),me:true});save();render();setTimeout(()=>{let box=document.getElementById('messages');if(box)box.scrollTop=box.scrollHeight},50)}
+function addCart(id){if(!state.cart.includes(id))state.cart.push(id);save();toast('Added to cart 🛍');render()}
+function checkout(){if(!state.cart.length)return toast('Wala pang item sa cart');toast('Demo checkout • connect payment gateway next')}
+
+function render(){renderNav();let out=state.page==='tahanan'?home():state.page==='community'?community():state.page==='chat'?chat():state.page==='news'?news():shop();document.getElementById('app').innerHTML=out;renderSideChat();const qt=document.getElementById('quickText');if(qt){qt.addEventListener('input',()=>document.getElementById('count').textContent=qt.value.length+' characters')}}
+function setMood(m){state.mood=m;save();toast('Mood saved 🌿');render()}
+function addJournal(id){let el=document.getElementById(id),text=el?.value.trim();if(!text)return toast('May gusto ka bang isulat muna?');state.journals.unshift({id:String(Date.now()),text,mood:state.mood||3,date:Date.now()});save();toast('Na-save sa Journal 🌿');render()}
+function deleteJournal(id){state.journals=state.journals.filter(j=>j.id!==id);save();toast('Deleted');render()}
+function toggleFav(id){state.favorites=state.favorites.includes(id)?state.favorites.filter(x=>x!==id):[...state.favorites,id];save();toast(state.favorites.includes(id)?'Na-save sa Paborito ♥':'Tinanggal sa Paborito');render()}
+function nextAffirm(){state.affirm=(state.affirm+1)%affirmations.length;render()}
+let breathTimer=null;
+function toggleBreathing(){if(state.breathing){clearInterval(breathTimer);state.breathing=false;state.phase='ready';render();return}state.breathing=true;state.phase='inhale';state.seconds=60;let phaseSec=4,elapsed=0;breathTimer=setInterval(()=>{state.seconds--;elapsed++;phaseSec--;if(phaseSec<=0){if(state.phase==='inhale'){state.phase='hold';phaseSec=7}else if(state.phase==='hold'){state.phase='exhale';phaseSec=8}else{state.phase='inhale';phaseSec=4;state.cycles++}}if(state.seconds<=0){clearInterval(breathTimer);state.breathing=false;state.phase='ready';toast('Tapos na. Salamat sa paghinga 🌿')}render()},1000);render()}
+function resetBreathing(){clearInterval(breathTimer);state.breathing=false;state.phase='ready';state.seconds=60;state.cycles=0;render()}
+function logout(){if(confirm('Mag-logout sa dashboard?')){signOut(auth).finally(()=>{localStorage.removeItem('payapang_user');toast('Logged out');setTimeout(()=>location.href='index.html',500)})}}
+function escapeHtml(s){return s.replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+render();
+</script>
+</body></html>
