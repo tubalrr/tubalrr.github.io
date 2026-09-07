@@ -73,6 +73,27 @@ button,input{font:inherit}button{cursor:pointer}
 .product-item{background:#FFFEFD;border:1.5px solid #F3EDE7;border-radius:16px;padding:14px;text-align:center}
 .product-item .thumb{width:100%;height:86px;border-radius:12px;background:linear-gradient(135deg,#FFF0DD,#EAF1EE);display:grid;place-items:center;font-size:28px;margin-bottom:10px}
 @media(max-width:1100px){.app{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.main{padding:22px}.stats{grid-template-columns:repeat(2,1fr)}.content-grid,.page-grid{grid-template-columns:1fr}.product-grid{grid-template-columns:1fr 1fr}}
+
+/* PRODUCT MANAGEMENT FUNCTIONALITY — keeps existing visual design */
+.product-modal{position:fixed;inset:0;background:rgba(35,46,58,.38);backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:20px;z-index:999}
+.product-modal.show{display:flex}
+.product-modal-card{width:min(560px,100%);background:rgba(255,255,255,.98);border:1px solid rgba(255,255,255,.95);border-radius:24px;padding:22px;box-shadow:var(--shadow)}
+.product-modal-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px}
+.product-modal-head h3{margin:0;font-size:18px;font-family:"Fraunces",serif}
+.modal-close{border:1.5px solid var(--line);background:#fff;padding:8px 11px;border-radius:12px;font-weight:800}
+.product-form{display:grid;gap:11px}
+.product-form input,.product-form textarea,.product-form select{width:100%;border:1.5px solid var(--line);background:#FFFEFD;border-radius:14px;padding:12px 13px;outline:0}
+.product-form input:focus,.product-form textarea:focus,.product-form select:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(233,162,94,.12)}
+.product-form textarea{min-height:90px;resize:vertical}
+.product-form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.product-card-actions{display:flex;gap:7px;justify-content:center;margin-top:10px}
+.product-card-actions button{border:1.5px solid var(--line);background:#fff;padding:7px 9px;border-radius:10px;font-size:10px;font-weight:800}
+.product-card-actions .delete{background:#FFF5F4;border-color:#FFE0DD;color:#B74A42}
+.product-card-image{width:100%;height:86px;border-radius:12px;object-fit:cover;background:linear-gradient(135deg,#FFF0DD,#EAF1EE);display:block;margin-bottom:10px}
+.product-card-desc{font-size:10.5px;color:var(--muted);line-height:1.45;margin:7px 0 0;min-height:30px}
+.product-status{margin-top:9px;display:inline-block}
+#productFeedback{display:none;margin-top:12px;font-size:11.5px;color:#2E8B4A;background:#E9F6EC;border:1px solid #D7ECD9;padding:9px 11px;border-radius:12px}
+
 </style>
 </head>
 <body>
@@ -220,16 +241,20 @@ button,input{font:inherit}button{cursor:pointer}
   <section id="shop" class="section">
     <div class="page-grid">
       <div class="table-card">
-        <div class="toolbar"><h3 style="margin:0">Shop Management</h3><button class="btn-primary">+ Add Product</button></div>
-        <div class="product-grid">
-          <div class="product-item"><div class="thumb">🧘</div><b style="font-size:13px">Calm Journal</b><p style="font-size:11.5px;color:var(--muted);margin:4px 0">₱299 • 42 sold</p><span class="badge badge-green">IN STOCK</span></div>
-          <div class="product-item"><div class="thumb">☕</div><b style="font-size:13px">Payapa Mug</b><p style="font-size:11.5px;color:var(--muted);margin:4px 0">₱199 • 18 sold</p><span class="badge badge-green">IN STOCK</span></div>
-          <div class="product-item"><div class="thumb">🌿</div><b style="font-size:13px">Aroma Oil</b><p style="font-size:11.5px;color:var(--muted);margin:4px 0">₱349 • Low stock</p><span class="badge badge-orange">LOW</span></div>
-          <div class="product-item"><div class="thumb">👕</div><b style="font-size:13px">Payapa Shirt</b><p style="font-size:11.5px;color:var(--muted);margin:4px 0">₱499 • New</p><span class="badge badge-gray">NEW</span></div>
+        <div class="toolbar"><h3 style="margin:0">Shop Management</h3><button class="btn-primary" id="addProductBtn">+ Add Product</button></div>
+        <div class="product-grid" id="productGrid">
+          <div class="empty-premium" style="grid-column:1/-1"><div class="big">🛍️</div><h4>Loading products</h4><p>Kinukuha ang products mula sa Firestore.</p></div>
         </div>
-        <div class="empty-premium" style="margin-top:16px"><div class="big">🛍️</div><h4>Manage real products</h4><p>Preview lang ito. Connect your Firestore shop collection para live na.</p></div>
+        <div class="empty-premium" id="emptyProducts" style="display:none;margin-top:16px"><div class="big">🛍️</div><h4>Wala pang products</h4><p>I-click ang Add Product para idagdag ang unang product sa shop.</p></div>
+        <div id="productFeedback"></div>
       </div>
-      <div class="table-card"><h3>Shop Overview</h3><div class="row-premium"><div><b>Total products</b></div><b>12</b></div><div class="row-premium"><div><b>Orders today</b></div><b>8</b></div><div class="row-premium"><div><b>Revenue</b></div><b>₱4,230</b></div><div style="margin-top:16px"><button class="action-btn" style="width:100%">View all orders →</button></div></div>
+      <div class="table-card">
+        <h3>Shop Overview</h3>
+        <div class="row-premium"><div><b>Total products</b></div><b id="totalProducts">—</b></div>
+        <div class="row-premium"><div><b>Products in stock</b></div><b id="inStockProducts">—</b></div>
+        <div class="row-premium"><div><b>Low / out of stock</b></div><b id="lowStockProducts">—</b></div>
+        <div style="margin-top:16px"><button class="action-btn" style="width:100%" id="refreshProductsBtn">Refresh products ↻</button></div>
+      </div>
     </div>
   </section>
 
@@ -237,9 +262,39 @@ button,input{font:inherit}button{cursor:pointer}
 </div>
 </div>
 
+
+<div class="product-modal" id="productModal">
+  <div class="product-modal-card">
+    <div class="product-modal-head">
+      <div><h3 id="productModalTitle">Add Product</h3><div style="font-size:11px;color:var(--muted);margin-top:4px">Only the signed-in administrator can manage products.</div></div>
+      <button class="modal-close" id="closeProductModal">✕</button>
+    </div>
+    <form class="product-form" id="productForm">
+      <input type="hidden" id="editingProductId">
+      <input id="productName" placeholder="Product name" required>
+      <textarea id="productDescription" placeholder="Product description (optional)"></textarea>
+      <div class="product-form-row">
+        <input id="productPrice" type="number" min="0" step="0.01" placeholder="Price (PHP)" required>
+        <input id="productStock" type="number" min="0" step="1" placeholder="Stock" value="0" required>
+      </div>
+      <div class="product-form-row">
+        <select id="productCategory">
+          <option value="General">General</option>
+          <option value="Digital">Digital</option>
+          <option value="Merchandise">Merchandise</option>
+          <option value="Other">Other</option>
+        </select>
+        <input id="productImage" type="url" placeholder="Image URL (optional)">
+      </div>
+      <button class="btn-primary" type="submit" id="saveProductBtn">Save Product</button>
+    </form>
+  </div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
   authDomain: "payapang-isip.firebaseapp.com",
@@ -249,16 +304,153 @@ const firebaseConfig = {
   appId: "1:901078398408:web:1f4c5e5794f96801f57cfd"
 };
 const ADMIN_EMAIL="tubalrr@gmail.com";
-const app=initializeApp(firebaseConfig);const auth=getAuth(app);
+const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
 const loginScreen=document.getElementById("loginScreen"),adminApp=document.getElementById("adminApp"),errorBox=document.getElementById("error"),loading=document.getElementById("loading"),loginBtn=document.getElementById("loginBtn");
 window.togglePass=()=>{const p=document.getElementById("password");p.type=p.type==="password"?"text":"password"};
 function err(msg){errorBox.textContent=msg;errorBox.style.display="block"}function busy(on){loading.style.display=on?"block":"none";loginBtn.disabled=on;loginBtn.style.opacity=on?.65:1}
 async function login(){errorBox.style.display="none";const email=document.getElementById("email").value.trim().toLowerCase(),password=document.getElementById("password").value;if(!email||!password){err("Enter your email and password.");return}busy(true);try{const cred=await signInWithEmailAndPassword(auth,email,password);if(cred.user.email?.toLowerCase()!==ADMIN_EMAIL){await signOut(auth);err("This account is not authorized as administrator.")}}catch(e){err("Incorrect email or password. Please check Firebase Authentication.")}finally{busy(false)}}
 loginBtn.addEventListener("click",login);document.getElementById("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
-onAuthStateChanged(auth,user=>{if(user&&user.email?.toLowerCase()===ADMIN_EMAIL){loginScreen.style.display="none";adminApp.style.display="block";document.getElementById("adminEmail").textContent=user.email;const e2=document.getElementById("adminEmail2");if(e2)e2.textContent=user.email}else{loginScreen.style.display="grid";adminApp.style.display="none"}});
+
+let currentAdmin=null;
+let productsCache=[];
+const money=new Intl.NumberFormat("en-PH",{style:"currency",currency:"PHP"});
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function productStatus(stock){
+  stock=Number(stock||0);
+  if(stock<=0)return '<span class="badge badge-orange product-status">OUT OF STOCK</span>';
+  if(stock<=5)return '<span class="badge badge-orange product-status">LOW STOCK</span>';
+  return '<span class="badge badge-green product-status">IN STOCK</span>';
+}
+function productThumb(x){
+  if(x.image)return `<img class="product-card-image" src="${esc(x.image)}" alt="" onerror="this.outerHTML='<div class=&quot;thumb&quot;>🛍️</div>'">`;
+  return '<div class="thumb">🛍️</div>';
+}
+function setFeedback(message){
+  const box=document.getElementById("productFeedback");
+  box.textContent=message||"";
+  box.style.display=message?"block":"none";
+  if(message)setTimeout(()=>{if(box.textContent===message)box.style.display="none"},3500);
+}
+function updateShopStats(){
+  const total=productsCache.length;
+  const inStock=productsCache.filter(x=>Number(x.stock||0)>5).length;
+  const low=productsCache.filter(x=>Number(x.stock||0)<=5).length;
+  document.getElementById("totalProducts").textContent=total;
+  document.getElementById("inStockProducts").textContent=inStock;
+  document.getElementById("lowStockProducts").textContent=low;
+}
+async function loadProducts(){
+  const grid=document.getElementById("productGrid");
+  const empty=document.getElementById("emptyProducts");
+  if(!grid)return;
+  try{
+    grid.innerHTML='<div class="empty-premium" style="grid-column:1/-1"><div class="big">⏳</div><h4>Loading products</h4><p>Kinukuha ang products mula sa Firestore.</p></div>';
+    let snap;
+    try{
+      snap=await getDocs(query(collection(db,"products"),orderBy("createdAt","desc")));
+    }catch(orderError){
+      snap=await getDocs(collection(db,"products"));
+    }
+    productsCache=snap.docs.map(d=>({id:d.id,...d.data()}));
+    updateShopStats();
+    if(!productsCache.length){
+      grid.innerHTML="";
+      empty.style.display="block";
+      return;
+    }
+    empty.style.display="none";
+    grid.innerHTML=productsCache.map(x=>`
+      <div class="product-item">
+        ${productThumb(x)}
+        <b style="font-size:13px">${esc(x.name||"Untitled Product")}</b>
+        <p style="font-size:11.5px;color:var(--muted);margin:4px 0">${money.format(Number(x.price||0))} • Stock: ${Number(x.stock||0)}</p>
+        <span class="badge badge-gray">${esc(x.category||"General").toUpperCase()}</span>
+        ${productStatus(x.stock)}
+        <p class="product-card-desc">${esc(x.description||"No description")}</p>
+        <div class="product-card-actions">
+          <button onclick="editProduct('${x.id}')">Edit</button>
+          <button class="delete" onclick="removeProduct('${x.id}')">Delete</button>
+        </div>
+      </div>`).join("");
+  }catch(e){
+    console.error(e);
+    productsCache=[];
+    updateShopStats();
+    grid.innerHTML='<div class="empty-premium" style="grid-column:1/-1"><div class="big">⚠️</div><h4>Hindi ma-load ang products</h4><p>I-check kung enabled ang Firestore Database at ang Firestore Security Rules.</p></div>';
+  }
+}
+function openProductModal(product=null){
+  if(!currentAdmin)return;
+  document.getElementById("productModal").classList.add("show");
+  document.getElementById("productModalTitle").textContent=product?"Edit Product":"Add Product";
+  document.getElementById("editingProductId").value=product?.id||"";
+  document.getElementById("productName").value=product?.name||"";
+  document.getElementById("productDescription").value=product?.description||"";
+  document.getElementById("productPrice").value=product?.price??"";
+  document.getElementById("productStock").value=product?.stock??0;
+  document.getElementById("productCategory").value=product?.category||"General";
+  document.getElementById("productImage").value=product?.image||"";
+}
+function closeProductModal(){document.getElementById("productModal").classList.remove("show");}
+document.getElementById("addProductBtn").addEventListener("click",()=>openProductModal());
+document.getElementById("closeProductModal").addEventListener("click",closeProductModal);
+document.getElementById("productModal").addEventListener("click",e=>{if(e.target.id==="productModal")closeProductModal();});
+document.getElementById("refreshProductsBtn").addEventListener("click",loadProducts);
+
+window.editProduct=(id)=>openProductModal(productsCache.find(x=>x.id===id));
+window.removeProduct=async(id)=>{
+  if(!currentAdmin||!confirm("Delete this product?"))return;
+  try{
+    await deleteDoc(doc(db,"products",id));
+    setFeedback("Product deleted successfully.");
+    await loadProducts();
+  }catch(e){
+    console.error(e);
+    alert("Unable to delete product. Check Firestore Security Rules.");
+  }
+};
+
+document.getElementById("productForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!currentAdmin)return;
+  const id=document.getElementById("editingProductId").value;
+  const name=document.getElementById("productName").value.trim();
+  const description=document.getElementById("productDescription").value.trim();
+  const price=Number(document.getElementById("productPrice").value);
+  const stock=Number(document.getElementById("productStock").value);
+  const category=document.getElementById("productCategory").value;
+  const image=document.getElementById("productImage").value.trim();
+  if(!name||!Number.isFinite(price)||price<0||!Number.isFinite(stock)||stock<0)return alert("Please enter valid product information.");
+  const btn=document.getElementById("saveProductBtn");
+  btn.disabled=true;btn.textContent="Saving…";
+  const data={name,description,price,stock,category,image,updatedAt:serverTimestamp(),updatedBy:currentAdmin.email};
+  try{
+    if(id){
+      await updateDoc(doc(db,"products",id),data);
+      setFeedback("Product updated successfully.");
+    }else{
+      await addDoc(collection(db,"products"),{...data,createdAt:serverTimestamp(),createdBy:currentAdmin.email});
+      setFeedback("Product added successfully.");
+    }
+    closeProductModal();
+    e.target.reset();
+    document.getElementById("editingProductId").value="";
+    document.getElementById("productStock").value=0;
+    await loadProducts();
+  }catch(err){
+    console.error(err);
+    alert("Unable to save product. Check Firestore Database and Security Rules.");
+  }finally{
+    btn.disabled=false;btn.textContent="Save Product";
+  }
+});
+
+
+onAuthStateChanged(auth,user=>{if(user&&user.email?.toLowerCase()===ADMIN_EMAIL){currentAdmin=user;loginScreen.style.display="none";adminApp.style.display="block";document.getElementById("adminEmail").textContent=user.email;const e2=document.getElementById("adminEmail2");if(e2)e2.textContent=user.email;loadProducts()}else{currentAdmin=null;loginScreen.style.display="grid";adminApp.style.display="none"}});
 document.getElementById("logoutBtn").addEventListener("click",()=>signOut(auth));
 const titles={overview:"Good day, Admin ☀",users:"Users",community:"Community",chat:"Global Chat",news:"News",shop:"Shop"};
-window.show=(id,btn)=>{document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");document.getElementById("title").textContent=titles[id];document.getElementById("crumb").textContent="Dashboard • "+titles[id];};
+window.show=(id,btn)=>{document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");if(id==="shop")loadProducts();document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");document.getElementById("title").textContent=titles[id];document.getElementById("crumb").textContent="Dashboard • "+titles[id];};
 window.showById=(id)=>{const b=[...document.querySelectorAll("nav button")].find(x=>x.textContent.trim().includes(titles[id].replace("Good day, Admin ☀","Overview")));if(b)show(id,b)};
 </script>
 </body>
