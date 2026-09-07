@@ -59,6 +59,13 @@ main{padding:26px 20px 90px;min-width:0}
 .auth-form{display:grid;gap:11px}.auth-form input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;outline:none;background:white}.auth-form input:focus{border-color:#f59e0b;box-shadow:0 0 0 4px rgba(245,158,11,.1)}.auth-primary{width:100%;padding:13px;border-radius:14px;background:var(--ink);color:white;font-weight:800}
 .auth-divider{display:flex;align-items:center;gap:10px;color:#94a3b8;font-size:11px;margin:16px 0}.auth-divider:before,.auth-divider:after{content:"";height:1px;background:var(--line);flex:1}.social-auth{display:grid;grid-template-columns:1fr 1fr;gap:10px}.social-auth button{padding:12px;border:1px solid var(--line);background:white;border-radius:14px;font-weight:800;font-size:12px}.auth-msg{display:none;margin-top:12px;padding:10px 12px;border-radius:12px;background:#fff1f2;color:#b42318;font-size:12px}.auth-msg.success{background:#ecfdf3;color:#16794b}.account-btn{display:flex;align-items:center;gap:8px}.account-avatar{width:28px;height:28px;border-radius:10px;background:#fff3cf;display:grid;place-items:center;font-size:12px}
 
+
+/* LIVE DIGITAL MEDIA PRODUCTS */
+.media-player{width:100%;margin:10px 0;border-radius:12px}
+.media-video{width:100%;max-height:210px;background:#111;border-radius:12px;margin:10px 0}
+.media-placeholder{width:100%;min-height:110px;border-radius:14px;display:grid;place-items:center;font-size:40px;background:linear-gradient(135deg,#fff3df,#edf5f0);margin-bottom:10px}
+.media-download{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:11px;font-weight:800}
+
 </style>
 </head>
 <body>
@@ -218,18 +225,24 @@ async function loadLiveProducts(){
   }
 }
 
-function productImage(p){
-  return p.image
-    ? `<img src="${String(p.image).replace(/"/g,'&quot;')}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" onerror="this.style.display='none'">`
-    : "🛍️";
+function mediaType(p){return p.type||"image";}
+function mediaUrl(p){return p.media||p.image||"";}
+function mediaPreview(p){
+  const type=mediaType(p), url=mediaUrl(p);
+  if(type==="image" && url)return `<div class="product-visual"><img src="${escProduct(url)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit" onerror="this.style.display='none'"></div>`;
+  if(type==="audio")return url?`<div class="media-placeholder">🎵</div><audio class="media-player" controls preload="metadata" src="${escProduct(url)}"></audio>`:`<div class="media-placeholder">🎵</div>`;
+  if(type==="video")return url?`<video class="media-video" controls preload="metadata" src="${escProduct(url)}"></video>`:`<div class="media-placeholder">🎬</div>`;
+  if(type==="file")return `<div class="media-placeholder">📁</div>${url?`<a class="media-download" href="${escProduct(url)}" target="_blank" rel="noopener">📥 Open file</a>`:""}`;
+  return '<div class="product-visual">🛍️</div>';
 }
-
 function productCard(p,home=false){
-  const id=String(p.id).replace(/'/g,"\\'");
+  const id=String(p.id).replace(/'/g,"\'");
+  const type=mediaType(p);
   return `<article class="product">
-    <div class="product-visual">${productImage(p)}</div>
+    ${mediaPreview(p)}
     <h3 class="serif">${escProduct(p.name)}</h3>
-    <div class="small">${escProduct(p.description||"No description")}</div>
+    <div class="small">🏷️ ${escProduct(type.toUpperCase())} • ${escProduct(p.category||"General")}</div>
+    <div class="small" style="margin-top:5px">${escProduct(p.description||"No description")}</div>
     <div class="row">
       <span class="price">₱${Number(p.price||0).toLocaleString("en-PH")}</span>
       ${home
@@ -238,9 +251,7 @@ function productCard(p,home=false){
     </div>
   </article>`;
 }
-
-function escProduct(v){
-  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+function escProduct(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}[c]));
 }
 function community(){let posts=state.community.slice().reverse();return `${header('Community','Isang ligtas at positibong lugar para magbahagi.')}<div class="card community-hero"><span class="badge">☀ PAYAPANG ISIP COMMUNITY</span><h2 class="serif" style="font-size:28px;margin:18px 0 8px;position:relative;z-index:1">Magbahagi ng kabutihan.</h2><p style="position:relative;z-index:1;opacity:.75">I-share ang simpleng thought, encouragement, o magandang nangyari sa araw mo.</p></div><div class="card post-composer" style="margin-top:16px"><b>✦ Gumawa ng post</b><textarea id="communityText" placeholder="Ano ang gusto mong ibahagi sa community?" style="margin-top:12px"></textarea><div class="row"><span class="small">Panatilihing mabait at magalang ang community.</span><button class="btn btn-dark" onclick="addPost()">I-post</button></div></div><div>${posts.map(p=>`<article class="post"><div class="post-head"><div class="avatar">PI</div><div><b>${escapeHtml(p.author||'Community Member')}</b><div class="small">${new Date(p.date).toLocaleString()}</div></div></div><p>${escapeHtml(p.text)}</p><div class="post-actions"><button class="mini-btn" onclick="likePost('${p.id}')">♥ ${p.likes||0} Like</button><button class="mini-btn" onclick="toast('Comments feature coming soon')">◌ Comment</button></div></article>`).join('')||'<div class="card empty">Wala pang community post. Ikaw ang unang magbahagi! ☀</div>'}</div>`}
 function chat(){let msgs=state.chat;return `${header('Global Chat','Friendly messages para sa Payapang Isip community.')}<div class="chat-shell"><aside class="card room-list"><button class="room active">🌍 Global Room<br><span class="small">Community chat</span></button><button class="room" onclick="toast('Coming soon')">🌿 Positivity</button><button class="room" onclick="toast('Coming soon')">☀ Morning Club</button><div class="small"><span class="online-dot"></span>Online demo room</div></aside><section class="card chat-box"><div class="messages" id="messages">${msgs.map(m=>`<div class="msg ${m.me?'me':''}"><div class="avatar">${m.me?'ME':'PI'}</div><div class="bubble"><b>${m.me?'Ikaw':'Payapang Isip Member'}</b><div>${escapeHtml(m.text)}</div><small>${new Date(m.date).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</small></div></div>`).join('')||'<div class="empty">Wala pang message. Batiin ang community 👋</div>'}</div><div class="chat-send"><input class="chat-input" id="chatText" placeholder="Type a friendly message..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn btn-dark" onclick="sendChat()">Send</button></div><div class="small" style="margin-top:10px">Demo mode: messages are stored locally on this browser.</div></section></div>`}
