@@ -83,6 +83,8 @@ async function doLogin(){
 loginBtn.addEventListener("click",doLogin);
 document.getElementById("password").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
 
+// Always require a fresh password when admin.html is opened.
+await signOut(auth);
 onAuthStateChanged(auth,user=>{
  if(user && user.email?.toLowerCase()===ADMIN_EMAIL){
    loginScreen.style.display="none";adminApp.style.display="block";
