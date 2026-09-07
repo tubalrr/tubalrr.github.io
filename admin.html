@@ -119,7 +119,7 @@ button,input{font:inherit}button{cursor:pointer}
     <button class="active" onclick="show('overview',this)"><span class="nav-icon">🏠</span> Overview</button>
     <button onclick="show('users',this)"><span class="nav-icon">👥</span> Users</button>
     <button onclick="show('community',this)"><span class="nav-icon">💬</span> Community</button>
-    <button onclick="window.location.href='./global-chat.html'"><span class="nav-icon">🌍</span> Global Chat</button>
+    <button onclick="show('chat',this)"><span class="nav-icon">🌍</span> Global Chat</button>
     <button onclick="show('news',this)"><span class="nav-icon">📰</span> News</button>
     <button onclick="show('shop',this)"><span class="nav-icon">🛍️</span> Shop</button>
    </nav>
@@ -136,7 +136,7 @@ button,input{font:inherit}button{cursor:pointer}
 
   <section id="overview" class="section active">
    <div class="welcome"><h2>Welcome back, calm keeper.</h2><p>Manage your community, moderate conversations, and nurture the safe space of Payapang Isip. Everything is connected and ready.</p>
-   <div class="quick-actions"><button onclick="showById('users')">👥 Manage Users</button><button onclick="showById('community')">💬 Moderate Community</button><button onclick="window.location.href='./global-chat.html'">🌍 Open Global Chat</button></div>
+   <div class="quick-actions"><button onclick="showById('users')">👥 Manage Users</button><button onclick="showById('community')">💬 Moderate Community</button><button onclick="showById('chat')">🌍 Open Global Chat</button></div>
    </div>
    <div class="stats">
     <div class="stat-card"><div class="stat-top"><div class="stat-icon">👥</div><span style="color:#CFC5B9">•••</span></div><div class="stat-label">Total Users</div><div class="stat-value">—</div><div class="stat-note">Live from Firebase</div></div>
@@ -207,26 +207,54 @@ button,input{font:inherit}button{cursor:pointer}
     </div>
   </section>
 
-  <!-- CHAT - PREMIUM LOOB -->
+  <!-- CHAT - LIVE ADMIN ACCESS -->
   <section id="chat" class="section">
     <div class="page-grid">
       <div class="table-card">
         <div class="toolbar">
-          <h3 style="margin:0">Global Chat • Live</h3>
-          <div style="display:flex;gap:8px;align-items:center">
-            <span class="badge badge-green">● LIVE MONITORING</span>
-            <button class="action-btn" onclick="window.location.href='./global-chat.html'">Open Full Chat ↗</button>
+          <div>
+            <h3 style="margin:0">Global Chat • Live</h3>
+            <p style="margin:5px 0 0;font-size:11.5px;color:var(--muted)">Admin view • Makikita rito ang live messages at kung sinong user ang nag-send.</p>
+          </div>
+          <span class="badge badge-green">● LIVE MONITORING</span>
+        </div>
+
+        <div id="adminChatMessages" style="background:#FBF8F5;border-radius:18px;padding:16px;max-height:420px;overflow:auto">
+          <div class="empty-premium" style="padding:24px"><div class="big">🌍</div><h4>Loading live chat…</h4><p>Kinukuha ang messages mula sa Firebase.</p></div>
+        </div>
+
+        <div style="display:flex;gap:10px;margin-top:14px">
+          <div class="search-box" style="flex:1">
+            💬
+            <input id="adminChatText" placeholder="Type to send as Admin..." maxlength="500">
+          </div>
+          <button id="adminChatSendBtn" class="btn-primary" type="button" onclick="sendAdminChat()">Send</button>
+        </div>
+
+        <p id="adminChatStatus" style="font-size:11.5px;color:var(--muted);margin:10px 2px 0">Admin chat is ready.</p>
+      </div>
+
+      <div class="table-card">
+        <div class="toolbar">
+          <h3 style="margin:0">Chat Users</h3>
+          <span id="chatUserCount" class="tag">0 USERS</span>
+        </div>
+
+        <div id="chatUsersList">
+          <div class="empty-premium" style="padding:24px">
+            <div class="big">👥</div>
+            <h4>Loading users…</h4>
+            <p>Makikita rito ang users na may messages sa Global Chat.</p>
           </div>
         </div>
-        <div style="background:#FBF8F5;border-radius:18px;padding:16px;max-height:360px;overflow:auto">
-          <div class="chat-bubble"><b style="font-size:11px">Alex • 10:42 AM</b><p style="margin:6px 0 0;font-size:12.5px">Good morning everyone! Payapa ba kayo today?</p></div>
-          <div class="chat-bubble"><b style="font-size:11px">Maria • 10:43 AM</b><p style="margin:6px 0 0;font-size:12.5px">Yes, nag-meditate ako kanina ☀</p></div>
-          <div class="chat-bubble me"><b style="font-size:11px">You (Moderator)</b><p style="margin:6px 0 0;font-size:12.5px">Nice! Keep sharing positivity 🌿</p></div>
+
+        <div style="margin-top:18px;background:#FFFBF2;border:1.5px solid #FFE8D0;border-radius:16px;padding:14px">
+          <b style="font-size:12.5px">🛡️ Admin Access</b>
+          <p style="font-size:11.5px;color:var(--muted);margin:6px 0 0;line-height:1.6">
+            Hindi mo kailangang pumunta sa main Payapang Isip page. Dito mismo sa Admin makikita at masusubaybayan ang Global Chat.
+          </p>
         </div>
-        <div style="display:flex;gap:10px;margin-top:14px"><div class="search-box" style="flex:1">💬<input placeholder="Type to send as moderator..."><button class="btn-primary">Send</button></div></div>
-        <div class="empty-premium" style="margin-top:16px;padding:24px"><div class="big">🌍</div><h4>Connect live chat collection</h4><p>Preview lang ito. Real-time messages will stream here.</p></div>
       </div>
-      <div class="table-card"><h3 style="margin:0 0 16px">Chat Controls</h3><div class="row-premium"><div><b>Slow mode</b><span style="display:block;color:var(--muted);font-size:11.5px">Limit spam</span></div><button class="action-btn">Enable</button></div><div class="row-premium"><div><b>Clear chat</b><span style="display:block;color:var(--muted);font-size:11.5px">Remove all messages</span></div><button class="action-btn" style="color:#B74A42">Clear</button></div><div class="row-premium"><div><b>Banned words</b><span style="display:block;color:var(--muted);font-size:11.5px">Auto filter</span></div><span class="tag">12 WORDS</span></div></div>
     </div>
   </section>
 
@@ -307,7 +335,7 @@ button,input{font:inherit}button{cursor:pointer}
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
   authDomain: "payapang-isip.firebaseapp.com",
@@ -464,7 +492,173 @@ const media=document.getElementById("productMedia").value.trim();
 });
 
 
-onAuthStateChanged(auth,user=>{if(user&&user.email?.toLowerCase()===ADMIN_EMAIL){currentAdmin=user;loginScreen.style.display="none";adminApp.style.display="block";document.getElementById("adminEmail").textContent=user.email;const e2=document.getElementById("adminEmail2");if(e2)e2.textContent=user.email;loadProducts()}else{currentAdmin=null;loginScreen.style.display="grid";adminApp.style.display="none"}});
+// ==============================
+// LIVE GLOBAL CHAT - ADMIN VIEW
+// ==============================
+let unsubscribeAdminChat = null;
+
+function escapeHtml(value=""){
+  return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function formatChatTime(timestamp){
+  try{
+    if(!timestamp?.toDate) return "Sending…";
+    return timestamp.toDate().toLocaleString([],{
+      month:"short",day:"numeric",hour:"numeric",minute:"2-digit"
+    });
+  }catch(e){
+    return "";
+  }
+}
+
+function renderAdminChat(messages){
+  const box=document.getElementById("adminChatMessages");
+  const usersBox=document.getElementById("chatUsersList");
+  const count=document.getElementById("chatUserCount");
+  if(!box || !usersBox || !count) return;
+
+  if(!messages.length){
+    box.innerHTML='<div class="empty-premium" style="padding:24px"><div class="big">💬</div><h4>Wala pang messages</h4><p>Kapag may user na nag-chat, lalabas dito ang kanilang pangalan o email.</p></div>';
+    usersBox.innerHTML='<div class="empty-premium" style="padding:24px"><div class="big">👥</div><h4>Wala pang chat users</h4><p>Waiting for messages.</p></div>';
+    count.textContent="0 USERS";
+    return;
+  }
+
+  box.innerHTML=messages.map(m=>{
+    const isAdmin=!!m.isAdmin || (m.email && currentAdmin && String(m.email).toLowerCase()===String(currentAdmin.email).toLowerCase());
+    const name=m.displayName || m.name || m.username || m.email || "Unknown User";
+    const text=m.text || m.message || m.content || "";
+    const email=m.email || "";
+    return `
+      <div class="chat-bubble ${isAdmin?'me':''}">
+        <b style="font-size:11px">${escapeHtml(name)} ${isAdmin?'• Admin':''}</b>
+        ${email && email!==name ? `<span style="display:block;font-size:10.5px;color:var(--muted);margin-top:3px">${escapeHtml(email)}</span>` : ""}
+        <span style="display:block;font-size:10.5px;color:var(--muted);margin-top:3px">${escapeHtml(formatChatTime(m.createdAt))}</span>
+        <p style="margin:6px 0 0;font-size:12.5px;white-space:pre-wrap;word-break:break-word">${escapeHtml(text)}</p>
+      </div>`;
+  }).join("");
+
+  const users=new Map();
+  messages.forEach(m=>{
+    if(m.isAdmin) return;
+    const key=m.uid || m.email || m.displayName || m.name || m.username || "unknown";
+    if(!users.has(key)){
+      users.set(key,{
+        name:m.displayName || m.name || m.username || m.email || "Unknown User",
+        email:m.email || "",
+        uid:m.uid || ""
+      });
+    }
+  });
+
+  const list=[...users.values()];
+  count.textContent=`${list.length} USER${list.length===1?"":"S"}`;
+
+  usersBox.innerHTML=list.length ? list.map(u=>`
+    <div class="row-premium">
+      <div>
+        <b>👤 ${escapeHtml(u.name)}</b>
+        ${u.email ? `<span style="display:block;color:var(--muted);font-size:11.5px;margin-top:3px">${escapeHtml(u.email)}</span>` : ""}
+        ${u.uid ? `<span style="display:block;color:var(--muted);font-size:10px;margin-top:3px">ID: ${escapeHtml(u.uid)}</span>` : ""}
+      </div>
+      <span class="badge badge-green">CHAT USER</span>
+    </div>
+  `).join("") : '<div class="empty-premium" style="padding:24px"><div class="big">👥</div><h4>Wala pang users</h4><p>Waiting for user messages.</p></div>';
+}
+
+function loadAdminChat(){
+  if(unsubscribeAdminChat) unsubscribeAdminChat();
+
+  const status=document.getElementById("adminChatStatus");
+  if(status) status.textContent="Loading live messages…";
+
+  const q=query(collection(db,"globalChats"),orderBy("createdAt","desc"),limit(100));
+
+  unsubscribeAdminChat=onSnapshot(q,snapshot=>{
+    const messages=snapshot.docs.map(d=>({id:d.id,...d.data()}));
+    renderAdminChat(messages);
+    if(status) status.textContent=`Live • ${messages.length} message${messages.length===1?"":"s"} loaded`;
+  },err=>{
+    console.error("Admin chat error:",err);
+    const box=document.getElementById("adminChatMessages");
+    if(box) box.innerHTML='<div class="empty-premium" style="padding:24px"><div class="big">⚠️</div><h4>Hindi ma-load ang Global Chat</h4><p>Check Firebase Firestore Rules.</p></div>';
+    if(status) status.textContent="Error loading chat. Check Firestore Rules.";
+  });
+}
+
+window.sendAdminChat=async()=>{
+  if(!currentAdmin) return alert("Admin login required.");
+
+  const input=document.getElementById("adminChatText");
+  const button=document.getElementById("adminChatSendBtn");
+  const status=document.getElementById("adminChatStatus");
+  const text=input?.value.trim();
+
+  if(!text) return;
+  if(text.length>500) return alert("Maximum 500 characters.");
+
+  button.disabled=true;
+  button.textContent="Sending…";
+
+  try{
+    await addDoc(collection(db,"globalChats"),{
+      text,
+      message:text,
+      content:text,
+      uid:currentAdmin.uid,
+      email:currentAdmin.email,
+      displayName:"Admin",
+      name:"Admin",
+      username:"Admin",
+      isAdmin:true,
+      createdAt:serverTimestamp()
+    });
+    input.value="";
+    if(status) status.textContent="Message sent as Admin.";
+  }catch(err){
+    console.error(err);
+    alert("Hindi na-send ang message. Check Firebase Firestore Rules.");
+  }finally{
+    button.disabled=false;
+    button.textContent="Send";
+  }
+};
+
+document.addEventListener("keydown",e=>{
+  const input=document.getElementById("adminChatText");
+  if(e.key==="Enter" && input && document.activeElement===input){
+    e.preventDefault();
+    window.sendAdminChat();
+  }
+});
+
+
+onAuthStateChanged(auth,user=>{
+  if(user&&user.email?.toLowerCase()===ADMIN_EMAIL){
+    currentAdmin=user;
+    loginScreen.style.display="none";
+    adminApp.style.display="block";
+    document.getElementById("adminEmail").textContent=user.email;
+    const e2=document.getElementById("adminEmail2");
+    if(e2)e2.textContent=user.email;
+    loadProducts();
+    loadAdminChat();
+  }else{
+    currentAdmin=null;
+    if(unsubscribeAdminChat){
+      unsubscribeAdminChat();
+      unsubscribeAdminChat=null;
+    }
+    loginScreen.style.display="grid";
+    adminApp.style.display="none";
+  }
+});
 document.getElementById("logoutBtn").addEventListener("click",()=>signOut(auth));
 const titles={overview:"Good day, Admin ☀",users:"Users",community:"Community",chat:"Global Chat",news:"News",shop:"Shop"};
 window.show=(id,btn)=>{document.querySelectorAll(".section").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active");if(id==="shop")loadProducts();document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");document.getElementById("title").textContent=titles[id];document.getElementById("crumb").textContent="Dashboard • "+titles[id];};
