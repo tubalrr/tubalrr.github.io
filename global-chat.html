@@ -41,6 +41,9 @@ border-radius:16px 16px 16px 4px;line-height:1.45;word-break:break-word}
 .notice{padding:12px 16px;background:#fff4dc;border-bottom:1px solid #f0dcae;font-size:12px;text-align:center}
 #loginNotice{display:none}
 @media(max-width:600px){.messages{height:65vh}.hero h1{font-size:28px}.message{max-width:88%}.nav{padding:12px 14px}}
+.emoji-choice{border:0;background:transparent;font-size:20px;padding:3px 4px;cursor:pointer}
+.emoji-choice:hover{transform:scale(1.2)}
+
 </style>
 </head>
 <body>
@@ -71,8 +74,24 @@ border-radius:16px 16px 16px 4px;line-height:1.45;word-break:break-word}
       <div class="empty">Loading conversations... 💬</div>
     </div>
 
-    <div id="emojiBar" style="display:none;padding:8px 14px;background:#fffdf8;border-top:1px solid var(--line);font-size:22px;cursor:pointer;word-spacing:6px">
-      😊 😂 ❤️ 👍 👋 🙏 😍 😢 😮 🎉 🌿 🍃 🌲 ☀️ 💚 ✨ 🔥
+    <div id="emojiBar" style="display:none;padding:8px 14px;background:#fffdf8;border-top:1px solid var(--line);font-size:20px;cursor:pointer;word-spacing:4px">
+      <button type="button" class="emoji-choice">😊</button>
+      <button type="button" class="emoji-choice">😂</button>
+      <button type="button" class="emoji-choice">❤️</button>
+      <button type="button" class="emoji-choice">👍</button>
+      <button type="button" class="emoji-choice">👋</button>
+      <button type="button" class="emoji-choice">🙏</button>
+      <button type="button" class="emoji-choice">😍</button>
+      <button type="button" class="emoji-choice">😢</button>
+      <button type="button" class="emoji-choice">😮</button>
+      <button type="button" class="emoji-choice">🎉</button>
+      <button type="button" class="emoji-choice">🌿</button>
+      <button type="button" class="emoji-choice">🍃</button>
+      <button type="button" class="emoji-choice">🌲</button>
+      <button type="button" class="emoji-choice">☀️</button>
+      <button type="button" class="emoji-choice">💚</button>
+      <button type="button" class="emoji-choice">✨</button>
+      <button type="button" class="emoji-choice">🔥</button>
     </div>
     <div id="stickerBar" style="display:none;padding:8px 14px;background:#fffdf8;border-top:1px solid var(--line)">
       <button class="btn light sticker" type="button">🌿</button>
@@ -168,7 +187,8 @@ onAuthStateChanged(auth,user=>{
   currentUser=user;
   loginNotice.style.display=user ? "none" : "block";
   input.disabled=!user;
-  form.querySelector("button").disabled=!user;
+  const sendButton = form.querySelector('button[type="submit"]');
+  if(sendButton) sendButton.disabled=!user;
   input.placeholder=user ? "Type your message..." : "Login required to chat";
 });
 
@@ -183,12 +203,17 @@ document.getElementById("stickerBtn").addEventListener("click",()=>{
   document.getElementById("emojiBar").style.display="none";
   b.style.display=b.style.display==="none"?"block":"none";
 });
-document.getElementById("emojiBar").addEventListener("click",e=>{
-  const t=e.target.textContent.trim();
-  if(t && t.length<=4){ input.value+=t; input.focus(); }
-});
+document.querySelectorAll(".emoji-choice").forEach(btn=>btn.addEventListener("click",()=>{
+  input.value += btn.textContent.trim();
+  input.focus();
+}));
+
 document.querySelectorAll(".sticker").forEach(btn=>btn.addEventListener("click",()=>{
-  input.value=btn.textContent.trim();
+  if(!currentUser){
+    alert("Please login first.");
+    return;
+  }
+  input.value = btn.textContent.trim();
   form.requestSubmit();
 }));
 
