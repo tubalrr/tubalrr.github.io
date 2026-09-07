@@ -235,7 +235,21 @@ button,input{font:inherit}button{cursor:pointer}
           </div>
 
           <div id="adminEmojiPicker" style="display:none;margin-top:8px;padding:10px;border-radius:14px;background:#FBF8F5;border:1px solid #eee;line-height:2.2">
-            😊 😂 ❤️ 👍 👋 🙏 😍 😢 😮 🎉 🌿 🍃 🌲 ☀️ 💚 ✨ 🔥 💬
+            <button type="button" class="admin-emoji">😊</button>
+            <button type="button" class="admin-emoji">😂</button>
+            <button type="button" class="admin-emoji">❤️</button>
+            <button type="button" class="admin-emoji">👍</button>
+            <button type="button" class="admin-emoji">👋</button>
+            <button type="button" class="admin-emoji">🙏</button>
+            <button type="button" class="admin-emoji">😍</button>
+            <button type="button" class="admin-emoji">😢</button>
+            <button type="button" class="admin-emoji">🎉</button>
+            <button type="button" class="admin-emoji">🌿</button>
+            <button type="button" class="admin-emoji">🍃</button>
+            <button type="button" class="admin-emoji">🌲</button>
+            <button type="button" class="admin-emoji">☀️</button>
+            <button type="button" class="admin-emoji">💚</button>
+            <button type="button" class="admin-emoji">✨</button>
           </div>
 
           <div id="adminStickerPicker" style="display:none;margin-top:8px;padding:10px;border-radius:14px;background:#FBF8F5;border:1px solid #eee;display:none;gap:8px;flex-wrap:wrap">
@@ -673,14 +687,10 @@ window.sendAdminSticker=(sticker)=>{
   window.sendAdminChat();
 };
 
-document.addEventListener("click",e=>{
-  const picker=document.getElementById("adminEmojiPicker");
-  if(!picker || !picker.contains(e.target)) return;
-  const value=e.target.textContent.trim();
-  if(!value || value.length>4) return;
+document.querySelectorAll(".admin-emoji").forEach(btn=>btn.addEventListener("click",()=>{
   const input=document.getElementById("adminChatText");
-  if(input){ input.value+=value; input.focus(); }
-});
+  if(input){ input.value+=btn.textContent.trim(); input.focus(); }
+}));
 
 document.addEventListener("keydown",e=>{
   const input=document.getElementById("adminChatText");
