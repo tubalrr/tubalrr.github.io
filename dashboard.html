@@ -23,7 +23,7 @@ main{flex:1;min-width:0;padding:28px 30px 100px}.content{max-width:1020px}.page-
 </style>
 </head>
 <body>
-<header class="topbar"><div class="topbar-inner"><div class="brand"><div class="logo">P</div><div><b>Payapang Isip</b><small>Personal Dashboard</small></div></div><div class="actions"><button class="btn btn-light" onclick="location.href='index.html'">← Back to Home</button><button class="btn btn-dark" onclick="logout()">Logout</button></div></div></header>
+<header class="topbar"><div class="topbar-inner"><div class="brand"><div class="logo">P</div><div><b>Payapang Isip</b><small>My Profile & Personal Space</small></div></div><div class="actions"><button class="btn btn-light" onclick="location.href='index.html'">← Back to Home</button><button class="btn btn-dark" onclick="logout()">Logout</button></div></div></header>
 <div class="shell">
 <aside class="sidebar"><nav class="nav" id="nav"></nav><div class="reminder"><b>🌿 Paalala</b><p>“Hindi mo kailangang ayusin lahat ngayon. Isang paghinga lang muna.”</p><div class="small">Payapang Isip • Wellness</div></div></aside>
 <main><div class="content" id="app"></div></main>
@@ -42,7 +42,7 @@ const affirmations=['Karapat-dapat akong maging payapa ngayong araw.','Hindi ko 
 const moods=[['😔','Mabigat'],['😕','Medyo'],['😐','Sakto'],['🙂','Magaan'],['😌','Payapa']];
 let state={page:'tahanan',mood:+localStorage.getItem('payapang_last_mood')||0,journals:JSON.parse(localStorage.getItem('payapang_journals')||'[]'),favorites:JSON.parse(localStorage.getItem('payapang_favorites')||'[1,3]'),community:JSON.parse(localStorage.getItem('payapang_community')||'[]'),chat:JSON.parse(localStorage.getItem('payapang_chat')||'[]'),cart:JSON.parse(localStorage.getItem('payapang_cart')||'[]'),affirm:0,breathing:false,phase:'ready',seconds:60,cycles:0};
 if(!state.journals.length){state.journals=[{id:'1',text:'Ngayong araw, pinili kong huminga ng malalim bago sumagot. Hindi ko na-control lahat, pero na-control ko sarili ko.',mood:4,date:Date.now()-86400000},{id:'2',text:'Ang bigat kanina. Pero sinulat ko lahat dito. Gumaan pakiramdam.',mood:2,date:Date.now()-172800000}];save()}
-const navItems=[['tahanan','⌂','Tahanan','Ngayon'],['journal','✎','Journal','entries'],['paborito','♥','Paborito','saved'],['hinga','◌','Hinga','4-7-8'],['progress','↗','Progress','araw'],['community','☀','Community','share'],['chat','◉','Global Chat','live'],['news','▣','News','updates'],['shop','🛍','Shop','items']];
+const navItems=[['tahanan','👤','Profile','Overview'],['journal','✎','Journal','entries'],['paborito','♥','Paborito','saved'],['hinga','◌','Hinga','4-7-8'],['progress','↗','Progress','araw']];
 function save(){localStorage.setItem('payapang_journals',JSON.stringify(state.journals));localStorage.setItem('payapang_favorites',JSON.stringify(state.favorites));localStorage.setItem('payapang_last_mood',state.mood);localStorage.setItem('payapang_community',JSON.stringify(state.community));localStorage.setItem('payapang_chat',JSON.stringify(state.chat));localStorage.setItem('payapang_cart',JSON.stringify(state.cart))}
 function streak(){return Math.min(state.journals.length,12)}
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800)}
@@ -79,7 +79,7 @@ function sendChat(){let el=document.getElementById('chatText'),text=el?.value.tr
 function addCart(id){if(!state.cart.includes(id))state.cart.push(id);save();toast('Added to cart 🛍');render()}
 function checkout(){if(!state.cart.length)return toast('Wala pang item sa cart');toast('Demo checkout • connect payment gateway next')}
 
-function render(){renderNav();let out=state.page==='tahanan'?home():state.page==='journal'?journal():state.page==='paborito'?favorites():state.page==='hinga'?breathing():state.page==='progress'?progress():state.page==='community'?community():state.page==='chat'?chat():state.page==='news'?news():shop();document.getElementById('app').innerHTML=out;const qt=document.getElementById('quickText');if(qt){qt.addEventListener('input',()=>document.getElementById('count').textContent=qt.value.length+' characters')}}
+function render(){renderNav();let out=state.page==='tahanan'?home():state.page==='journal'?journal():state.page==='paborito'?favorites():state.page==='hinga'?breathing():progress();document.getElementById('app').innerHTML=out;const qt=document.getElementById('quickText');if(qt){qt.addEventListener('input',()=>document.getElementById('count').textContent=qt.value.length+' characters')}}
 function setMood(m){state.mood=m;save();toast('Mood saved 🌿');render()}
 function addJournal(id){let el=document.getElementById(id),text=el?.value.trim();if(!text)return toast('May gusto ka bang isulat muna?');state.journals.unshift({id:String(Date.now()),text,mood:state.mood||3,date:Date.now()});save();toast('Na-save sa Journal 🌿');render()}
 function deleteJournal(id){state.journals=state.journals.filter(j=>j.id!==id);save();toast('Deleted');render()}
