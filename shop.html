@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Payapang Isip Shop</title>
+<style>
+:root{--ink:#18342b;--paper:#f5f0e6;--card:#fffdf8;--sage:#7f9b85;--line:#d9dfd4;--accent:#e7b76b}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:var(--ink);background:linear-gradient(180deg,#eef4ed,var(--paper));min-height:100vh}
+header{position:sticky;top:0;z-index:5;background:rgba(255,253,248,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav{max-width:1250px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.brand{font-family:Georgia,serif;font-size:22px;font-weight:700}.brand span{color:var(--sage)}
+.btn{border:0;border-radius:999px;padding:11px 17px;font-weight:700;cursor:pointer}.btn-dark{background:var(--ink);color:#fff}.btn-light{background:#fff;border:1px solid var(--line);color:var(--ink)}
+main{max-width:1250px;margin:auto;padding:34px 22px 100px}.hero{padding:32px;border-radius:28px;background:linear-gradient(135deg,#dce9dc,#fff4df);border:1px solid var(--line);margin-bottom:24px}
+.hero h1{font:700 42px Georgia,serif;margin:0 0 10px}.hero p{max-width:680px;line-height:1.6}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}.filter{padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;cursor:pointer;font-weight:700}.filter.active{background:var(--ink);color:white}
+.search{flex:1;min-width:220px;padding:12px 15px;border:1px solid var(--line);border-radius:999px;background:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}.product{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:0 10px 28px rgba(24,52,43,.06)}
+.visual{height:190px;border-radius:14px;background:#edf3ec;display:grid;place-items:center;font-size:54px;overflow:hidden;margin-bottom:12px}.visual img{width:100%;height:100%;object-fit:cover}.video{width:100%;height:190px;border-radius:14px;background:#111;margin-bottom:12px}.audio{width:100%;margin-top:12px}
+.tag{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--sage)}h3{font:700 21px Georgia,serif;margin:8px 0}.desc{font-size:13px;line-height:1.5;opacity:.72;min-height:38px}.bottom{display:flex;justify-content:space-between;align-items:center;margin-top:14px;gap:8px}.price{font-weight:800;font-size:18px}.empty{text-align:center;padding:70px 20px;background:#fffdf8;border:1px dashed var(--line);border-radius:22px}
+.cart{position:fixed;right:22px;bottom:22px;background:var(--ink);color:#fff;padding:13px 18px;border-radius:999px;box-shadow:0 12px 30px rgba(0,0,0,.2);font-weight:700}
+@media(max-width:600px){.hero h1{font-size:32px}.nav{padding:12px}.brand{font-size:18px}main{padding:20px 14px}}
+</style>
+</head>
+<body>
+<header><div class="nav"><div class="brand">Payapang <span>Isip</span> 🛍️</div><div><button class="btn btn-light" onclick="location.href='index.html'">← Back to Home</button></div></div></header>
+<main>
+<section class="hero"><div class="tag">PAYAPANG ISIP DIGITAL SHOP</div><h1>Mga bagay na puwedeng dalhin sa iyong tahimik na oras.</h1><p>Images, relaxing audio, videos, at digital files. Ang products dito ay direktang kinukuha mula sa Firebase Firestore.</p></section>
+<div class="toolbar">
+<input id="search" class="search" placeholder="🔎 Search products..." oninput="renderProducts()">
+<button class="filter active" data-type="all" onclick="setFilter('all',this)">All</button>
+<button class="filter" data-type="image" onclick="setFilter('image',this)">🖼️ Images</button>
+<button class="filter" data-type="audio" onclick="setFilter('audio',this)">🎵 Audio</button>
+<button class="filter" data-type="video" onclick="setFilter('video',this)">🎬 Videos</button>
+<button class="filter" data-type="file" onclick="setFilter('file',this)">📁 Files</button>
+</div>
+<div id="products" class="grid"></div>
+</main>
+<div class="cart">🛒 Cart: <span id="cartCount">0</span></div>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {getFirestore,collection,getDocs,query,orderBy} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
+ authDomain:"payapang-isip.firebaseapp.com",
+ projectId:"payapang-isip",
+ storageBucket:"payapang-isip.firebasestorage.app",
+ messagingSenderId:"901078398408",
+ appId:"1:901078398408:web:1f4c5e5794f96801f57cfd"
+};
+const app=initializeApp(firebaseConfig),db=getFirestore(app);
+let products=[],filter="all",cart=JSON.parse(localStorage.getItem("payapang_cart")||"[]");
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function typeOf(p){return String(p.type||"image").toLowerCase()}
+function mediaOf(p){return p.media||p.image||""}
+
+function media(p){
+ const t=typeOf(p),u=mediaOf(p);
+ if(t==="image")return `<div class="visual">${u?`<img src="${esc(u)}" alt="">`:"🖼️"}</div>`;
+ if(t==="audio")return `<div class="visual">🎵</div>${u?`<audio class="audio" controls src="${esc(u)}"></audio>`:""}`;
+ if(t==="video")return u?`<video class="video" controls src="${esc(u)}"></video>`:`<div class="visual">🎬</div>`;
+ return `<div class="visual">📁</div>${u?`<a class="btn btn-light" style="display:inline-block;text-decoration:none" href="${esc(u)}" target="_blank">Open File</a>`:""}`;
+}
+function card(p){
+ const id=String(p.id);
+ return `<article class="product">${media(p)}<div class="tag">${esc(typeOf(p).toUpperCase())}${p.category?" • "+esc(p.category):""}</div><h3>${esc(p.name||"Untitled Product")}</h3><div class="desc">${esc(p.description||"No description")}</div><div class="bottom"><div class="price">₱${Number(p.price||0).toLocaleString("en-PH")}</div><button class="btn btn-dark" onclick="addCart('${id}')">${cart.includes(id)?"Added ✓":"Add to Cart"}</button></div></article>`;
+}
+window.setFilter=(v,el)=>{filter=v;document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));el.classList.add("active");renderProducts()}
+window.addCart=id=>{if(!cart.includes(id))cart.push(id);localStorage.setItem("payapang_cart",JSON.stringify(cart));document.getElementById("cartCount").textContent=cart.length;renderProducts()}
+window.renderProducts=()=>{
+ const q=document.getElementById("search").value.toLowerCase();
+ const list=products.filter(p=>(filter==="all"||typeOf(p)===filter)&&(`${p.name||""} ${p.description||""} ${p.category||""}`).toLowerCase().includes(q));
+ document.getElementById("products").innerHTML=list.length?list.map(card).join(""):`<div class="empty" style="grid-column:1/-1">🛍️<h3>Wala pang products</h3><p>Mag-add ng product gamit ang Admin Panel.</p></div>`;
+ document.getElementById("cartCount").textContent=cart.length;
+}
+async function load(){
+ try{
+  let snap;
+  try{snap=await getDocs(query(collection(db,"products"),orderBy("createdAt","desc")))}
+  catch(e){snap=await getDocs(collection(db,"products"))}
+  products=snap.docs.map(d=>({id:d.id,...d.data()}));renderProducts();
+ }catch(e){console.error(e);document.getElementById("products").innerHTML=`<div class="empty" style="grid-column:1/-1"><h3>Hindi ma-load ang products</h3><p>Check Firebase Firestore Rules at connection.</p></div>`}
+}
+load();
+</script>
+</body>
+</html>
