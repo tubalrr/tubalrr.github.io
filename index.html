@@ -1,293 +1,193 @@
-<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Home • ULTRA | CTRLZONE</title>
-<link rel="stylesheet" href="css/style.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-</head><body>
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
-<aside class="sidebar">
-  <a class="brand" href="index.html"><span style="color:#00e5ff">CTRL</span>ZONE</a>
-  <nav>
-  <a href="index.html" class="active" style="background:rgba(0,229,255,0.12);color:#00e5ff;border-color:rgba(0,229,255,0.2)">⌂ <span>Home</span></a>
-  <a href="games.html">🎮 <span>Games</span></a>
-  <a href="streams.html">🔴 <span>Live</span></a>
-  <a href="videos.html">▶ <span>Videos</span></a>
-  <a href="community.html">👥 <span>Community</span></a>
-  <a href="events.html">🏆 <span>Events</span></a>
-  <a href="news.html">📰 <span>News</span></a>
-  <a href="gallery.html">🖼 <span>Gallery</span></a>
-  <a href="spin.html">🎡 <span>CTRL Spin</span></a>
-</nav>
-  <div class="side-bottom"><a href="login.html" data-auth-login>🔐 Login</a><a href="dashboard.html" data-auth-user style="display:none">👤 My Account</a></div>
-</aside>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Payapang Isip • Nature AI Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800;9..144,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css">
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:#0B1A12;color:#E8EDE8;overflow-x:hidden}
+.serif{font-family:Fraunces,serif}
+.kain-top{position:fixed;top:0;left:0;right:0;z-index:100;height:70px;display:flex;align-items:center;padding:0 28px;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent);backdrop-filter:blur(4px)}
+.kain-top-inner{width:100%;max-width:1400px;margin:auto;display:flex;justify-content:space-between;align-items:center}
+.kain-brand{font-family:Fraunces,serif;font-size:21px;font-weight:900;letter-spacing:.04em;color:#fff;text-decoration:none;display:flex;gap:2px}
+.kain-brand span{color:#D4A259}
+.kain-nav{display:flex;gap:22px;align-items:center}
+.kain-nav a{color:rgba(255,255,255,.85);text-decoration:none;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;transition:.2s}
+.kain-nav a:hover,.kain-nav a.active{color:#fff;border-bottom:1.5px solid #D4A259;padding-bottom:2px}
+.btn-kain{border:0;border-radius:6px;padding:9px 14px;font-weight:800;font-size:11px;cursor:pointer;letter-spacing:.04em;transition:.2s}
+.btn-ghost{border:1.5px solid rgba(255,255,255,.4);background:transparent;color:#fff}
+.btn-gold{background:#D4A259;color:#111}
+.kain-hero{position:relative;min-height:92vh;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;background:#0D1E14;overflow:hidden}
+.kain-hero-bg{position:absolute;inset:0;background:radial-gradient(900px 600px at 20% 30%, rgba(212,162,89,.18), transparent 60%), radial-gradient(700px 500px at 80% 70%, rgba(45,90,61,.35), transparent 70%), linear-gradient(105deg,#0B1A12 0%, #122A1B 45%, #0D1E14 100%);z-index:1}
+.kain-hero-bg:after{content:"";position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1600&q=80') center/cover no-repeat;opacity:.26;mix-blend-mode:overlay}
+.kain-hero-content{position:relative;z-index:2;padding:120px 28px 60px 44px}
+.kicker{font-size:10px;letter-spacing:.32em;font-weight:800;color:#D4A259;text-transform:uppercase;margin-bottom:14px;display:flex;gap:10px;align-items:center}
+.kicker:after{content:"";width:30px;height:1px;background:#D4A259;display:inline-block}
+.kain-hero h1{font-family:Fraunces,serif;font-size:clamp(42px,5.8vw,80px);line-height:.9;margin:0;color:#fff;font-weight:900;letter-spacing:-.02em}
+.kain-hero h1 em{font-style:normal;color:#D4A259}
+.kain-hero h2{font-family:Fraunces,serif;font-size:clamp(26px,3.2vw,42px);line-height:1.05;margin:8px 0 0;color:#fff;font-weight:700}
+.kain-hero h2 span{color:#D4A259}
+.desc{margin:14px 0 0;max-width:460px;color:rgba(255,255,255,.72);line-height:1.7;font-size:12.5px}
+.hero-btns{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+.btn-hero{padding:13px 20px;border-radius:6px;font-weight:800;font-size:11px;letter-spacing:.04em;cursor:pointer;transition:.2s;border:0}
+.btn-hero-gold{background:#D4A259;color:#111}
+.btn-hero-outline{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.5)}
+.kain-hero-visual{position:relative;z-index:2;height:100%;display:grid;place-items:center;padding:90px 28px 40px}
+.bowl-wrap{position:relative;width:min(500px,82vw);aspect-ratio:1/1;display:grid;place-items:center}
+.bowl-wrap:before{content:"";position:absolute;width:135%;height:135%;background:radial-gradient(circle, rgba(212,162,89,.2) 0%, transparent 70%);border-radius:50%}
+.bowl-img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;box-shadow:0 30px 80px rgba(0,0,0,.5), 0 0 0 10px rgba(255,255,255,.04);transform:rotate(-6deg);transition:.6s}
+/* FIXED BOTTOM AREA - NOT EMPTY */
+.main-light{background:#F6F8F3;color:#1A2E22;padding:0}
+.features-dark{background:linear-gradient(180deg,#0B1A12 0%, #0E2216 100%);padding:18px 28px 10px}
+.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:1400px;margin:auto}
+.feat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:16px;backdrop-filter:blur(10px);transition:.2s}
+.feat:hover{background:rgba(255,255,255,.1);transform:translateY(-3px)}
+.feat .ico{width:36px;height:36px;border-radius:10px;background:rgba(212,162,89,.15);display:grid;place-items:center;font-size:18px;margin-bottom:8px}
+.feat b{font-family:Fraunces;font-size:14px;color:#fff;display:block}
+.feat span{font-size:11px;color:rgba(255,255,255,.65);line-height:1.5;display:block;margin-top:4px}
+.daily-strip{max-width:1400px;margin:16px auto;padding:0 28px}
+.daily-card{background:linear-gradient(135deg,#1E3A26,#152A1C);border:1px solid rgba(212,162,89,.2);color:#fff;border-radius:16px;padding:18px 20px;display:flex;gap:16px;align-items:center;justify-content:space-between}
+.shell-light{max-width:1400px;margin:0 auto;padding:20px 28px 50px;display:grid;grid-template-columns:260px 1fr;gap:18px;background:#F6F8F3}
+.sidebar{position:sticky;top:90px;height:fit-content;display:flex;flex-direction:column;gap:12px}
+.nav-menu{display:flex;flex-direction:column;gap:7px}
+.nav-link{display:flex;gap:10px;align-items:center;padding:11px 12px;border-radius:10px;background:#fff;border:1px solid rgba(33,75,56,.1);text-decoration:none;color:#1A2E22;font-weight:700;font-size:13px}
+.nav-link.active{background:#1A2E22;color:#fff}
+.content-card{background:#fff;border:1px solid rgba(33,75,56,.1);border-radius:16px;padding:0;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.05)}
+.content-head{padding:16px 18px;border-bottom:1px solid rgba(33,75,56,.08);display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,#fff,#FBFDF8)}
+.app-inner{padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.app-box{background:#F6F8F3;border:1px solid rgba(33,75,56,.08);border-radius:12px;padding:14px}
+.auth-backdrop{position:fixed;inset:0;background:rgba(5,15,10,.7);backdrop-filter:blur(10px);z-index:9999;display:none;align-items:center;justify-content:center;padding:16px}
+.auth-backdrop.show{display:flex}
+.auth-modal{width:min(460px,94vw);background:#FFFEFB;border-radius:18px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+#toast{position:fixed;right:16px;bottom:16px;background:#1A2E22;color:#fff;padding:12px 14px;border-radius:10px;display:none;z-index:9999;font-size:12px}
+@media(max-width:1000px){.kain-hero{grid-template-columns:1fr}.kain-hero-visual{display:none}.kain-nav{display:none}.features-grid{grid-template-columns:repeat(2,1fr)}.shell-light{grid-template-columns:1fr}.sidebar{position:relative;top:0}.app-inner{grid-template-columns:1fr}}
+@media(max-width:520px){.features-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
 
-<main>
-<header class="topbar"><button class="menu-btn" onclick="toggleMenu()">☰</button><div style="display:flex;gap:12px;align-items:center"><div class="status">● ULTRA • LIVE • REAL-TIME</div><div id="globalNotifBell" style="position:relative;cursor:pointer;display:none"><span style="font-size:18px">🔔</span><span id="globalNotifBadge" style="position:absolute;top:-6px;right:-6px;background:#ff2e93;color:white;font-size:9px;font-weight:800;padding:2px 6px;border-radius:100px;display:none">NEW</span></div></div><a href="dashboard.html" class="profile"><span data-user-avatar>G</span></a></header>
-
-<section class="ultra-hero">
-  <div class="ultra-hero-bg"></div>
-  <div class="ultra-hero-inner">
-    <div>
-      <div class="ultra-badge"><div class="dot"></div> PHILIPPINES #1 GAMING HUB • EST 2026</div>
-      <h1>ENTER THE <span class="grad">CTRLZONE</span></h1>
-      <p>The ultimate all-in-one gaming platform. Play, watch, connect, and dominate with 12,000+ gamers nationwide.</p>
-      <div class="actions" style="margin-top:24px">
-        <a class="btn" href="games.html">🎮 EXPLORE GAMES</a>
-        <a class="btn ghost" href="streams.html">🔴 WATCH LIVE</a>
-        <a class="btn ghost" href="community.html">👥 JOIN COMMUNITY</a>
-      </div>
-      <div class="ultra-stats">
-        <div class="ultra-stat"><b class="cyan" id="realTotalPosts">--</b><span>Total Posts</span></div>
-        <div class="ultra-stat"><b class="purple" id="realTotalUsers">--</b><span>Real Gamers</span></div>
-        <div class="ultra-stat"><b class="pink" id="realOnlineNow">LIVE</b><span>Community Feed</span></div>
-      </div>
+<div class="kain-top">
+  <div class="kain-top-inner">
+    <a href="./index.html" class="kain-brand">PAYAPANG <span>&</span> ISIP.</a>
+    <div class="kain-nav">
+      <a href="./index.html" class="active">Home</a>
+      <a href="./global-chat.html">Community</a>
+      <a href="./shop.html">Shop</a>
+      <a href="./dashboard.html">Dashboard</a>
+      <a href="#about">About</a>
     </div>
-    <div class="ultra-right">
-      <div class="ultra-preview-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-          <b style="font-size:12px;color:white;letter-spacing:1px">🔥 TRENDING NOW</b>
-          <span style="font-size:10px;color:var(--green);background:rgba(0,255,136,0.1);padding:4px 8px;border-radius:100px">LIVE</span>
-        </div>
-        <div style="display:grid;gap:10px">
-          <div style="display:flex;gap:10px;align-items:center;background:rgba(255,255,255,0.03);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.06)">
-            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#00e5ff,#7c3aed);display:grid;place-items:center;font-size:16px">🎮</div>
-            <div style="flex:1"><div style="font-size:13px;color:white;font-weight:600">Mobile Legends</div><div style="font-size:11px;color:#6b7fa0" id="mlbbCount">Loading...</div></div>
-            <div style="width:8px;height:8px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green)"></div>
-          </div>
-          <div style="display:flex;gap:10px;align-items:center;background:rgba(255,255,255,0.03);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.06)">
-            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#ff2e93,#7c3aed);display:grid;place-items:center;font-size:16px">🔥</div>
-            <div style="flex:1"><div style="font-size:13px;color:white;font-weight:600">PUBG Mobile</div><div style="font-size:11px;color:#6b7fa0" id="pubgCount">Loading...</div></div>
-            <div style="width:8px;height:8px;background:var(--green);border-radius:50%"></div>
-          </div>
-          <div style="display:flex;gap:10px;align-items:center;background:rgba(255,255,255,0.03);padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,0.06)">
-            <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#ff2e93);display:grid;place-items:center;font-size:16px">👑</div>
-            <div style="flex:1"><div style="font-size:13px;color:white;font-weight:600">Honor of Kings</div><div style="font-size:11px;color:#6b7fa0" id="hokCount">Loading...</div></div>
-            <div style="width:8px;height:8px;background:var(--green);border-radius:50%"></div>
-          </div>
-        </div>
-        <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center">
-          <span style="font-size:11px;color:#6b7fa0">Community XP • Level up</span>
-          <span style="font-size:11px;color:var(--cyan);font-weight:700">1,240 XP →</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div id="homeVideoBanner" style="display:none;max-width:1280px;margin:0 auto;padding:0 24px"><div style="background:linear-gradient(90deg,rgba(0,229,255,0.15),rgba(124,58,237,0.15));border:1px solid rgba(0,229,255,0.3);border-radius:14px;padding:14px 16px;margin:16px 0;display:flex;justify-content:space-between;align-items:center"><div style="display:flex;gap:12px;align-items:center"><div style="width:36px;height:36px;border-radius:10px;background:#1877f2;display:grid;place-items:center;font-size:18px">📘</div><div><div style="font-size:13px;color:white;font-weight:700" id="homeBannerTitle">New Video from CtrlZone!</div><div style="font-size:11px;color:#6b7fa0" id="homeBannerDesc">Admin posted new FB video</div></div></div><div style="display:flex;gap:8px"><a href="videos.html" style="background:var(--cyan);color:#000;padding:8px 14px;border-radius:8px;text-decoration:none;font-size:12px;font-weight:700">Watch →</a><button onclick="this.parentElement.parentElement.parentElement.style.display='none'; localStorage.setItem('lastSeenVideo', Date.now())" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:white;padding:8px 12px;border-radius:8px;font-size:11px;cursor:pointer">X</button></div></div></div>
-<div class="ultra-layout" style="grid-template-columns:1fr">
-  <div>
-    <div class="ultra-section-title">🎮 FEATURED GAMES • MOST PLAYED</div>
-    <div class="grid cards" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">
-      <article class="card" style="position:relative;overflow:hidden">
-        <div style="position:absolute;top:12px;right:12px;background:rgba(0,229,255,0.15);border:1px solid rgba(0,229,255,0.3);color:var(--cyan);padding:4px 10px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:0.5px">🔥 HOT</div>
-        <div class="game-icon">🎮</div>
-        <h3>Mobile Legends</h3>
-        <p>5v5 MOBA madness. Join <span id="realMLBBPlayers">real</span> players in ranked battles, clutch plays, and squad up for Mythic push.</p>
-        <div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap">
-          <span class="ultra-tag cyan">#MOBA</span><span class="ultra-tag green"><span id="realMLBBOnline">Live</span></span>
-        </div>
-        <div style="margin-top:16px;display:flex;gap:8px">
-          <a href="games.html" class="btn small" style="flex:1;text-align:center">PLAY NOW</a>
-          <a href="community.html" class="btn ghost small" style="flex:1;text-align:center">JOIN SQUAD</a>
-        </div>
-      </article>
-      <article class="card" style="position:relative;overflow:hidden">
-        <div style="position:absolute;top:12px;right:12px;background:rgba(255,46,147,0.15);border:1px solid rgba(255,46,147,0.3);color:var(--pink);padding:4px 10px;border-radius:100px;font-size:10px;font-weight:700">⚡ NEW META</div>
-        <div class="game-icon">👑</div>
-        <h3>Honor of Kings</h3>
-        <p>Next-gen MOBA taking PH by storm. Learn new heroes, master builds, and dominate the King's Rift.</p>
-        <div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap">
-          <span class="ultra-tag purple">#HOK</span><span class="ultra-tag cyan">TRENDING</span>
-        </div>
-        <div style="margin-top:16px;display:flex;gap:8px">
-          <a href="games.html" class="btn small" style="flex:1;text-align:center">EXPLORE</a>
-          <a href="videos.html" class="btn ghost small" style="flex:1;text-align:center">WATCH GUIDES</a>
-        </div>
-      </article>
-      <article class="card" style="position:relative;overflow:hidden">
-        <div style="position:absolute;top:12px;right:12px;background:rgba(0,255,136,0.12);border:1px solid rgba(0,255,136,0.25);color:var(--green);padding:4px 10px;border-radius:100px;font-size:10px;font-weight:700">🏆 ESPORTS</div>
-        <div class="game-icon">🔫</div>
-        <h3>PUBG Mobile</h3>
-        <p>Battle royale intensity. No-recoil guides, M416 tips, and squad tactics from PH's top fraggers.</p>
-        <div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap">
-          <span class="ultra-tag purple">#BATTLE ROYALE</span><span class="ultra-tag green">#TIPS</span>
-        </div>
-        <div style="margin-top:16px;display:flex;gap:8px">
-          <a href="games.html" class="btn small" style="flex:1;text-align:center">DROP IN</a>
-          <a href="streams.html" class="btn ghost small" style="flex:1;text-align:center">WATCH PROS</a>
-        </div>
-      </article>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px">
-      <div class="ultra-side-card" style="background:linear-gradient(135deg,rgba(0,229,255,0.08),rgba(124,58,237,0.08));border-color:rgba(0,229,255,0.2)">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div class="ultra-side-title" style="margin:0">🔴 LIVE NOW • 24 STREAMS</div>
-          <a href="streams.html" style="font-size:11px;color:var(--cyan);text-decoration:none;font-weight:700">VIEW ALL →</a>
-        </div>
-        <div style="display:grid;gap:8px" id="realLiveNow">
-          <div style="font-size:12px;color:#6b7fa0;padding:12px;text-align:center">⏳ Loading real gamers...</div>
-        </div>
-      </div>
-      <div class="ultra-side-card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <div class="ultra-side-title" style="margin:0">💬 COMMUNITY FEED</div>
-          <a href="community.html" style="font-size:11px;color:var(--cyan);text-decoration:none;font-weight:700">OPEN →</a>
-        </div>
-        <div style="display:grid;gap:10px" id="realCommunityFeed">
-          <div style="font-size:12px;color:#6b7fa0;padding:12px;text-align:center">⏳ Loading real posts...</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ultra-section-title">🏆 WHY CTRLZONE?</div>
-    <div class="stats">
-      <div class="stat"><b id="statPosts">--</b><span>Total Posts</span><small style="display:block;margin-top:6px;font-size:11px;color:#5a6f90">Real community posts</small></div>
-      <div class="stat"><b id="statUsers">--</b><span>Real Gamers</span><small style="display:block;margin-top:6px;font-size:11px;color:#5a6f90">Verified accounts</small></div>
-      <div class="stat"><b id="statToday">--</b><span>Today</span><small style="display:block;margin-top:6px;font-size:11px;color:#5a6f90">Posts today</small></div>
-      <div class="stat"><b>100%</b><span>Pinoy Made</span><small style="display:block;margin-top:6px;font-size:11px;color:#5a6f90">Built for PH gamers</small></div>
+    <div class="kain-actions" id="accountActions">
+      <button class="btn-kain btn-ghost" onclick="openAuth('login')">Login</button>
+      <button class="btn-kain btn-gold" onclick="openAuth('signup')">✨ Create Account</button>
     </div>
   </div>
 </div>
 
-<footer>© 2026 CTRLZONE ULTRA — Built for gamers, by gamers. Play. Watch. Connect. Dominate.</footer>
-</main><script src="js/script.js"></script><script type="module" src="js/firebase-auth.js"></script>
+<div class="kain-hero">
+  <div class="kain-hero-bg"></div>
+  <div class="kain-hero-content">
+    <div class="kicker">WELCOME TO</div>
+    <h1>PAYAPANG <em>&</em> ISIP.</h1>
+    <h2>Natural Calm.<br>Global <span>Peace.</span></h2>
+    <p class="desc">Experience Filipino calm and nature-inspired healing — a quiet digital forest where you can breathe, reflect, and find your center again. Prepared with presence.</p>
+    <div class="hero-btns">
+      <button class="btn-hero btn-hero-gold" onclick="document.querySelector('.main-light').scrollIntoView({behavior:'smooth'})">Explore Nature</button>
+      <button class="btn-hero btn-hero-outline" onclick="location.href='./global-chat.html'">Reserve a Moment</button>
+    </div>
+  </div>
+  <div class="kain-hero-visual">
+    <div class="bowl-wrap">
+      <video autoplay muted loop playsinline class="bowl-img" poster="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800">
+        <source src="misty_forest_sunbeams.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+
+<div class="main-light">
+  <div class="features-dark">
+    <div class="features-grid">
+      <div class="feat" onclick="document.querySelector('.shell-light').scrollIntoView({behavior:'smooth'})"><div class="ico">🧘</div><b>Huminga Muna</b><span>Magpahinga at bigyan ang sarili ng ilang tahimik na sandali. 5-min breathing exercise.</span></div>
+      <div class="feat" onclick="location.href='./global-chat.html'"><div class="ico">🌍</div><b>Global Chat</b><span>Kumonekta sa community nang real-time. Real users, walang fake, LIVE presence.</span></div>
+      <div class="feat"><div class="ico">💭</div><b>Daily Reminder</b><span>Isang munting paalala na maaaring kailangan mong marinig ngayon. Bagong araw, bagong pag-asa.</span></div>
+      <div class="feat" onclick="document.querySelector('.shell-light').scrollIntoView({behavior:'smooth'})"><div class="ico">🌲</div><b>Explore Nature</b><span>Tuklasin ang calming space, AI nature videos, at gubat na digital.</span></div>
+    </div>
+    <div class="daily-strip">
+      <div class="daily-card">
+        <div><div style="font-family:Fraunces;font-size:36px;line-height:.5;color:#D4A259">“</div><b style="font-family:Fraunces;font-size:18px">Hindi mo kailangang ayusin ang lahat ngayon.</b><div style="font-size:11px;opacity:.7;margin-top:4px">May mga araw na sapat nang magpahinga, huminga, at magpatuloy muli bukas. Dahan-dahan lang.</div></div>
+        <button style="white-space:nowrap;border:0;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer;background:#fff;color:#1A2E22;font-size:11px">🍃 Bagong Paalala</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shell-light" id="about">
+    <aside class="sidebar">
+      <div class="nav-menu">
+        <a href="./index.html" class="nav-link active">🏠 HomeNgayon</a>
+        <a href="./global-chat.html" class="nav-link">🌍 Global Chatlive</a>
+        <a href="./shop.html" class="nav-link">🛍️ Shopitems</a>
+        <a href="./dashboard.html" class="nav-link">👤 My Dashboardprofile</a>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(33,75,56,.1);border-radius:14px;padding:12px">
+        <b style="font-size:12px;font-family:Fraunces;cursor:pointer" onclick="location.href='./global-chat.html'">🌍 Global Chat • Live →</b>
+        <div style="margin:8px 0;font-size:11px;color:#6B8A7A;background:#F6F8F3;border-radius:8px;padding:8px">Real users, small box, no fake • 30s heartbeat</div>
+        <button onclick="location.href='./global-chat.html'" style="width:100%;padding:8px;border-radius:8px;background:#1A2E22;color:#fff;border:0;font-size:11px;font-weight:700">Open Chat →</button>
+      </div>
+      <div style="background:#fff;border:1px solid rgba(33,75,56,.1);border-radius:14px;padding:12px"><b style="font-family:Fraunces;font-size:12px">🌿 Paalala ng Gubat</b><p style="font-size:11px;color:#6B8A7A;line-height:1.6;margin:6px 0 0">Parang puno — hindi mo kailangang madaliin ang paglaki. Mag-ugat ka muna nang malalim. Payapa lang.</p></div>
+    </aside>
+    <main class="content-card">
+      <div class="content-head">
+        <div><b style="font-family:Fraunces">Payapang Isip • Ngayong Araw 🌲</b><div style="font-size:11px;color:#6B8A7A">Huminga, magpahinga, at magpatuloy — dahan-dahan lang.</div></div>
+        <span style="background:#E8F5E9;padding:5px 10px;border-radius:999px;font-size:10px;font-weight:800">🌿 LIVE</span>
+      </div>
+      <div class="app-inner">
+        <div class="app-box"><b style="font-family:Fraunces;font-size:14px">🧘 5-Minute Hinga</b><p style="font-size:11px;color:#6B8A7A;line-height:1.6;margin:6px 0">Inhale 4s, hold 4s, exhale 6s. Ulitin ng 5 beses. Parang hangin sa gubat.</p><button style="margin-top:8px;padding:8px 12px;border-radius:8px;background:#1A2E22;color:#fff;border:0;font-size:11px;font-weight:700">Simulan →</button></div>
+        <div class="app-box"><b style="font-family:Fraunces;font-size:14px">💭 Daily Reminder</b><p style="font-size:11px;color:#6B8A7A;line-height:1.6;margin:6px 0">“Hindi mo kailangang maging perpekto para maging sapat. Nandito ka pa, at sapat na iyon.”</p><button style="margin-top:8px;padding:8px 12px;border-radius:8px;background:#fff;border:1px solid rgba(33,75,56,.15);font-size:11px;font-weight:700">Bagong Paalala →</button></div>
+        <div class="app-box"><b style="font-family:Fraunces;font-size:14px">🌍 Community Check-in</b><p style="font-size:11px;color:#6B8A7A;line-height:1.6;margin:6px 0">May <span id="onlineCountInline">0</span> na online ngayon. Kumusta ka? Share ng payapang mensahe.</p><button onclick="location.href='./global-chat.html'" style="margin-top:8px;padding:8px 12px;border-radius:8px;background:#D4A259;color:#111;border:0;font-size:11px;font-weight:800">Pumunta sa Chat →</button></div>
+        <div class="app-box"><b style="font-family:Fraunces;font-size:14px">🌲 Nature Video</b><p style="font-size:11px;color:#6B8A7A;line-height:1.6;margin:6px 0">Misty forest, ghibli-style AI video. Naka-external URL para walang 6MB limit sa GitHub.</p><video autoplay muted loop playsinline style="width:100%;height:80px;object-fit:cover;border-radius:8px;margin-top:6px"><source src="misty_forest_sunbeams.mp4" type="video/mp4"></video></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div id="toast"></div>
+<div class="auth-backdrop" id="authBackdrop"><div class="auth-modal">
+  <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:Fraunces;font-size:18px">Payapang Isip • Account</b><button onclick="closeAuth()" style="border:0;background:transparent;font-size:26px;cursor:pointer">×</button></div>
+  <div style="margin:12px 0;display:flex;background:#EEF3EC;border-radius:10px;padding:4px"><button id="tabLogin" class="btn-kain" style="flex:1;background:#fff" onclick="setAuthMode('login')">Login</button><button id="tabSignup" class="btn-kain" style="flex:1;background:transparent" onclick="setAuthMode('signup')">Create</button></div>
+  <div id="authMsg" style="display:none;padding:8px;border-radius:8px;font-size:12px;margin-bottom:8px"></div>
+  <input id="authEmail" type="email" placeholder="Email" style="width:100%;padding:11px;border:1.5px solid #dce5dc;border-radius:8px;margin:4px 0">
+  <input id="authPassword" type="password" placeholder="Password (6+ chars)" style="width:100%;padding:11px;border:1.5px solid #dce5dc;border-radius:8px;margin:4px 0">
+  <button id="authSubmit" onclick="submitAuth()" style="width:100%;padding:11px;border-radius:8px;background:#1A2E22;color:#fff;border:0;font-weight:800;margin-top:6px">Sign In</button>
+  <button onclick="signInGoogle()" style="width:100%;padding:10px;border-radius:8px;background:#fff;border:1.5px solid #dce5dc;font-weight:700;margin-top:8px">🌐 Continue with Google</button>
+</div></div>
+
+<script type="module" src="./script.js"></script>
 <script type="module">
-// REALTIME HOMEPAGE - NO FAKE NAMES - LOCKED DESIGN
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDZ9dqwfUbKGSNq9YK96voy-vUiC-dkg5c",
-  authDomain: "ctrlzone-50db8.firebaseapp.com",
-  projectId: "ctrlzone-50db8",
-  storageBucket: "ctrlzone-50db8.firebasestorage.app",
-  messagingSenderId: "961266035107",
-  appId: "1:961266035107:web:03c628e259d317013b9216"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-function escapeHTML(t){return String(t||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
-
-const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(50));
-
-onSnapshot(postsQuery, snapshot => {
-  const posts = snapshot.docs.map(d=>({id:d.id, ...d.data()}));
-  const total = posts.length;
-  
-  // Count unique users
-  const users = new Set(posts.map(p=>p.uid)).size;
-  
-  // Today count
-  const today = new Date(); today.setHours(0,0,0,0);
-  const todayCount = posts.filter(p=>{
-    try{ const d = p.createdAt?.toDate?.(); return d && d >= today; }catch(e){return false}
-  }).length;
-
-  // Update stats
-  const setText = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
-  setText("realTotalPosts", total);
-  setText("statPosts", total);
-  setText("realTotalUsers", users);
-  setText("statUsers", users);
-  setText("realOnlineNow", total>0 ? total+" POSTS" : "LIVE");
-  setText("statToday", todayCount);
-  setText("realMLBBPlayers", total>0 ? total : "0");
-  setText("realMLBBOnline", users>0 ? users+" gamers" : "Join now");
-  setText("mlbbCount", total>0 ? total+" posts" : "No posts yet");
-  setText("pubgCount", users>0 ? users+" gamers" : "Be first");
-  setText("hokCount", todayCount+" today");
-
-  // REAL COMMUNITY FEED - NO FAKE NAMES
-  const feedContainer = document.getElementById("realCommunityFeed");
-  if(feedContainer){
-    if(posts.length===0){
-      feedContainer.innerHTML = `<div style="font-size:13px;color:#6b7fa0;padding:12px;text-align:center">No posts yet. Be the first gamer to post! 🎮<br><a href="community.html" style="color:#00e5ff">Go to Community →</a></div>`;
-    } else {
-      feedContainer.innerHTML = posts.slice(0,3).map(p=>{
-        const name = escapeHTML(p.name||"CTRLZONE Gamer");
-        const content = escapeHTML((p.content||"").substring(0,60)) + ((p.content||"").length>60?"...":"");
-        return `<div style="font-size:13px;color:#c8d6ee;line-height:1.5;display:flex;gap:8px"><span>🔥</span><div><b style="color:white">${name}</b> ${content}<br><small style="color:#5a6f90;font-size:10px">${p.likes||0} likes • ${p.name ? "real user" : ""}</small></div></div>`;
-      }).join("") + `<div style="margin-top:10px"><a href="community.html" style="font-size:11px;color:var(--cyan);text-decoration:none;font-weight:700">VIEW ALL ${total} POSTS →</a></div>`;
-    }
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+import { getFirestore, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",authDomain:"payapang-isip.firebaseapp.com",projectId:"payapang-isip",storageBucket:"payapang-isip.firebasestorage.app",messagingSenderId:"901078398408",appId:"1:901078398408:web:1f4c5e5794f96801f57cfd"};
+const firebaseApp=initializeApp(firebaseConfig);const auth=getAuth(firebaseApp);const db=getFirestore(firebaseApp);const googleProvider=new GoogleAuthProvider();let mode="login";
+window.openAuth=(m="login")=>{document.getElementById("authBackdrop").classList.add("show");window.setAuthMode(m)};
+window.closeAuth=()=>document.getElementById("authBackdrop").classList.remove("show");
+window.setAuthMode=(m)=>{mode=m;const s=m==="signup";document.getElementById("tabLogin").style.background=!s?"#fff":"transparent";document.getElementById("tabSignup").style.background=s?"#fff":"transparent";document.getElementById("authSubmit").textContent=s?"Create Account":"Sign In"};
+function msg(t,ok=false){const b=document.getElementById("authMsg");b.textContent=t;b.style.display="block";b.style.background=ok?"#e9f7ec":"#fff0ee";b.style.color=ok?"#236438":"#a33"}
+window.submitAuth=async()=>{const e=document.getElementById("authEmail").value.trim(),p=document.getElementById("authPassword").value;if(!e||!p){msg("Email at password kailangan.");return}try{if(mode==="signup") await createUserWithEmailAndPassword(auth,e,p);else await signInWithEmailAndPassword(auth,e,p);msg("Success!",true);setTimeout(()=>closeAuth(),600)}catch(err){msg(err.message)}};
+window.signInGoogle=async()=>{try{await signInWithPopup(auth,googleProvider);closeAuth()}catch(e){msg(e.message)}};
+window.logoutAccount=async()=>{await signOut(auth)};
+onAuthStateChanged(auth,user=>{
+  const box=document.getElementById("accountActions");
+  if(user){
+    const name=user.displayName||user.email?.split("@")[0]||"Member";const photo=user.photoURL||"";
+    box.innerHTML=`<div style="display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.1);padding:4px 10px 4px 4px;border-radius:999px;border:1px solid rgba(255,255,255,.15)"><div style="width:28px;height:28px;border-radius:50%;background:#D4A259;display:grid;place-items:center;font-weight:800;color:#000">${photo?`<img src="${photo}" style="width:100%;height:100%;border-radius:50%">`:name[0].toUpperCase()}</div><div style="color:#fff;font-size:11px"><b>${name}</b><br><span style="cursor:pointer;opacity:.7" onclick="logoutAccount()">Logout</span></div></div>`;
+  }else{
+    box.innerHTML=`<button class="btn-kain btn-ghost" onclick="openAuth('login')">Login</button><button class="btn-kain btn-gold" onclick="openAuth('signup')">✨ Create Account</button>`;
   }
-
-  // REAL LIVE NOW - recent posters
-  const liveContainer = document.getElementById("realLiveNow");
-  if(liveContainer){
-    if(posts.length===0){
-      liveContainer.innerHTML = `<div style="font-size:12px;color:#6b7fa0;padding:12px;text-align:center">No active gamers yet.<br>Be first! <a href="login.html" style="color:#00e5ff">Login</a></div>`;
-    } else {
-      // Get unique recent users
-      const recentUsers = [];
-      const seen = new Set();
-      for(const p of posts){
-        if(!seen.has(p.uid) && recentUsers.length<3){
-          seen.add(p.uid);
-          recentUsers.push(p);
-        }
-      }
-      liveContainer.innerHTML = recentUsers.map(p=>{
-        const name = escapeHTML(p.name||"Gamer");
-        const initial = name.charAt(0).toUpperCase();
-        const content = escapeHTML((p.content||"").substring(0,25));
-        return `<div style="display:flex;gap:10px;align-items:center"><div class="ultra-post-avatar" style="width:32px;height:32px">${p.photoURL ? `<img src="${escapeHTML(p.photoURL)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : initial}</div><div style="flex:1"><div style="font-size:13px;color:white;font-weight:600">${name} • ${content}</div><div style="font-size:11px;color:#6b7fa0">Real post • ${p.likes||0} likes</div></div><div style="background:var(--green);color:#000;padding:4px 8px;border-radius:6px;font-size:9px;font-weight:800">REAL</div></div>`;
-      }).join("");
-    }
-  }
-}, err=>{
-  console.error("Realtime homepage error", err);
-  const setText = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
-  setText("realTotalPosts", "Error");
-  setText("statPosts", "Error");
 });
+const presQ=query(collection(db,"presence"),orderBy("lastSeen","desc"),limit(20));
+onSnapshot(presQ,snap=>{const el=document.getElementById("onlineCountInline");if(el) el.textContent=snap.size});
 </script>
-
-<script type="module">
-// GLOBAL NOTIFICATION FOR NEW VIDEOS - ON ALL PAGES
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-import { getFirestore, collection, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-const firebaseConfig2 = {
-  apiKey: "AIzaSyDZ9dqwfUbKGSNq9YK96voy-vUiC-dkg5c",
-  authDomain: "ctrlzone-50db8.firebaseapp.com",
-  projectId: "ctrlzone-50db8",
-  storageBucket: "ctrlzone-50db8.firebasestorage.app",
-  messagingSenderId: "961266035107",
-  appId: "1:961266035107:web:03c628e259d317013b9216"
-};
-
-try{
-  const app2 = initializeApp(firebaseConfig2, "notifApp");
-  const db2 = getFirestore(app2);
-  const vidsQuery = query(collection(db2, "videos"), orderBy("createdAt", "desc"), limit(1));
-  onSnapshot(vidsQuery, snap=>{
-    if(snap.empty) return;
-    const latest = snap.docs[0].data();
-    let latestTime = 0;
-    try{ latestTime = latest.createdAt?.toDate?.()?.getTime() || 0; }catch(e){}
-    const lastSeen = localStorage.getItem('lastSeenVideo');
-    const lastSeenTime = lastSeen ? parseInt(lastSeen) : 0;
-    if(latestTime > lastSeenTime && latestTime>0){
-      const bell = document.getElementById("globalNotifBell");
-      const badge = document.getElementById("globalNotifBadge");
-      const banner = document.getElementById("homeVideoBanner");
-      const bTitle = document.getElementById("homeBannerTitle");
-      const bDesc = document.getElementById("homeBannerDesc");
-      if(bell) bell.style.display="block";
-      if(badge) badge.style.display="block";
-      if(banner){
-        banner.style.display="block";
-        if(bTitle) bTitle.textContent = "🔔 New: "+(latest.title||"New Video from CtrlZone");
-        if(bDesc) bDesc.textContent = "Admin posted on Facebook • Click Watch to view";
-      }
-    }
-  });
-}catch(e){ console.log("Notif init", e); }
-</script>
-</body></html>
-
+</body>
+</html>
