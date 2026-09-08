@@ -102,3 +102,26 @@ if (document.readyState === 'loading') {
 } else {
   loadNews();
 }
+// === MENU FIX mo ===
+function toggleMenu(){
+  const sb = document.querySelector('.sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  sb.classList.toggle('show');
+  if(ov) ov.classList.toggle('show', sb.classList.contains('show'));
+}
+function closeMenu(){
+  const sb = document.querySelector('.sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  if(sb) sb.classList.remove('show');
+  if(ov) ov.classList.remove('show');
+}
+
+// === FIREBASE NEWS FIXED - tanggal yung data:text bug ===
+const FALLBACK = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800";
+function cleanImage(url){
+  if(!url) return FALLBACK;
+  url=String(url).trim();
+  if(url.startsWith("data:")) return FALLBACK; // ito yung mahabang data:text/html;base64... sa baba
+  if(url.includes("tse1.mm.bing.net")||url.includes("bing.net")||url.includes("...")) return FALLBACK;
+  return url;
+}
