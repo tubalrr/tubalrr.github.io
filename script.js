@@ -1,139 +1,81 @@
+/* PAYAPANG ISIP x NATURA - FIXED JS - with Firebase News filtered + menu fix */
+const navbar=document.getElementById("navbar");
+window.addEventListener("scroll",()=>navbar && navbar.classList.toggle("scrolled",scrollY>40));
 
-// Payapang Isip - Google Auth - JOIN COMMUNITY
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
-import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-
-const firebaseConfig = {
- apiKey:"AIzaSyCjYzrOvJuV1UN67aljAHQEK5LWCmtvMPw",
- authDomain:"payapang-isip.firebaseapp.com",
- projectId:"payapang-isip",
- storageBucket:"payapang-isip.firebasestorage.app",
- messagingSenderId:"901078398408",
- appId:"1:901078398408:web:1f4c5e5794f96801f57cfd"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ prompt: 'select_account' });
-
-let currentUser = null;
-
-// Save user to Firestore
-async function saveUser(user){
-  try{
-    await setDoc(doc(db, "users", user.uid), {
-      uid: user.uid,
-      name: user.displayName,
-      email: user.email,
-      photo: user.photoURL,
-      lastLogin: serverTimestamp(),
-      joinedAt: serverTimestamp()
-    }, { merge: true });
-  }catch(e){ console.log("save user error", e); }
+const menuBtn=document.querySelector(".menu-toggle");
+const menu=document.querySelector(".nav-menu");
+if(menuBtn && menu){
+  menuBtn.addEventListener("click",()=>menu.classList.toggle("active"));
+  document.querySelectorAll(".nav-menu a").forEach(a=>a.addEventListener("click",()=>menu.classList.remove("active")));
 }
 
-// Google Login Function
-window.loginWithGoogle = async () => {
-  const btn = document.getElementById('googleLoginBtn');
-  const msg = document.getElementById('authMessage');
-  try{
-    if(btn){ btn.disabled=true; btn.textContent="⏳ Connecting to Google..."; }
-    if(msg) msg.textContent="Opening Google login...";
-    const result = await signInWithPopup(auth, provider);
-    currentUser = result.user;
-    await saveUser(currentUser);
-    if(msg) msg.textContent=`Welcome, ${currentUser.displayName}! 🌲 Redirecting...`;
-    if(btn) btn.textContent="✅ Logged in!";
-    // Store for other pages
-    localStorage.setItem('payapang_user', JSON.stringify({
-      uid: currentUser.uid,
-      name: currentUser.displayName,
-      email: currentUser.email,
-      photo: currentUser.photoURL
-    }));
-    setTimeout(()=>{
-      closeAuthModal();
-      // Redirect to community
-      window.location.href = './global-chat.html';
-    }, 1200);
-  }catch(err){
-    console.error(err);
-    if(msg) msg.textContent="❌ " + (err.message || "Login failed. Try again.");
-    if(btn){ btn.disabled=false; btn.textContent="Continue with Google"; }
-    if(err.code === 'auth/popup-blocked'){
-      alert("Pop-up blocked! Please allow pop-ups for this site and try again.");
-    }
-  }
-};
-
-window.logoutGoogle = async () => {
-  await signOut(auth);
-  localStorage.removeItem('payapang_user');
-  location.reload();
-};
-
-// Auth Modal Functions
-window.openAuthModal = () => {
-  const modal = document.getElementById('authModal');
-  if(modal) modal.classList.add('active');
-  document.body.style.overflow='hidden';
-};
-window.closeAuthModal = () => {
-  const modal = document.getElementById('authModal');
-  if(modal) modal.classList.remove('active');
-  document.body.style.overflow='';
-};
-
-onAuthStateChanged(auth, (user)=>{
-  currentUser = user;
-  const joinBtns = document.querySelectorAll('.nav-cta, [data-join-community]');
-  if(user){
-    // Update UI - user logged in
-    joinBtns.forEach(btn=>{
-      if(btn.classList.contains('nav-cta')){
-        btn.textContent = `🌲 ${user.displayName?.split(' ')[0] || 'Community'} →`;
-        btn.href = './global-chat.html';
-        btn.onclick = null;
-      }
-    });
-    const loginNotice = document.getElementById('loginNotice');
-    if(loginNotice) loginNotice.style.display='none';
-  } else {
-    // Not logged in - make join buttons open modal
-    joinBtns.forEach(btn=>{
-      if(btn.classList.contains('nav-cta')){
-        btn.textContent = 'Join Community ↗';
-        btn.removeAttribute('href');
-        btn.onclick = (e)=>{ e.preventDefault(); openAuthModal(); };
-      }
-    });
-  }
-});
-
-// Close modal when clicking outside
+// === MENU FIX mo from earlier ===
+function toggleMenu(){
+  const sb = document.querySelector('.sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  if(!sb) return;
+  sb.classList.toggle('show');
+  if(ov) ov.classList.toggle('show', sb.classList.contains('show'));
+}
+function closeMenu(){
+  const sb = document.querySelector('.sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  if(sb) sb.classList.remove('show');
+  if(ov) ov.classList.remove('show');
+}
 document.addEventListener('click', (e)=>{
-  const modal = document.getElementById('authModal');
-  if(e.target === modal) closeAuthModal();
-});
-document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape') closeAuthModal();
+  const sidebar=document.querySelector('.sidebar');
+  const btn=document.querySelector('.menu-toggle');
+  const overlay=document.getElementById('sidebarOverlay');
+  if(!sidebar || !btn) return;
+  if(e.target === overlay){ closeMenu(); return; }
+  if(sidebar.classList.contains('show') && !sidebar.contains(e.target) && !btn.contains(e.target)){
+    if(window.innerWidth <= 900){ closeMenu(); }
+  }
 });
 
-// ---- NEWS LOADER FOR INDEX ----
-import { getFirestore as getFS2, collection as col2, query as q2, orderBy as ob2, onSnapshot as os2, getDocs as gd2 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
-const db2 = getFS2(app);
-const FALLBACK = "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800";
-function cleanImage(u){ if(!u) return FALLBACK; u=String(u).trim(); if(u.startsWith("data:")) return FALLBACK; if(u.includes("bing.net")||u.includes("...")||u.length<15) return FALLBACK; return u; }
-function esc(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
-function renderNews(docs){
-  const c=document.getElementById('forestNewsList'); if(!c) return;
-  const filtered=docs.filter(n=>(n.status||"published").toLowerCase()==="published");
-  const cleaned=filtered.filter(n=>{const img=String(n.image||n.media||""); if(img.startsWith("data:")) return false; if(img.includes("tse1.mm.bing.net")) return false; return true;});
-  if(cleaned.length===0){c.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:#9ab29d;background:#FFFEFD;border-radius:14px">Wala pang news. Mag-add sa Admin gamit Unsplash link.</div>`;return;}
-  c.innerHTML=cleaned.slice(0,6).map(n=>{const img=cleanImage(n.image||n.media||""); const id=n.id||""; return `<a href="./News.html?id=${id}" style="text-decoration:none"><article style="background:#FFFEFD;border-radius:14px;overflow:hidden;color:#12231a"><img src="${esc(img)}" style="width:100%;height:160px;object-fit:cover" onerror="this.src='${FALLBACK}'"><div style="padding:12px"><small>${esc((n.category||"Forest Whispers").toUpperCase())}</small><h3>${esc(n.title||"Untitled")}</h3><p>${esc((n.content||"").slice(0,80))}...</p></div></article></a>`;}).join('');
+// Reveal animation
+const observer=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("show");observer.unobserve(e.target)}})
+},{threshold:.12});
+document.querySelectorAll(".reveal").forEach(el=>observer.observe(el));
+
+// Modal
+const modal=document.getElementById("storyModal");
+const watchBtn=document.getElementById("watchBtn");
+const closeModalBtn=document.getElementById("closeModal");
+if(watchBtn && modal) watchBtn.addEventListener("click",()=>modal.classList.add("active"));
+if(closeModalBtn && modal) closeModalBtn.addEventListener("click",()=>modal.classList.remove("active"));
+if(modal) modal.addEventListener("click",e=>{if(e.target===modal)modal.classList.remove("active")});
+
+// Newsletter
+const subForm=document.getElementById("subscribeForm");
+if(subForm){
+  subForm.addEventListener("submit",e=>{
+   e.preventDefault();
+   const email=document.getElementById("email");
+   const msg=document.getElementById("formMessage");
+   if(msg) msg.textContent=`Salamat! ${email.value} is now part of Payapang Isip. 🌲`;
+   if(email) email.value="";
+  });
 }
-async function loadNews(){try{const qq=q2(col2(db2,"news"),ob2("createdAt","desc"));os2(qq,snap=>{renderNews(snap.docs.map(d=>({id:d.id,...d.data()})));},async()=>{const s=await gd2(col2(db2,"news"));renderNews(s.docs.map(d=>({id:d.id,...d.data()})));});}catch(e){const s=await gd2(col2(db2,"news"));renderNews(s.docs.map(d=>({id:d.id,...d.data()})));}}
-loadNews();
+
+// Cursor glow
+const glow=document.querySelector(".cursor-glow");
+if(glow){
+  window.addEventListener("pointermove",e=>{
+   glow.style.left=e.clientX+"px";glow.style.top=e.clientY+"px";
+  });
+}
+
+// Active nav highlight
+document.addEventListener('DOMContentLoaded',()=>{
+  const cur = location.pathname.split('/').pop() || 'index.html';
+  document.querySelectorAll('.nav-menu a, .sidebar a').forEach(a=>{
+    if(a.getAttribute('href')===cur) a.classList.add('active');
+  });
+  document.querySelectorAll('[data-auth-login]').forEach(el=>{
+    el.style.pointerEvents='auto';
+    el.style.zIndex='10';
+  });
+});
