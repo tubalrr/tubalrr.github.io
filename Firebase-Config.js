@@ -1,7 +1,6 @@
-// Copy this to firebase-config.js and fill your real key
-// firebase-config.js is in .gitignore - never commit it
+// LOCAL ONLY - DO NOT COMMIT - add to .gitignore
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY_HERE",
+  apiKey: "AIzaSyDM5tGPB0z8UOCxajq5LARLXphzr9tLZBA",
   authDomain: "payapang-isip.firebaseapp.com",
   projectId: "payapang-isip",
   storageBucket: "payapang-isip.firebasestorage.app",
