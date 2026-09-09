@@ -1,0 +1,67 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Panel - Chat Working</title>
+<style>body{margin:0;font-family:system-ui;background:#0b1a12;color:#fff;padding:18px} .top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+button{padding:8px 12px;border-radius:999px;border:1px solid #3a5a3a;background:#1a2e22;color:#c8e6c9;cursor:pointer;font-weight:700}
+.chat{max-width:900px;margin:18px auto;background:#111;border:1px solid #222;border-radius:16px;overflow:hidden}
+.msgs{height:420px;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.msg{background:#1e2e22;padding:8px 10px;border-radius:12px;font-size:13px} .msg.admin{background:#2d4a2e;border:1px solid #7FB069}
+.row{display:flex;gap:8px;padding:10px;border-top:1px solid #222} input{flex:1;padding:10px;border-radius:999px;border:1px solid #333;background:#0e1a12;color:#fff}
+.banner{padding:10px;border-radius:10px;margin:10px 0;display:none} .banner.lock{background:#ff50501a;border:1px solid #ff505033;color:#ffb3b3} .banner.ok{background:#7FB06922;border:1px solid #7FB06955;color:#c8e6c9}
+</style></head><body>
+<div class="top"><div><h2 style="margin:0">🌲 Admin Panel - Chat FIXED</h2><small id="conn" style="color:#9ab29d">Connecting...</small></div>
+<div style="display:flex;gap:8px"><button id="lockBtn" onclick="toggleLock()">🔓 Unlock</button><button onclick="location.href='./index.html'">Home</button></div></div>
+<div id="lockBanner" class="banner lock">🔒 Global Chat is LOCKED - users cannot chat. Click Unlock to enable.</div>
+<div id="okBanner" class="banner ok" style="display:block">✅ Listening to 5 collections without orderBy - will receive index messages</div>
+<div class="chat"><div id="msgs" class="msgs"><div style="opacity:.6">Loading real messages...</div></div>
+<div class="row"><input id="chatInput" placeholder="Type as Admin..."><button onclick="send()">Send ➤</button></div></div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+import { firebaseConfig } from "./firebase-config.js";
+const app=initializeApp(firebaseConfig); const db=getFirestore(app);
+const msgsEl=document.getElementById("msgs"); let allMsgs={}; let isLocked=false;
+
+function et(t){ if(!t) return 0; if(t.toDate) return t.toDate().getTime(); if(t instanceof Date) return t.getTime(); if(typeof t==='number') return t; if(typeof t==='string'){ const d=new Date(t); return isNaN(d)?0:d.getTime(); } return 0; }
+function render(){
+  const merged=Object.values(allMsgs).flat().sort((a,b)=>et(a.timestamp||a.createdAt)-et(b.timestamp||b.createdAt));
+  const uniq=new Map(); merged.forEach(m=>{ const k=m.id||m.timestamp; if(!uniq.has(m.id)) uniq.set(m.id,m); });
+  const list=[...uniq.values()].slice(-100);
+  msgsEl.innerHTML=list.map(m=>`<div class="msg ${m.from?.includes('Admin')||m.sender?.includes('tubalrr')?'admin':''}"><b>${m.from||m.sender||'Anon'}</b>: ${m.message||m.text||m.content||''} <small style="opacity:.6">${new Date(et(m.timestamp||m.createdAt)).toLocaleTimeString()}</small></div>`).join('')||'<div>No messages yet</div>';
+  msgsEl.scrollTop=msgsEl.scrollHeight;
+  document.getElementById("conn").textContent=`${list.length} messages • ${Object.keys(allMsgs).length} cols listening • ${isLocked?'LOCKED':'UNLOCKED'}`;
+}
+function listen(col){
+  onSnapshot(collection(db,col), snap=>{
+    allMsgs[col]=snap.docs.map(d=>({id:d.id,...d.data()}));
+    console.log(`[${col}] ${snap.size}`); render();
+  }, err=>{
+    console.log("retry "+col, err.message);
+    onSnapshot(collection(db,col), s=>{ allMsgs[col]=s.docs.map(d=>({id:d.id,...d.data()})); render(); });
+  });
+}
+["globalChats","globalMessages","messages","chats","chatMessages"].forEach(listen);
+
+// lock listener
+onSnapshot(doc(db,"settings","globalChat"), snap=>{
+  isLocked=snap.data()?.locked||false;
+  document.getElementById("lockBanner").style.display=isLocked?"block":"none";
+  const btn=document.getElementById("lockBtn");
+  btn.textContent=isLocked?"🔒 Locked - Click to Unlock":"🔓 Unlocked - Click to Lock";
+  btn.style.background=isLocked?"#ff5050":"#1a2e22";
+  document.getElementById("chatInput").disabled=isLocked;
+  document.getElementById("chatInput").placeholder=isLocked?"🔒 Locked - unlock first":"Type as Admin...";
+});
+
+window.toggleLock=async()=>{
+  await setDoc(doc(db,"settings","globalChat"), {locked:!isLocked, lockedBy:"tubalrr@gmail.com", lockedAt:serverTimestamp()}, {merge:true});
+};
+window.send=async()=>{
+  const input=document.getElementById("chatInput"); const text=input.value.trim(); if(!text) return;
+  if(isLocked){ alert("Unlock first"); return; }
+  input.value="";
+  const payload={message:text, text:text, content:text, from:"Admin", sender:"tubalrr@gmail.com", email:"tubalrr@gmail.com", timestamp:serverTimestamp(), createdAt:serverTimestamp(), type:"text", avatar:"🌲"};
+  for(const col of ["globalChats","globalMessages","messages","chats","chatMessages"]){ try{ await addDoc(collection(db,col), payload); }catch(e){ console.error(col,e); } }
+};
+document.getElementById("chatInput").addEventListener("keydown", e=>{ if(e.key==="Enter") send(); });
+</script>
+</body></html>
