@@ -1,7 +1,7 @@
 // LOCAL ONLY - DO NOT COMMIT if you want no alerts, but for now this fixes api-key-expired because it uses NEW unrestricted key
 // TO FIX api-key-expired: Go to https://console.cloud.google.com/apis/credentials -> Edit key -> Add Identity Toolkit API + Token Service API
 export const firebaseConfig = {
-  apiKey: "AIzaSyDM5tGPB0z8UOCxajq5LARLXphzr9tLZBA",
+  apiKey: "AIzaSyCAaKeCzBMfHI_aDQ8BquJLRBQ_65MaJwc",
   authDomain: "payapang-isip.firebaseapp.com",
   projectId: "payapang-isip",
   storageBucket: "payapang-isip.firebasestorage.app",
