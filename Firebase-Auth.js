@@ -5,7 +5,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const firebaseConfig = {
- apiKey:"AIzaSyCxiOo0BzOUgRcZZpUKVF3uu2ktjyjg8OM",
+ apiKey:"",
  authDomain:"payapang-isip.firebaseapp.com",
  projectId:"payapang-isip",
  storageBucket:"payapang-isip.firebasestorage.app",
